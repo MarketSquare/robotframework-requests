@@ -1,7 +1,14 @@
 *.*~
+*~
 *.pyc
 *.swp
 *.swo
 log.html
-output.html
+output.xml
+debug.txt
 report.html
+~*
+.DS_Store
+
+build/
+
