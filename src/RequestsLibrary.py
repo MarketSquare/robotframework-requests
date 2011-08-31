@@ -1,13 +1,11 @@
 import requests
-
-import urllib
-import urllib2
 import json
+
+from urllib import urlencode
 
 import robot
 
 from robot.libraries.BuiltIn import BuiltIn
-
 
 class RequestsLibrary(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
@@ -18,6 +16,9 @@ class RequestsLibrary(object):
         '''
 
         self._cache = robot.utils.ConnectionCache('No sessions created')
+
+        requests.settings.base_headers['User-Agent'] = 'robotframework-requests'
+
 
         self.builtin = BuiltIn()
 
@@ -56,60 +57,64 @@ class RequestsLibrary(object):
         return json.loads(content)
 
     
-    def get(self, alias, uri, **kwargs):
+    def get(self, alias, uri, headers=None):
         ''' Get: send a GET request on the session object found using the given alias 
         '''
 
         session = self._cache.switch(alias)
-        resp = session.get(uri, **kwargs)
+        resp = session.get(uri, headers=headers)
 
         # store the last response object
         session.last_resp = resp
         return resp
 
 
-    def post(self, alias, uri, **kwargs):
+    def post(self, alias, uri, data=None, headers=None):
         ''' Post: send a POST request on the session object found using the given alias 
         '''
 
+        if data:
+            data = urlencode(data)
+
         session = self._cache.switch(alias)
-        resp = session.post(uri, **kwargs)
+        resp = session.post(uri, data=data, headers=headers)
 
         # store the last response object
         session.last_resp = resp
+        self.builtin.log("Post response: " + resp.content, 'DEBUG')
         return resp
 
 
-    def put(self, alias, uri, **kwargs):
-        ''' Put: send a GET request on the session object found using the given alias 
+    def put(self, alias, uri, data=None, headers=None):
+        ''' Put: send a PUT request on the session object found using the given alias 
         '''
 
         session = self._cache.switch(alias)
-        resp = session.put(uri, **kwargs)
+        resp = session.put(uri, data=urlencode(data), headers=headers)
 
         # store the last response object
         session.last_resp = resp
         return resp
 
 
-    def delete(self, alias, uri, **kwargs):
+    def delete(self, alias, uri, headers=None):
         ''' Delete: send a DELETE request on the session object found using the given alias 
         '''
 
         session = self._cache.switch(alias)
-        resp = session.delete(uri, **kwargs)
+        resp = session.delete(uri, headers=headers)
 
         # store the last response object
         session.last_resp = resp
         return resp
 
 
-    def head(self, alias, uri, **kwargs):
+    def head(self, alias, uri, headers=None):
         ''' Delete: send a HEAD request on the session object found using the given alias 
         '''
 
         session = self._cache.switch(alias)
-        resp = session.head(uri, **kwargs)
+        resp = session.head(uri, headers=headers)
 
         # store the last response object
         session.last_resp = resp
