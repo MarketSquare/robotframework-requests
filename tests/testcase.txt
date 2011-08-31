@@ -28,6 +28,12 @@ Get With Auth
     Should Be Equal As Strings  ${jsondata['authenticated']}  True
 
 
+Post Request With No Data
+    Create Session  httpbin  http://httpbin.org
+    ${resp}  Post  httpbin  /post  
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+
 Post Requests
     Create Session  httpbin  http://httpbin.org
 
@@ -37,7 +43,6 @@ Post Requests
     ${jsondata}=  To Json  ${resp.content}
     Dictionary Should Contain Value  ${jsondata['form']}  bulkan
     Dictionary Should Contain Value  ${jsondata['form']}  evcimen
-
 
 
 Put Requests
@@ -55,3 +60,19 @@ Head Request
     Create Session  httpbin  http://httpbin.org
     ${resp}  Head  httpbin  /headers
     Should Be Equal As Strings  ${resp.status_code}  200
+
+
+Delete Request With No Data
+    Create Session  httpbin  http://httpbin.org
+    ${resp}  Delete  httpbin  /delete
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+
+Delete Request With Data
+    Create Session  httpbin  http://httpbin.org
+    ${data}  Create Dictionary  name  bulkan  surname  evcimen
+    ${resp}  Delete  httpbin  /delete  data=${data}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    ${jsondata}=  To Json  ${resp.content}
+    Dictionary Should Contain Value  ${jsondata['args']}  bulkan
+    Dictionary Should Contain Value  ${jsondata['args']}  evcimen

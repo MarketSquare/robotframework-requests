@@ -69,15 +69,12 @@ class RequestsLibrary(object):
         return resp
 
 
-    def post(self, alias, uri, data=None, headers=None):
+    def post(self, alias, uri, data=(), headers=None):
         ''' Post: send a POST request on the session object found using the given alias 
         '''
 
-        if data:
-            data = urlencode(data)
-
         session = self._cache.switch(alias)
-        resp = session.post(uri, data=data, headers=headers)
+        resp = session.post(uri, data=urlencode(data), headers=headers)
 
         # store the last response object
         session.last_resp = resp
@@ -97,12 +94,12 @@ class RequestsLibrary(object):
         return resp
 
 
-    def delete(self, alias, uri, headers=None):
+    def delete(self, alias, uri, data=(), headers=None):
         ''' Delete: send a DELETE request on the session object found using the given alias 
         '''
 
         session = self._cache.switch(alias)
-        resp = session.delete(uri, headers=headers)
+        resp = session.delete("%s?%s" %(uri, urlencode(data)), headers=headers)
 
         # store the last response object
         session.last_resp = resp
@@ -120,27 +117,10 @@ class RequestsLibrary(object):
         session.last_resp = resp
         return resp
 
-    
 
-if __name__ == '__main__':
-    rl = RequestsLibrary()
-    session = rl.create_session('github', 'http://github.com/api/v2/json')
-    #resp = rl.get('github', '/user/search/bulkan')
-    #jsondata = rl.to_json(resp.content)
-
-
-    auth = ('user', 'passwd')
-    session = rl.create_session('httpbin', 'http:/httpbin.org', auth=auth)
-    resp = rl.get('httpbin', '/basic-auth/user/passwd')
-    import pdb; pdb.set_trace() 
-    
-
-    
-    #with requests.session(auth=auth) as c:
-    #    resp = c.get('http://httpbin.org/basic-auth/user/passwd')
-    #    print resp
-
-
-    
-    # sometimes you just need pdb
-
+#if __name__ == '__main__':
+#    rl = RequestsLibrary()
+#    session = rl.create_session('github', 'http://github.com/api/v2/json')
+#    auth = ('user', 'passwd')
+#    session = rl.create_session('httpbin', 'http:/httpbin.org', auth=auth)
+#    resp = rl.get('httpbin', '/basic-auth/user/passwd')
