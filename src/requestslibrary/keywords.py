@@ -7,7 +7,7 @@ import robot
 
 from robot.libraries.BuiltIn import BuiltIn
 
-class RequestsLibrary(object):
+class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
 
     def __init__(self):
