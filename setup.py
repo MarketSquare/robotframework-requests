@@ -3,9 +3,10 @@
 from distutils.core import setup
 
 from os.path import abspath, dirname, join
-execfile(join(dirname(abspath(__file__)), 'src', 'rf-requestslibrary', 'version.py'))
+execfile(join(dirname(abspath(__file__)), 'src', 'requestslibrary', 'version.py'))
 
 DESCRIPTION = """
+Robot Framework keyword library wrapper around the HTTP client library requests.
 """[1:-1]
 
 
@@ -29,5 +30,5 @@ setup(name         = 'robotframework-requests',
       platforms    = 'any',
       classifiers  = CLASSIFIERS.splitlines(),
       package_dir  = {'' : 'src'},
-      packages     = ['RequestsLibrary'],
+      packages     = ['requestslibrary'],
       )
