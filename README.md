@@ -50,6 +50,7 @@ Usage
         <td>/</td>
     </tr>
     <tr>
+        <td></td>
         <td>Should Be Equal As Strings</td>
         <td>${resp.status_code}</td>
         <td>200</td>
@@ -65,6 +66,7 @@ Usage
     </tr>
 
     <tr>
+        <td></td>
         <td>Should Be Equal As Strings</td>
         <td>${resp.status_code}</td>
         <td>200</td>
@@ -77,6 +79,7 @@ Usage
     </tr>
 
     <tr>
+        <td></td>
         <td>Dictionary Should Contain Value</td>
         <td>${jsondata['users'][0]}</td>
         <td>Bulkan Savun Evcimen</td>
