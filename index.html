@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>RequestsLibrary</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style media="all" type="text/css">
+body {
+  background: white;
+  color: black;
+  font-size: small;
+  font-family: sans-serif;
+  padding: 0.1em 0.5em;
+}
+a.name, span.name {
+  font-style: italic;
+}
+a, a:link, a:visited {
+  color: #c30;
+}
+a:hover, a:active {
+  text-decoration: underline;
+  color: black;
+}
+div.shortcuts {
+  margin: 1em 0em;
+  font-size: 0.9em;
+}
+div.shortcuts a {
+  text-decoration: none;
+  color: black;
+}
+div.shortcuts a:hover {
+  text-decoration: underline;
+}
+table.keywords {
+  border: 2px solid black;
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 0.3em 0em;
+  width: 100%;
+}
+table.keywords th, table.keywords td {
+  border: 2px solid black;
+  padding: 0.2em;
+  vertical-align: top;
+}
+table.keywords th {
+  background: #bbb;
+  color: black;
+}
+table.keywords td.kw {
+  width: 150px;
+  font-weight: bold;
+}
+table.keywords td.arg {
+  width: 300px;
+  font-style: italic;
+}
+table.doc {
+  border: 1px solid black;
+  background: transparent;
+  border-collapse: collapse;
+  empty-cells: show;
+  font-size: 0.85em;
+}
+table.doc td {
+  border: 1px solid black;
+  padding: 0.1em 0.3em;
+  height: 1.2em;
+
+}
+#footer {
+  font-size: 0.9em;
+}
+</style>
+<style media="print" type="text/css">
+body {
+  margin: 0px 1px;
+  padding: 0px;
+  font-size: 10px;
+}
+a {
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+<h1>RequestsLibrary</h1>
+<b>Scope:</b> global<br>
+<b>Named arguments: </b>
+supported
+
+<h2 id="introduction">Introduction</h2>
+<p>Documentation for test library <span class="name">RequestsLibrary</span>.</p>
+
+
+<h2>Shortcuts</h2>
+<div class='shortcuts'>
+<a href="#Create Session" title="Create Session: create a HTTP session to a server">Create&nbsp;Session</a>
+&nbsp;&middot;&nbsp;
+<a href="#Delete" title="Delete: send a DELETE request on the session object found using the given alias ">Delete</a>
+&nbsp;&middot;&nbsp;
+<a href="#Delete All Sessions" title="Delete Session: removes all the session objects">Delete&nbsp;All&nbsp;Sessions</a>
+&nbsp;&middot;&nbsp;
+<a href="#Get" title="Get: send a GET request on the session object found using the given alias ">Get</a>
+&nbsp;&middot;&nbsp;
+<a href="#Head" title="Delete: send a HEAD request on the session object found using the given alias ">Head</a>
+&nbsp;&middot;&nbsp;
+<a href="#Post" title="Post: send a POST request on the session object found using the given alias ">Post</a>
+&nbsp;&middot;&nbsp;
+<a href="#Put" title="Put: send a PUT request on the session object found using the given alias ">Put</a>
+&nbsp;&middot;&nbsp;
+<a href="#To Json" title="">To&nbsp;Json</a>
+</div>
+
+<h2>Keywords</h2>
+<table border="1" class="keywords">
+<tr>
+  <th class="kw">Keyword</th>
+  <th class="arg">Arguments</th>
+  <th class="doc">Documentation</th>
+</tr>
+<tr>
+  <td class="kw"><a name="Create Session"></a>Create Session</td>
+  <td class="arg">alias, url, headers=None, cookies=None, auth=None, timeout=None, proxies=None</td>
+  <td class="doc">Create Session: create a HTTP session to a server<br />
+<br />
+<b>url:</b> Base url of the server <b>alias:</b> Robot Framework alias to identify the session <b>headers:</b> Dictionary of default headers <b>auth:</b> Dictionary of username &amp; password for HTTP Basic Auth <b>timeout:</b> connection timeout <b>proxies:</b> proxy server url</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Delete"></a>Delete</td>
+  <td class="arg">alias, uri, data=(), headers=None</td>
+  <td class="doc">Delete: send a DELETE request on the session object found using the given alias<br />
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Delete All Sessions"></a>Delete All Sessions</td>
+  <td class="arg"></td>
+  <td class="doc">Delete Session: removes all the session objects<br />
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Get"></a>Get</td>
+  <td class="arg">alias, uri, headers=None</td>
+  <td class="doc">Get: send a GET request on the session object found using the given alias<br />
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Head"></a>Head</td>
+  <td class="arg">alias, uri, headers=None</td>
+  <td class="doc">Delete: send a HEAD request on the session object found using the given alias<br />
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Post"></a>Post</td>
+  <td class="arg">alias, uri, data=(), headers=None</td>
+  <td class="doc">Post: send a POST request on the session object found using the given alias<br />
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Put"></a>Put</td>
+  <td class="arg">alias, uri, data=None, headers=None</td>
+  <td class="doc">Put: send a PUT request on the session object found using the given alias<br />
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="To Json"></a>To Json</td>
+  <td class="arg">content</td>
+  <td class="doc"></td>
+</tr>
+</table>
+<p id="footer">
+Altogether 8 keywords.<br />
+Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
+on 2011-09-09 14:20:56.
+</p>
+</body>
+</html>
