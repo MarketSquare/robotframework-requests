@@ -12,7 +12,7 @@ Robot Framework keyword library wrapper around the HTTP client library requests.
 
 CLASSIFIERS = """
 Development Status :: 5 - Production/Stable
-License :: OSI Approved :: Apache Software License
+License :: Public Domain
 Operating System :: OS Independent
 Programming Language :: Python
 Topic :: Software Development :: Testing
@@ -25,10 +25,11 @@ setup(name         = 'robotframework-requests',
       author       = 'Bulkan Savun Evcimen',
       author_email = 'bulkan@gmail.com',
       url          = 'http://github.com/bulkan/robotframework-requests',
-      license      = 'Apache License 2.0',
+      license      = 'Public Domain',
       keywords     = 'robotframework testing test automation http client requests',
       platforms    = 'any',
       classifiers  = CLASSIFIERS.splitlines(),
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
+      package_data = {'RequestsLibrary': ['tests/*.txt']}
       )

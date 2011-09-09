@@ -82,11 +82,3 @@ Usage
         <td>Bulkan Savun Evcimen</td>
     </tr>
 </table>
-
-
-
-The following command will run the tests that I have written using Robot Framework
-
-
-```pybot -P robotframework-requests/src robotframework-requests/tests
-```
