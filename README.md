@@ -5,7 +5,15 @@ test library that uses the [Requests](https://github.com/kennethreitz/requests) 
 Usage
 =====
 
-```pip install robotframework-requests
+You need to have requests installed
+
+```
+   pip install -U requests
+```
+
+Now install robotframework-requests
+
+```pip install -U robotframework-requests
 ```
 
 <table border=1>
