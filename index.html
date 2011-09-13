@@ -91,26 +91,71 @@ a {
 supported
 
 <h2 id="introduction">Introduction</h2>
-<p>Documentation for test library <span class="name">RequestsLibrary</span>.</p>
+<p>RequestsLibrary is a HTTP client keyword library that uses the requests module from Kenneth Reitz <a href="https://github.com/kennethreitz/requests">https://github.com/kennethreitz/requests</a><br />
+<br />
+Examples:<br />
+<table border="1" class="doc">
+<tr>
+<td>Create Session</td>
+<td>google</td>
+<td><a href="http://www.google.com">http://www.google.com</a></td>
+</tr>
+<tr>
+<td>Create Session</td>
+<td>github</td>
+<td><a href="http://github.com/api/v2/json">http://github.com/api/v2/json</a></td>
+</tr>
+<tr>
+<td>${resp}</td>
+<td>Get &nbsp;google</td>
+<td>/</td>
+</tr>
+<tr>
+<td>Should Be Equal As Strings</td>
+<td>${resp.status_code}</td>
+<td>200</td>
+</tr>
+<tr>
+<td>${resp}</td>
+<td>Get &nbsp;github</td>
+<td>/user/search/bulkan</td>
+</tr>
+<tr>
+<td>Should Be Equal As Strings</td>
+<td>${resp.status_code}</td>
+<td>200</td>
+</tr>
+<tr>
+<td>${jsondata}</td>
+<td>To Json</td>
+<td>${resp.content}</td>
+</tr>
+<tr>
+<td>Dictionary Should Contain Value</td>
+<td>${jsondata['users'][0]}</td>
+<td>Bulkan Savun Evcimen</td>
+</tr>
+</table>
+</p>
 
 
 <h2>Shortcuts</h2>
 <div class='shortcuts'>
 <a href="#Create Session" title="Create Session: create a HTTP session to a server">Create&nbsp;Session</a>
 &nbsp;&middot;&nbsp;
-<a href="#Delete" title="Delete: send a DELETE request on the session object found using the given alias ">Delete</a>
+<a href="#Delete" title="Send a DELETE request on the session object found using the given `alias`">Delete</a>
 &nbsp;&middot;&nbsp;
-<a href="#Delete All Sessions" title="Delete Session: removes all the session objects">Delete&nbsp;All&nbsp;Sessions</a>
+<a href="#Delete All Sessions" title="Removes all the session objects">Delete&nbsp;All&nbsp;Sessions</a>
 &nbsp;&middot;&nbsp;
-<a href="#Get" title="Get: send a GET request on the session object found using the given alias ">Get</a>
+<a href="#Get" title="Send a GET request on the session object found using the given `alias`">Get</a>
 &nbsp;&middot;&nbsp;
-<a href="#Head" title="Delete: send a HEAD request on the session object found using the given alias ">Head</a>
+<a href="#Head" title="Send a HEAD request on the session object found using the given `alias`">Head</a>
 &nbsp;&middot;&nbsp;
-<a href="#Post" title="Post: send a POST request on the session object found using the given alias ">Post</a>
+<a href="#Post" title="Send a POST request on the session object found using the given `alias`">Post</a>
 &nbsp;&middot;&nbsp;
-<a href="#Put" title="Put: send a PUT request on the session object found using the given alias ">Put</a>
+<a href="#Put" title="Send a PUT request on the session object found using the given `alias`">Put</a>
 &nbsp;&middot;&nbsp;
-<a href="#To Json" title="">To&nbsp;Json</a>
+<a href="#To Json" title="Convert a string to a JSON object ">To&nbsp;Json</a>
 </div>
 
 <h2>Keywords</h2>
@@ -125,54 +170,93 @@ supported
   <td class="arg">alias, url, headers=None, cookies=None, auth=None, timeout=None, proxies=None</td>
   <td class="doc">Create Session: create a HTTP session to a server<br />
 <br />
-<b>url:</b> Base url of the server <b>alias:</b> Robot Framework alias to identify the session <b>headers:</b> Dictionary of default headers <b>auth:</b> Dictionary of username &amp; password for HTTP Basic Auth <b>timeout:</b> connection timeout <b>proxies:</b> proxy server url</td>
+<span class="name">url</span> Base url of the server<br />
+<br />
+<span class="name">alias</span> Robot Framework alias to identify the session<br />
+<br />
+<span class="name">headers</span> Dictionary of default headers<br />
+<br />
+<span class="name">auth</span> Dictionary of username &amp; password for HTTP Basic Auth<br />
+<br />
+<span class="name">timeout</span> connection timeout<br />
+<br />
+<span class="name">proxies</span> proxy server url</td>
 </tr>
 <tr>
   <td class="kw"><a name="Delete"></a>Delete</td>
   <td class="arg">alias, uri, data=(), headers=None</td>
-  <td class="doc">Delete: send a DELETE request on the session object found using the given alias<br />
-</td>
+  <td class="doc">Send a DELETE request on the session object found using the given <span class="name">alias</span><br />
+<br />
+<span class="name">alias</span> that will be used to identify the Session object in the cache<br />
+<br />
+<span class="name">uri</span> to send the DELETE request to<br />
+<br />
+<span class="name">headers</span> a dictionary of headers to use with the request</td>
 </tr>
 <tr>
   <td class="kw"><a name="Delete All Sessions"></a>Delete All Sessions</td>
   <td class="arg"></td>
-  <td class="doc">Delete Session: removes all the session objects<br />
+  <td class="doc">Removes all the session objects<br />
 </td>
 </tr>
 <tr>
   <td class="kw"><a name="Get"></a>Get</td>
   <td class="arg">alias, uri, headers=None</td>
-  <td class="doc">Get: send a GET request on the session object found using the given alias<br />
-</td>
+  <td class="doc">Send a GET request on the session object found using the given <span class="name">alias</span><br />
+<br />
+<span class="name">alias</span> that will be used to identify the Session object in the cache<br />
+<br />
+<span class="name">uri</span> to send the GET request to<br />
+<br />
+<span class="name">headers</span> a dictionary of headers to use with the request</td>
 </tr>
 <tr>
   <td class="kw"><a name="Head"></a>Head</td>
   <td class="arg">alias, uri, headers=None</td>
-  <td class="doc">Delete: send a HEAD request on the session object found using the given alias<br />
-</td>
+  <td class="doc">Send a HEAD request on the session object found using the given <span class="name">alias</span><br />
+<br />
+<span class="name">alias</span> that will be used to identify the Session object in the cache<br />
+<br />
+<span class="name">uri</span> to send the HEAD request to<br />
+<br />
+<span class="name">headers</span> a dictionary of headers to use with the request</td>
 </tr>
 <tr>
   <td class="kw"><a name="Post"></a>Post</td>
   <td class="arg">alias, uri, data=(), headers=None</td>
-  <td class="doc">Post: send a POST request on the session object found using the given alias<br />
-</td>
+  <td class="doc">Send a POST request on the session object found using the given <span class="name">alias</span><br />
+<br />
+<span class="name">alias</span> that will be used to identify the Session object in the cache<br />
+<br />
+<span class="name">uri</span> to send the GET request to<br />
+<br />
+<span class="name">data</span> a dictionary of key-value pairs that will be urlencoded and sent as POST data<br />
+<br />
+<span class="name">headers</span> a dictionary of headers to use with the request</td>
 </tr>
 <tr>
   <td class="kw"><a name="Put"></a>Put</td>
   <td class="arg">alias, uri, data=None, headers=None</td>
-  <td class="doc">Put: send a PUT request on the session object found using the given alias<br />
-</td>
+  <td class="doc">Send a PUT request on the session object found using the given <span class="name">alias</span><br />
+<br />
+<span class="name">alias</span> that will be used to identify the Session object in the cache<br />
+<br />
+<span class="name">uri</span> to send the PUT request to<br />
+<br />
+<span class="name">headers</span> a dictionary of headers to use with the request</td>
 </tr>
 <tr>
   <td class="kw"><a name="To Json"></a>To Json</td>
   <td class="arg">content</td>
-  <td class="doc"></td>
+  <td class="doc">Convert a string to a JSON object<br />
+<br />
+<span class="name">content</span> String content to convert into JSON</td>
 </tr>
 </table>
 <p id="footer">
 Altogether 8 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2011-09-09 14:20:56.
+on 2011-09-13 10:47:35.
 </p>
 </body>
 </html>
