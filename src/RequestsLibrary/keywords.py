@@ -24,15 +24,21 @@ class RequestsKeywords(object):
 
 
     def create_session(self, alias, url, headers=None, cookies=None, auth=None, timeout=None, proxies=None):
-        ''' Create Session: create a HTTP session to a server
+        """ Create Session: create a HTTP session to a server
 
-        *url:* Base url of the server
-        *alias:* Robot Framework alias to identify the session
-        *headers:* Dictionary of default headers
-        *auth:* Dictionary of username & password for HTTP Basic Auth
-        *timeout:* connection timeout
-        *proxies:* proxy server url
-        '''
+        `url` Base url of the server
+
+        `alias` Robot Framework alias to identify the session
+
+        `headers` Dictionary of default headers
+
+        `auth` Dictionary of username & password for HTTP Basic Auth
+
+        `timeout` connection timeout
+
+        `proxies` proxy server url
+
+        """
 
         def baseurlhook(args):
             # url is the base url. Request url is uri
@@ -42,24 +48,37 @@ class RequestsKeywords(object):
 
         session = requests.session(hooks=dict(args=baseurlhook), auth=auth, headers=headers,
                 cookies=cookies, timeout=timeout, proxies=proxies )
+
         self._cache.register(session, alias=alias)
         return session
 
 
     def delete_all_sessions(self):
-        ''' Delete Session: removes all the session objects
-        '''
+        """ Removes all the session objects
+        """
 
         self._cache.empty_cache()
 
 
     def to_json(self, content):
+        """ Convert a string to a JSON object 
+
+        `content` String content to convert into JSON
+        
+        """
         return json.loads(content)
 
     
     def get(self, alias, uri, headers=None):
-        ''' Get: send a GET request on the session object found using the given alias 
-        '''
+        """ Send a GET request on the session object found using the given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the GET request to
+
+        `headers` a dictionary of headers to use with the request
+
+        """
 
         session = self._cache.switch(alias)
         resp = session.get(uri, headers=headers)
@@ -70,8 +89,17 @@ class RequestsKeywords(object):
 
 
     def post(self, alias, uri, data=(), headers=None):
-        ''' Post: send a POST request on the session object found using the given alias 
-        '''
+        """ Send a POST request on the session object found using the given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the GET request to
+
+        `data` a dictionary of key-value pairs that will be urlencoded and sent as POST data
+
+        `headers` a dictionary of headers to use with the request
+
+        """
 
         session = self._cache.switch(alias)
         resp = session.post(uri, data=urlencode(data), headers=headers)
@@ -83,8 +111,15 @@ class RequestsKeywords(object):
 
 
     def put(self, alias, uri, data=None, headers=None):
-        ''' Put: send a PUT request on the session object found using the given alias 
-        '''
+        """ Send a PUT request on the session object found using the given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the PUT request to
+
+        `headers` a dictionary of headers to use with the request
+
+        """
 
         session = self._cache.switch(alias)
         resp = session.put(uri, data=urlencode(data), headers=headers)
@@ -95,8 +130,15 @@ class RequestsKeywords(object):
 
 
     def delete(self, alias, uri, data=(), headers=None):
-        ''' Delete: send a DELETE request on the session object found using the given alias 
-        '''
+        """ Send a DELETE request on the session object found using the given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the DELETE request to
+
+        `headers` a dictionary of headers to use with the request
+
+        """
 
         session = self._cache.switch(alias)
         resp = session.delete("%s?%s" %(uri, urlencode(data)), headers=headers)
@@ -107,8 +149,15 @@ class RequestsKeywords(object):
 
 
     def head(self, alias, uri, headers=None):
-        ''' Delete: send a HEAD request on the session object found using the given alias 
-        '''
+        """ Send a HEAD request on the session object found using the given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the HEAD request to
+
+        `headers` a dictionary of headers to use with the request
+
+        """
 
         session = self._cache.switch(alias)
         resp = session.head(uri, headers=headers)
@@ -116,11 +165,3 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         return resp
-
-
-#if __name__ == '__main__':
-#    rl = RequestsLibrary()
-#    session = rl.create_session('github', 'http://github.com/api/v2/json')
-#    auth = ('user', 'passwd')
-#    session = rl.create_session('httpbin', 'http:/httpbin.org', auth=auth)
-#    resp = rl.get('httpbin', '/basic-auth/user/passwd')
