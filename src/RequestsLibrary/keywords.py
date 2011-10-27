@@ -17,7 +17,7 @@ class RequestsKeywords(object):
 
         self._cache = robot.utils.ConnectionCache('No sessions created')
 
-        requests.settings.base_headers['User-Agent'] = 'robotframework-requests'
+        #requests.settings.base_headers['User-Agent'] = 'robotframework-requests'
 
 
         self.builtin = BuiltIn()
@@ -43,6 +43,7 @@ class RequestsKeywords(object):
         def baseurlhook(args):
             # url is the base url. Request url is uri
             args['url'] = '%s%s' %(url, args['url'])
+            print 'here'
         
         self.builtin.log('Creating session: %s' %alias, 'DEBUG')
 
@@ -165,3 +166,11 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         return resp
+
+
+
+if __name__ == '__main__':
+     rk = RequestsKeywords()
+     rk.create_session('github','http://github.com/api/v2/json')
+     resp =  rk.get('github', 'http://github.com/api/v2/json/user/search/bulkan')
+     import pdb; pdb.set_trace() 
