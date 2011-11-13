@@ -33,6 +33,12 @@ Post Request With No Data
     ${resp}  Post  httpbin  /post  
     Should Be Equal As Strings  ${resp.status_code}  200
 
+Post Request With No Dictionary
+    Create Session  httpbin  http://httpbin.org
+    Set Test Variable  ${data}  some content
+    ${resp}  Post  httpbin  /post  data=${data}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Contain  ${resp.content}  ${data}
 
 Post Requests
     Create Session  httpbin  http://httpbin.org
