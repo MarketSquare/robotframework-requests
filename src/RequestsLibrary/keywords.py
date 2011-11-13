@@ -97,13 +97,17 @@ class RequestsKeywords(object):
         `uri` to send the GET request to
 
         `data` a dictionary of key-value pairs that will be urlencoded and sent as POST data
+                or binary data that is sent as the raw body content
 
         `headers` a dictionary of headers to use with the request
 
         """
 
         session = self._cache.switch(alias)
-        resp = session.post(uri, data=urlencode(data), headers=headers)
+        if type(data) is dict:
+            resp = session.post(uri, data=urlencode(data), headers=headers)
+        else:
+            resp = session.post(uri, data=data, headers=headers)
 
         # store the last response object
         session.last_resp = resp
