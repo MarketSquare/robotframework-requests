@@ -89,7 +89,7 @@ class RequestsKeywords(object):
         return resp
 
 
-    def post(self, alias, uri, data=(), headers=None):
+    def post(self, alias, uri, data={}, headers=None):
         """ Send a POST request on the session object found using the given `alias`
 
         `alias` that will be used to identify the Session object in the cache
