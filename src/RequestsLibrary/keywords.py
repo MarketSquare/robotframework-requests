@@ -40,12 +40,14 @@ class RequestsKeywords(object):
 
         """
 
+
         def baseurlhook(args):
             # url is the base url. Request url is uri
             args['url'] = '%s%s' %(url, args['url'])
-            print 'here'
         
         self.builtin.log('Creating session: %s' %alias, 'DEBUG')
+
+        auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
         session = requests.session(hooks=dict(args=baseurlhook), auth=auth, headers=headers,
                 cookies=cookies, timeout=timeout, proxies=proxies )
