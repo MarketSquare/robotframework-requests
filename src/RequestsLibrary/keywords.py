@@ -43,7 +43,6 @@ class RequestsKeywords(object):
         def baseurlhook(args):
             # url is the base url. Request url is uri
             args['url'] = '%s%s' %(url, args['url'])
-            print 'here'
         
         self.builtin.log('Creating session: %s' %alias, 'DEBUG')
 
