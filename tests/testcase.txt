@@ -20,7 +20,6 @@ Get Requests
 
 
 Get With Auth
-    [Tags]  test
     ${auth}  Create List  user   passwd
     Create Session  httpbin  http://httpbin.org  auth=${auth}
 
