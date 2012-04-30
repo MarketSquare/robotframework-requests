@@ -7,14 +7,11 @@ Usage
 
 You need to have requests installed
 
-```
-   pip install -U requests
-```
+``` pip install -U requests```
 
 Now install robotframework-requests
 
-```pip install -U robotframework-requests
-```
+```pip install -U robotframework-requests```
 
 <table border=1>
     <tr>
