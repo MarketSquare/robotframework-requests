@@ -26,7 +26,7 @@ Get With Auth
     ${resp}  Get  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
-    Should Be Equal As Strings  ${jsondata['authenticated']}  true
+    Should Be Equal As Strings  ${jsondata['authenticated']}  True
 
 
 Post Request With No Data
