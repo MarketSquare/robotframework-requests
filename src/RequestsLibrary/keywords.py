@@ -1,4 +1,5 @@
 import requests
+import sys
 import json
 
 from urllib import urlencode
@@ -129,7 +130,12 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.put(uri, data=urlencode(data), headers=headers)
+        if type(data) is dict:
+            resp = session.put(uri, data=urlencode(data), headers=headers)
+        else:
+            resp = session.put(uri, data=data, headers=headers)
+
+        print resp.content
 
         # store the last response object
         session.last_resp = resp
