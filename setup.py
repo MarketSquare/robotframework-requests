@@ -33,3 +33,9 @@ setup(name         = 'robotframework-requests',
       packages     = ['RequestsLibrary'],
       package_data = {'RequestsLibrary': ['tests/*.txt']}
       )
+
+""" From now on use this approach
+
+python setup.py sdist upload
+git tag -a 1.2.3 -m 'version 1.2.3'
+git push --tags"""
