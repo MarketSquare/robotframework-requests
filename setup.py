@@ -32,7 +32,10 @@ setup(name         = 'robotframework-requests',
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
       package_data = {'RequestsLibrary': ['tests/*.txt']}
-      )
+      install_requires=[
+          'requests==0.9.0'
+      ],
+)
 
 """ From now on use this approach
 
