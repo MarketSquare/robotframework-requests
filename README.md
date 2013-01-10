@@ -7,7 +7,9 @@ Usage
 
 You need to have requests installed
 
-``` pip install -U requests```
+NOTE: Only support requests 0.9.0 or lower
+
+``` pip install -U requests==0.9.0```
 
 Now install robotframework-requests
 
