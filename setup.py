@@ -31,7 +31,7 @@ setup(name         = 'robotframework-requests',
       classifiers  = CLASSIFIERS.splitlines(),
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
-      package_data = {'RequestsLibrary': ['tests/*.txt']}
+      package_data = {'RequestsLibrary': ['tests/*.txt']},
       install_requires=[
           'requests==0.9.0'
       ],
