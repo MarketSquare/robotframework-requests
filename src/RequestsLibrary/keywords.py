@@ -154,7 +154,7 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.delete("%s?%s" %(uri, urlencode(data)), headers=headers)
+        resp = session.delete(uri, headers=headers)
 
         # store the last response object
         session.last_resp = resp
