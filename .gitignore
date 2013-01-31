@@ -11,6 +11,11 @@ report.html
 .DS_Store
 htmlcov
 .coverage
-
 build/
+MANIFEST
+dist/
+include/
+lib/
+test.py
+bin/
 
