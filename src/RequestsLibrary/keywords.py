@@ -36,24 +36,13 @@ class RequestsKeywords(object):
 
         `proxies` proxy server url"""
 
-        def baseurlhook(args):
-            # url is the base url. Request url is uri
-            args['url'] = '%s%s' % (url, args['url'])
-
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
 
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
-        #session = requests.session(hooks=dict(args=baseurlhook),
-                    #auth=auth, headers=headers,
-                    #cookies=cookies, timeout=timeout, proxies=proxies)
         s = session = requests.Session()
 
         s.headers.update(headers)
-
-        s.hooks.update(dict(args=baseurlhook))
-
-        #for attr in ('auth', 'proxies'):
 
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else  s.proxies
@@ -61,6 +50,9 @@ class RequestsKeywords(object):
         # cant pass these into the Session anymore
         self.timeout = timeout
         self.cookies = cookies
+
+        # cant use hooks :(
+        self.url = url
 
         self._cache.register(session, alias=alias)
         return session
@@ -91,10 +83,9 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.get(uri, headers=headers,
+        resp = session.get("%s/%s" % (self.url, uri.strip('/')),
+                           headers=headers,
                            cookies=self.cookies, timeout=self.timeout)
-
-        print session.hooks
 
         # store the last response object
         session.last_resp = resp
@@ -118,11 +109,15 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         if type(data) is dict:
-            resp = session.post(uri, data=urlencode(data), headers=headers,
-                           cookies=self.cookies, timeout=self.timeout)
-        else:
-            resp = session.post(uri, data=data, headers=headers,
-                           cookies=self.cookies, timeout=self.timeout)
+            data = urlencode(data)
+
+        resp = session.post("%s/%s" % (self.url, uri),
+                       data=data, headers=headers,
+                       cookies=self.cookies, timeout=self.timeout)
+        #else:
+            #resp = session.post("%s/%s" % (self.url, uri),
+                           #headers=headers, cookies=self.cookies,
+                           #timeout=self.timeout)
 
         # store the last response object
         session.last_resp = resp
@@ -143,11 +138,13 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         if type(data) is dict:
-            resp = session.put(uri, data=urlencode(data), headers=headers,
+            resp = session.put("%s/%s" % (self.url, uri),
+                           data=urlencode(data), headers=headers,
                            cookies=self.cookies, timeout=self.timeout)
         else:
-            resp = session.put(uri, data=data, headers=headers,
-                           cookies=self.cookies, timeout=self.timeout)
+            resp = session.put("%s/%s" % (self.url, uri),
+                            data=data, headers=headers,
+                            cookies=self.cookies, timeout=self.timeout)
 
         print resp.content
 
@@ -169,8 +166,9 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         args = "?%s" % urlencode(data) if data else ''
-        resp = session.delete("%s%s" % (uri, args), headers=headers,
-                           cookies=self.cookies, timeout=self.timeout)
+        resp = session.delete("%s/%s%s" % (self.url, uri, args),
+                            headers=headers, cookies=self.cookies,
+                            timeout=self.timeout)
 
         # store the last response object
         session.last_resp = resp
@@ -189,7 +187,7 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.head(uri, headers=headers,
+        resp = session.head("%s/%s" % (self.url, uri), headers=headers,
                            cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object
