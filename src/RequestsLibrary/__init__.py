@@ -3,9 +3,11 @@ from version import VERSION
 
 _version_ = VERSION
 
+
 class RequestsLibrary(RequestsKeywords):
-    """ RequestsLibrary is a HTTP client keyword library that uses the requests module from Kenneth Reitz
-        https://github.com/kennethreitz/requests
+    """ RequestsLibrary is a HTTP client keyword library that uses
+    the requests module from Kenneth Reitz
+    https://github.com/kennethreitz/requests
 
 
         Examples:

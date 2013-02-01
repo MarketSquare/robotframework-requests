@@ -1,5 +1,4 @@
 import requests
-import sys
 import json
 
 from urllib import urlencode
@@ -7,6 +6,7 @@ from urllib import urlencode
 import robot
 
 from robot.libraries.BuiltIn import BuiltIn
+
 
 class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
@@ -18,13 +18,10 @@ class RequestsKeywords(object):
 
         self._cache = robot.utils.ConnectionCache('No sessions created')
 
-        #requests.settings.base_headers['User-Agent'] = 'robotframework-requests'
-
-
         self.builtin = BuiltIn()
 
-
-    def create_session(self, alias, url, headers=None, cookies=None, auth=None, timeout=None, proxies=None):
+    def create_session(self, alias, url, headers=None, cookies=None,
+                       auth=None, timeout=None, proxies=None):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -37,25 +34,22 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
 
-        `proxies` proxy server url
-
-        """
-
+        `proxies` proxy server url"""
 
         def baseurlhook(args):
             # url is the base url. Request url is uri
-            args['url'] = '%s%s' %(url, args['url'])
-        
-        self.builtin.log('Creating session: %s' %alias, 'DEBUG')
+            args['url'] = '%s%s' % (url, args['url'])
+
+        self.builtin.log('Creating session: %s' % alias, 'DEBUG')
 
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
-        session = requests.session(hooks=dict(args=baseurlhook), auth=auth, headers=headers,
-                cookies=cookies, timeout=timeout, proxies=proxies )
+        session = requests.session(hooks=dict(args=baseurlhook),
+                    auth=auth, headers=headers,
+                    cookies=cookies, timeout=timeout, proxies=proxies)
 
         self._cache.register(session, alias=alias)
         return session
-
 
     def delete_all_sessions(self):
         """ Removes all the session objects
@@ -63,25 +57,23 @@ class RequestsKeywords(object):
 
         self._cache.empty_cache()
 
-
     def to_json(self, content):
-        """ Convert a string to a JSON object 
+        """ Convert a string to a JSON object
 
         `content` String content to convert into JSON
-        
+
         """
         return json.loads(content)
 
-    
     def get(self, alias, uri, headers=None):
-        """ Send a GET request on the session object found using the given `alias`
+        """ Send a GET request on the session object found using the
+            given `alias`
 
         `alias` that will be used to identify the Session object in the cache
 
         `uri` to send the GET request to
 
         `headers` a dictionary of headers to use with the request
-
         """
 
         session = self._cache.switch(alias)
@@ -91,16 +83,17 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-
     def post(self, alias, uri, data={}, headers=None):
-        """ Send a POST request on the session object found using the given `alias`
+        """ Send a POST request on the session object found using the
+        given `alias`
 
         `alias` that will be used to identify the Session object in the cache
 
         `uri` to send the GET request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded and sent as POST data
-                or binary data that is sent as the raw body content
+        `data` a dictionary of key-value pairs that will be urlencoded
+               and sent as POST data
+               or binary data that is sent as the raw body content
 
         `headers` a dictionary of headers to use with the request
 
@@ -141,9 +134,9 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-
     def delete(self, alias, uri, data=(), headers=None):
-        """ Send a DELETE request on the session object found using the given `alias`
+        """ Send a DELETE request on the session object found using the
+        given `alias`
 
         `alias` that will be used to identify the Session object in the cache
 
@@ -155,15 +148,15 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         args = "?%s" % urlencode(data) if data else ''
-        resp = session.delete("%s%s" %(uri, args), headers=headers)
+        resp = session.delete("%s%s" % (uri, args), headers=headers)
 
         # store the last response object
         session.last_resp = resp
         return resp
 
-
     def head(self, alias, uri, headers=None):
-        """ Send a HEAD request on the session object found using the given `alias`
+        """ Send a HEAD request on the session object found using the
+        given `alias`
 
         `alias` that will be used to identify the Session object in the cache
 
@@ -179,11 +172,3 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         return resp
-
-
-
-if __name__ == '__main__':
-     rk = RequestsKeywords()
-     rk.create_session('github','http://github.com/api/v2/json')
-     resp =  rk.get('github', 'http://github.com/api/v2/json/user/search/bulkan')
-     import pdb; pdb.set_trace() 
