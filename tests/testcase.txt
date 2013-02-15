@@ -16,7 +16,7 @@ Get Requests
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
 
-    Dictionary Should Contain Value  ${jsondata}  Bulkan Savun Evcimen
+    Dictionary Should Contain Value  ${jsondata}  Bulkan Evcimen
 
 
 Get With Auth
