@@ -21,7 +21,8 @@ class RequestsKeywords(object):
         self.builtin = BuiltIn()
 
     def create_session(self, alias, url, headers={}, cookies=None,
-                       auth=None, timeout=None, proxies=None):
+                       auth=None, timeout=None, proxies=None,
+                       verify=False):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -34,7 +35,11 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
 
-        `proxies` proxy server url"""
+        `proxies` proxy server url
+
+        `verify` set to True if Requests should verify the certificate
+
+        """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
 
@@ -50,6 +55,7 @@ class RequestsKeywords(object):
         # cant pass these into the Session anymore
         self.timeout = timeout
         self.cookies = cookies
+        self.verify = verify
 
         # cant use hooks :(
         self.url = url

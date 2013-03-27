@@ -21,7 +21,7 @@ Get Requests
 
 Get With Auth
     ${auth}  Create List  user   passwd
-    Create Session  httpbin  http://httpbin.org  auth=${auth}
+    Create Session    httpbin    https://httpbin.org     auth=${auth}     verify=True
 
     ${resp}  Get  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
