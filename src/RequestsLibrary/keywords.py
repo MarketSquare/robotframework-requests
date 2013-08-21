@@ -97,7 +97,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def post(self, alias, uri, data={}, headers=None):
+    def post(self, alias, uri, data={}, headers=None, files={}):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -110,7 +110,6 @@ class RequestsKeywords(object):
                or binary data that is sent as the raw body content
 
         `headers` a dictionary of headers to use with the request
-
         """
 
         session = self._cache.switch(alias)
@@ -119,11 +118,8 @@ class RequestsKeywords(object):
 
         resp = session.post("%s/%s" % (self.url, uri),
                        data=data, headers=headers,
+                       files=files,
                        cookies=self.cookies, timeout=self.timeout)
-        #else:
-            #resp = session.post("%s/%s" % (self.url, uri),
-                           #headers=headers, cookies=self.cookies,
-                           #timeout=self.timeout)
 
         # store the last response object
         session.last_resp = resp

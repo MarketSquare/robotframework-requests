@@ -2,6 +2,7 @@
 Library  Collections
 Library  String
 Library  RequestsLibrary
+Library  OperatingSystem
 Suite Teardown  Delete All Sessions
 
 *** Test Cases ***
@@ -66,6 +67,19 @@ Post Requests
     ${jsondata}=  To Json  ${resp.content}
     Dictionary Should Contain Value  ${jsondata['form']}  bulkan
     Dictionary Should Contain Value  ${jsondata['form']}  evcimen
+
+
+Post Request With File
+    [Tags]  test
+    Create Session  httpbin  http://httpbin.org
+
+    ${file_data}  Get Binary File  ${CURDIR}${/}data.json
+    ${files}  Create Dictionary  file  ${file_data}
+    ${resp}  Post  httpbin  /post  files=${files}
+    Log  ${resp.content}
+    ${jsondata}=  To Json  ${resp.content.files.file}
+    Log  ${jsondata}
+
 
 
 Put Requests
