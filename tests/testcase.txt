@@ -7,6 +7,7 @@ Suite Teardown  Delete All Sessions
 
 *** Test Cases ***
 Get Requests
+    [Tags]  get
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com
      
@@ -21,6 +22,7 @@ Get Requests
 
 
 Get With Auth
+    [Tags]  get
     ${auth}  Create List  user   passwd
     Create Session    httpbin    https://httpbin.org     auth=${auth}     verify=True
 
@@ -31,18 +33,21 @@ Get With Auth
 
 
 Post Request With No Data
+    [Tags]  post
     Create Session  httpbin  http://httpbin.org
     ${resp}  Post  httpbin  /post  
     Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Put Request With No Data
+    [Tags]  put
     Create Session  httpbin  http://httpbin.org
     ${resp}  Put  httpbin  /put
     Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Post Request With No Dictionary
+    [Tags]  post
     Create Session  httpbin  http://httpbin.org
     Set Test Variable  ${data}  some content
     ${resp}  Post  httpbin  /post  data=${data}
@@ -51,6 +56,7 @@ Post Request With No Dictionary
 
 
 Put Request With No Dictionary
+    [Tags]  put
     Create Session  httpbin  http://httpbin.org
     Set Test Variable  ${data}  some content
     ${resp}  Put  httpbin  /put  data=${data}
@@ -59,6 +65,7 @@ Put Request With No Dictionary
 
 
 Post Requests
+    [Tags]  post
     Create Session  httpbin  http://httpbin.org
 
     ${data}  Create Dictionary  name  bulkan  surname  evcimen
@@ -70,19 +77,21 @@ Post Requests
 
 
 Post Request With File
-    [Tags]  test
+    [Tags]  post
     Create Session  httpbin  http://httpbin.org
 
     ${file_data}  Get Binary File  ${CURDIR}${/}data.json
     ${files}  Create Dictionary  file  ${file_data}
     ${resp}  Post  httpbin  /post  files=${files}
-    Log  ${resp.content}
-    ${jsondata}=  To Json  ${resp.content.files.file}
-    Log  ${jsondata}
 
+    ${jsondata}=  To Json  ${resp.content}
+    ${file}  To Json  ${jsondata['files']['file']}
+    Dictionary Should Contain Key  ${file}  one
+    Dictionary Should Contain Key  ${file}  two
 
 
 Put Requests
+    [Tags]  put
     Create Session  httpbin  http://httpbin.org
 
     ${data}  Create Dictionary  name  bulkan  surname  evcimen
@@ -100,12 +109,14 @@ Head Request
 
 
 Delete Request With No Data
+    [Tags]  delete
     Create Session  httpbin  http://httpbin.org
     ${resp}  Delete  httpbin  /delete
     Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Delete Request With Data
+    [Tags]  delete
     Create Session  httpbin  http://httpbin.org
     ${data}  Create Dictionary  name  bulkan  surname  evcimen
     ${resp}  Delete  httpbin  /delete  data=${data}
