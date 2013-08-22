@@ -8,7 +8,6 @@ output.xml
 debug.txt
 report.html
 ~*
-.DS_Store
 htmlcov
 .coverage
 build/
