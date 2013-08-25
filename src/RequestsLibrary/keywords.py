@@ -12,17 +12,13 @@ class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
 
     def __init__(self):
-        '''
-        TODO: probably can set global proxy here
-        '''
-
         self._cache = robot.utils.ConnectionCache('No sessions created')
-
         self.builtin = BuiltIn()
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
                        verify=False):
+
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -38,17 +34,12 @@ class RequestsKeywords(object):
         `proxies` proxy server url
 
         `verify` set to True if Requests should verify the certificate
-
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
-
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
-
         s = session = requests.Session()
-
         s.headers.update(headers)
-
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else  s.proxies
 
@@ -64,8 +55,7 @@ class RequestsKeywords(object):
         return session
 
     def delete_all_sessions(self):
-        """ Removes all the session objects
-        """
+        """ Removes all the session objects """
 
         self._cache.empty_cache()
 
@@ -73,7 +63,6 @@ class RequestsKeywords(object):
         """ Convert a string to a JSON object
 
         `content` String content to convert into JSON
-
         """
         return json.loads(content)
 
@@ -110,6 +99,8 @@ class RequestsKeywords(object):
                or binary data that is sent as the raw body content
 
         `headers` a dictionary of headers to use with the request
+
+        `files` a dictionary of file names containing file data to POST to the server
         """
 
         session = self._cache.switch(alias)
@@ -140,15 +131,13 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         if type(data) is dict:
-            resp = session.put("%s/%s" % (self.url, uri),
-                           data=urlencode(data), headers=headers,
-                           cookies=self.cookies, timeout=self.timeout)
-        else:
-            resp = session.put("%s/%s" % (self.url, uri),
-                            data=data, headers=headers,
-                            cookies=self.cookies, timeout=self.timeout)
+            data=urlencode(data)
 
-        print resp.content
+        resp = session.put("%s/%s" % (self.url, uri),
+                    data=data, headers=headers,
+                    cookies=self.cookies, timeout=self.timeout)
+
+        self.builtin.log("PUT response: %s DEBUG" % resp.content)
 
         # store the last response object
         session.last_resp = resp
