@@ -10,7 +10,7 @@ Get Requests
     [Tags]  get
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com
-     
+
     ${resp}=  Get  google  /
     Should Be Equal As Strings  ${resp.status_code}  200
 
@@ -21,10 +21,18 @@ Get Requests
     Dictionary Should Contain Value  ${jsondata}  Bulkan Evcimen
 
 
+Get HTTPS & Verify Cert
+    [Tags]  get
+    Create Session    httpbin    https://httpbin.org   verify=True
+
+    ${resp}  Get  httpbin  /get
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+
 Get With Auth
     [Tags]  get
     ${auth}  Create List  user   passwd
-    Create Session    httpbin    https://httpbin.org     auth=${auth}     verify=True
+    Create Session    httpbin    https://httpbin.org     auth=${auth}
 
     ${resp}  Get  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
