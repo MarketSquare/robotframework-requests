@@ -52,6 +52,8 @@ class RequestsKeywords(object):
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else  s.proxies
 
+        s.verify = self.builtin.convert_to_boolean(verify)
+
         # cant pass these into the Session anymore
         self.timeout = timeout
         self.cookies = cookies
@@ -89,6 +91,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         resp = session.get("%s/%s" % (self.url, uri.strip('/')),
                            headers=headers,
+                           #verify=self.verify,
                            cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object
