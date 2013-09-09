@@ -15,6 +15,15 @@ class RequestsKeywords(object):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
 
+    def _utf8_urlencode(self, data):
+        if not type(data) is dict:
+            return data
+
+        utf8_data = {}
+        for k,v in data.iteritems():
+            utf8_data[k] = unicode(v).encode('utf-8')
+        return urlencode(utf8_data)
+
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
                        verify=False):
@@ -104,8 +113,7 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        if type(data) is dict:
-            data = urlencode(data)
+        data = self._utf8_urlencode(data)
 
         resp = session.post("%s/%s" % (self.url, uri),
                        data=data, headers=headers,
@@ -130,8 +138,7 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        if type(data) is dict:
-            data=urlencode(data)
+        data = self._utf8_urlencode(data)
 
         resp = session.put("%s/%s" % (self.url, uri),
                     data=data, headers=headers,

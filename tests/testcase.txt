@@ -10,7 +10,7 @@ Get Requests
     [Tags]  get
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com
-     
+
     ${resp}=  Get  google  /
     Should Be Equal As Strings  ${resp.status_code}  200
 
@@ -74,6 +74,16 @@ Post Requests
     ${jsondata}=  To Json  ${resp.content}
     Dictionary Should Contain Value  ${jsondata['form']}  bulkan
     Dictionary Should Contain Value  ${jsondata['form']}  evcimen
+
+
+Post With Unicode Data
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org
+    ${data}  Create Dictionary  name  度假村
+    ${headers}  Create Dictionary  Content-Type  application/x-www-form-urlencoded
+    ${resp}  Post  httpbin  /post  data=${data}  headers=${headers}
+    ${jsondata}=  To Json  ${resp.content}
+    Dictionary Should Contain Value  ${jsondata['form']}  度假村
 
 
 Post Request With File
