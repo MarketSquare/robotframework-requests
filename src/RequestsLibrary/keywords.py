@@ -60,7 +60,7 @@ class RequestsKeywords(object):
         self.verify = verify
 
         # cant use hooks :(
-        self.url = url
+        s.url = url
 
         self._cache.register(session, alias=alias)
         return session
@@ -77,6 +77,16 @@ class RequestsKeywords(object):
         """
         return json.loads(content)
 
+    
+    def _get_url(self, session, uri):
+        ''' Helpere method to get the full url
+        '''
+        url = session.url
+        if uri:
+            slash = '' if uri.startswith('/') else '/'
+            url = "%s%s%s" %(session.url, slash, uri)
+        return url
+
     def get(self, alias, uri, headers=None):
         """ Send a GET request on the session object found using the
             given `alias`
@@ -89,9 +99,8 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.get("%s/%s" % (self.url, uri.strip('/')),
+        resp = session.get(self._get_url(session, uri),
                            headers=headers,
-                           #verify=self.verify,
                            cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object
@@ -118,7 +127,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
 
-        resp = session.post("%s/%s" % (self.url, uri),
+        resp = session.post(self._get_url(session, uri),
                        data=data, headers=headers,
                        files=files,
                        cookies=self.cookies, timeout=self.timeout)
@@ -143,7 +152,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
 
-        resp = session.put("%s/%s" % (self.url, uri),
+        resp = session.put(self._get_url(session, uri),
                     data=data, headers=headers,
                     cookies=self.cookies, timeout=self.timeout)
 
@@ -167,7 +176,7 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         args = "?%s" % urlencode(data) if data else ''
-        resp = session.delete("%s/%s%s" % (self.url, uri, args),
+        resp = session.delete("%s%s" % (self._get_url(session, uri), args),
                             headers=headers, cookies=self.cookies,
                             timeout=self.timeout)
 
@@ -188,7 +197,7 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.head("%s/%s" % (self.url, uri), headers=headers,
+        resp = session.head(self._get_url(session, uri), headers=headers,
                            cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object
