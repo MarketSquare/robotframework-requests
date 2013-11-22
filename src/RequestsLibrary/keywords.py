@@ -175,8 +175,9 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        args = "?%s" % urlencode(data) if data else ''
-        resp = session.delete("%s%s" % (self._get_url(session, uri), args),
+        data = self._utf8_urlencode(data)
+
+        resp = session.delete(self._get_url(session, uri), data=data,
                             headers=headers, cookies=self.cookies,
                             timeout=self.timeout)
 

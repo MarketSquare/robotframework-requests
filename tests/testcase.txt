@@ -139,6 +139,7 @@ Delete Request With Data
     ${data}  Create Dictionary  name  bulkan  surname  evcimen
     ${resp}  Delete  httpbin  /delete  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Log  ${resp.content}
     ${jsondata}=  To Json  ${resp.content}
-    Dictionary Should Contain Value  ${jsondata['args']}  bulkan
-    Dictionary Should Contain Value  ${jsondata['args']}  evcimen
+    Comment  Dictionary Should Contain Value  ${jsondata['data']}  bulkan
+    Comment  Dictionary Should Contain Value  ${jsondata['data']}  evcimen
