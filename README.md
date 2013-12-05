@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/bulkan/robotframework-requests.png?branch=master)](https://travis-ci.org/bulkan/robotframework-requests)
+[![PyPi downloads](https://pypip.in/d/robotframework-requests/badge.png)](https://crate.io/packages/robotframework-requests/)
 
 RequestsLibrary is a [Robot Framework](http://code.google.com/p/robotframework/) test library that uses the [Requests](https://github.com/kennethreitz/requests) HTTP client.
 
