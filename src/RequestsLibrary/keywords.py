@@ -16,6 +16,9 @@ class RequestsKeywords(object):
         self.builtin = BuiltIn()
 
     def _utf8_urlencode(self, data):
+        if type(data) is unicode:
+            return data.encode('utf-8')
+
         if not type(data) is dict:
             return data
 
