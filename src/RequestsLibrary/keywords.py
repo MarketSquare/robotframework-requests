@@ -1,5 +1,6 @@
 import requests
 import json
+import vcr
 
 from urllib import urlencode
 
@@ -90,7 +91,7 @@ class RequestsKeywords(object):
             url = "%s%s%s" %(session.url, slash, uri)
         return url
 
-    def get(self, alias, uri, headers=None):
+    def get(self, alias, uri, headers=None, cassette=None):
         """ Send a GET request on the session object found using the
             given `alias`
 
@@ -100,17 +101,17 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
         """
-
         session = self._cache.switch(alias)
-        resp = session.get(self._get_url(session, uri),
-                           headers=headers,
-                           cookies=self.cookies, timeout=self.timeout)
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/GET', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.get_request(session, uri, headers)
+        else:
+            response = self.get_request(session, uri, headers)
 
-        # store the last response object
-        session.last_resp = resp
-        return resp
+        return response
 
-    def post(self, alias, uri, data={}, headers=None, files={}):
+
+    def post(self, alias, uri, data={}, headers=None, files={}, cassette=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -126,21 +127,18 @@ class RequestsKeywords(object):
 
         `files` a dictionary of file names containing file data to POST to the server
         """
-
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/POST', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.post_request(session, uri, data, headers, files)
+        else:
+            response = self.post_request(session, uri, data, headers, files)
 
-        resp = session.post(self._get_url(session, uri),
-                       data=data, headers=headers,
-                       files=files,
-                       cookies=self.cookies, timeout=self.timeout)
+        return response
 
-        # store the last response object
-        session.last_resp = resp
-        self.builtin.log("Post response: " + resp.content, 'DEBUG')
-        return resp
 
-    def put(self, alias, uri, data=None, headers=None):
+    def put(self, alias, uri, data=None, headers=None, cassette=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -154,18 +152,17 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/PUT', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.put_request(session, uri, data, headers)
+        else:
+            response = self.put_request(session, uri, data, headers)
 
-        resp = session.put(self._get_url(session, uri),
-                    data=data, headers=headers,
-                    cookies=self.cookies, timeout=self.timeout)
+        return response
 
-        self.builtin.log("PUT response: %s DEBUG" % resp.content)
 
-        # store the last response object
-        session.last_resp = resp
-        return resp
 
-    def delete(self, alias, uri, data=(), headers=None):
+    def delete(self, alias, uri, data=(), headers=None, cassette=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -179,16 +176,17 @@ class RequestsKeywords(object):
 
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/DELETE', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.delete_request(session, uri, data, headers)
+        else:
+            response = self.delete_request(session, uri, data, headers)
 
-        resp = session.delete(self._get_url(session, uri), data=data,
-                            headers=headers, cookies=self.cookies,
-                            timeout=self.timeout)
+        return response
 
-        # store the last response object
-        session.last_resp = resp
-        return resp
 
-    def head(self, alias, uri, headers=None):
+
+    def head(self, alias, uri, headers=None, cassette=None):
         """ Send a HEAD request on the session object found using the
         given `alias`
 
@@ -201,8 +199,58 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.head(self._get_url(session, uri), headers=headers,
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/HEAD', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.head_request(session, uri, headers)
+        else:
+            response = self.head_request(session, uri, headers)
+
+        return response
+
+
+    def get_request(self, session, uri, headers):
+        resp = session.get(self._get_url(session, uri),
+                           headers=headers,
                            cookies=self.cookies, timeout=self.timeout)
+
+        # store the last response object
+        session.last_resp = resp
+        return resp
+
+    def post_request(self, session, uri, data, headers, files):
+        resp = session.post(self._get_url(session, uri),
+                            data=data, headers=headers,
+                            files=files,
+                            cookies=self.cookies, timeout=self.timeout)
+
+        # store the last response object
+        session.last_resp = resp
+        self.builtin.log("Post response: " + resp.content, 'DEBUG')
+        return resp
+
+    def put_request(self, session, uri, data, headers):
+        resp = session.put(self._get_url(session, uri),
+                           data=data, headers=headers,
+                           cookies=self.cookies, timeout=self.timeout)
+
+        self.builtin.log("PUT response: %s DEBUG" % resp.content)
+
+        # store the last response object
+        session.last_resp = resp
+        return resp
+
+    def delete_request(self, session, uri, data, headers):
+        resp = session.delete(self._get_url(session, uri), data=data,
+                              headers=headers, cookies=self.cookies,
+                              timeout=self.timeout)
+
+        # store the last response object
+        session.last_resp = resp
+        return resp
+
+    def head_request(self, session, uri, headers):
+        resp = session.head(self._get_url(session, uri), headers=headers,
+                            cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object
         session.last_resp = resp
