@@ -38,7 +38,7 @@ To be able to distinguish HTTP requests to different hosts and for ease of creat
 this will create a `request.Session` object.  The `Create Session` keyword accepts to two arguments an _alias_ to identify the session later
 and the _root url_. 
 
-All of the HTTP verbs are mapped to keywords and they at least accept two arguments. The first is the _alias_ identifying the Session we created earlier. 
+All of the HTTP verbs are mapped to the keywords and they at least accept two arguments. The first is the _alias_ identifying the Session we created earlier. 
 The second argument is _URI_
 
 Above we create two Sessions one to the _github api_ and the other to _google_. Creating sessions dont send any requests.
