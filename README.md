@@ -69,4 +69,4 @@ Help
 Send your questions to the [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
 
 
-[Follow me on twitter - @bulkanevcimen](https://twitter.com/bulkan)
+[Follow me on twitter - @bulkanevcimen](https://twitter.com/bulkanevcimen)
