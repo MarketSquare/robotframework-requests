@@ -40,7 +40,7 @@ class RequestsKeywords(object):
 
         `headers` Dictionary of default headers
 
-        `auth` Dictionary of username & password for HTTP Basic Auth
+        `auth` List of username & password for HTTP Basic Auth
 
         `timeout` connection timeout
 
