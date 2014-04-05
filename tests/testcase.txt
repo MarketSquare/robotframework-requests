@@ -20,6 +20,15 @@ Get Requests
 
     Dictionary Should Contain Value  ${jsondata}  Bulkan Evcimen
 
+Get Requests with Url Parameters
+    [Tags]  get
+    Create Session  httpbin     http://httpbin.org
+    ${params}   Create Dictionary   key   value     key2     value2
+    ${resp}     Get  httpbin  /get    params=${params}
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+    ${jsondata}  To Json  ${resp.content}
+    Should be Equal     ${jsondata['args']}     ${params}
 
 Get HTTPS & Verify Cert
     [Tags]  get
