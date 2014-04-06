@@ -91,7 +91,7 @@ class RequestsKeywords(object):
             url = "%s%s%s" %(session.url, slash, uri)
         return url
 
-    def get(self, alias, uri, headers=None, cassette=None):
+    def get(self, alias, uri, headers=None, cassette=None, params={}):
         """ Send a GET request on the session object found using the
             given `alias`
 
@@ -102,11 +102,12 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
         """
         session = self._cache.switch(alias)
+        params = self._utf8_urlencode(params)
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/GET', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.get_request(session, uri, headers)
+                response = self.get_request(session, uri, headers, params)
         else:
-            response = self.get_request(session, uri, headers)
+            response = self.get_request(session, uri, headers, params)
 
         return response
 
@@ -208,9 +209,10 @@ class RequestsKeywords(object):
         return response
 
 
-    def get_request(self, session, uri, headers):
+    def get_request(self, session, uri, headers, params):
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
+                           params=params,
                            cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object
