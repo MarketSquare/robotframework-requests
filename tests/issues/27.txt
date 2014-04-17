@@ -10,11 +10,11 @@ Post Request With XML File
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
 
-    ${file_data}  Get File  ${CURDIR}${/}test.xml
-    ${files}  Create Dictionary  xml  ${file_data}
-    ${headers}  Create Dictionary  Authorization  testing-token
+    ${file_data}=  Get File  ${CURDIR}${/}test.xml
+    ${files}=  Create Dictionary  xml  ${file_data}
+    ${headers}=  Create Dictionary  Authorization  testing-token
     Log  ${headers}
-    ${resp}  Post  httpbin  /post  files=${files}  headers=${headers}
+    ${resp}=  Post  httpbin  /post  files=${files}  headers=${headers}
 
     ${jsondata}=  To Json  ${resp.content}
     Log  ${jsondata}
