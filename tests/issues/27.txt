@@ -1,7 +1,7 @@
 *** Settings ***
 Library  Collections
 Library  String
-Library  RequestsLibrary
+Library  ../../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
 Suite Teardown  Delete All Sessions
 
