@@ -150,3 +150,13 @@ Delete Request With Data
     ${jsondata}=  To Json  ${resp.content}
     Comment  Dictionary Should Contain Value  ${jsondata['data']}  bulkan
     Comment  Dictionary Should Contain Value  ${jsondata['data']}  evcimen
+
+Patch Requests
+    [Tags]    patch
+    Create Session    httpbin    http://httpbin.org
+    ${data}=    Create Dictionary    name    bulkan    surname    evcimen
+    ${headers}=    Create Dictionary    Content-Type    application/x-www-form-urlencoded
+    ${resp}=    Patch    httpbin    /patch    data=${data}    headers=${headers}
+    ${jsondata}=    To Json    ${resp.content}
+    Dictionary Should Contain Value    ${jsondata['form']}    bulkan
+    Dictionary Should Contain Value    ${jsondata['form']}    evcimen
