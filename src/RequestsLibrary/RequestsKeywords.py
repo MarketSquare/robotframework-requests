@@ -199,6 +199,31 @@ class RequestsKeywords(object):
 
         return response
 
+    def patch(self, alias, uri, data={}, headers=None, files={}, cassette=None):
+        """ Send a PATCH request on the session object found using the
+        given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the PATCH request to
+
+        `data` a dictionary of key-value pairs that will be urlencoded
+               and sent as PATCH data
+               or binary data that is sent as the raw body content
+
+        `headers` a dictionary of headers to use with the request
+
+        `files` a dictionary of file names containing file data to PATCH to the server
+        """
+        session = self._cache.switch(alias)
+        data = self._utf8_urlencode(data)
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/PATCH', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.patch_request(session, uri, data, headers, files)
+        else:
+            response = self.patch_request(session, uri, data, headers, files)
+
+        return response
 
     def put(self, alias, uri, data=None, headers=None, cassette=None):
         """ Send a PUT request on the session object found using the
@@ -270,6 +295,7 @@ class RequestsKeywords(object):
         return response
 
 
+
     def get_request(self, session, uri, headers, params):
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
@@ -289,6 +315,17 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         self.builtin.log("Post response: " + resp.content, 'DEBUG')
+        return resp
+
+    def patch_request(self, session, uri, data, headers, files):
+        resp = session.patch(self._get_url(session, uri),
+                            data=data, headers=headers,
+                            files=files,
+                            cookies=self.cookies, timeout=self.timeout)
+
+        # store the last response object
+        session.last_resp = resp
+        self.builtin.log("Patch response: " + resp.content, 'DEBUG')
         return resp
 
     def put_request(self, session, uri, data, headers):
