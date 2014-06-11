@@ -8,6 +8,11 @@ import robot
 
 from robot.libraries.BuiltIn import BuiltIn
 
+try:
+    from requests_ntlm import HttpNtlmAuth
+except ImportError:
+    pass
+
 
 class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
@@ -27,6 +32,46 @@ class RequestsKeywords(object):
         for k,v in data.iteritems():
             utf8_data[k] = unicode(v).encode('utf-8')
         return urlencode(utf8_data)
+
+    def _create_session(self, alias, url, headers, cookies, auth,
+                        timeout, proxies, verify):
+
+        """ Create Session: create a HTTP session to a server
+
+        `url` Base url of the server
+
+        `alias` Robot Framework alias to identify the session
+
+        `headers` Dictionary of default headers
+
+        `auth` List of username & password for HTTP Basic Auth
+
+        `timeout` connection timeout
+
+        `proxies` proxy server url
+
+        `verify` set to True if Requests should verify the certificate
+        """
+
+        self.builtin.log('Creating session: %s' % alias, 'DEBUG')
+        s = session = requests.Session()
+        s.headers.update(headers)
+        s.auth = auth if auth else s.auth
+        s.proxies = proxies if proxies else  s.proxies
+
+        s.verify = self.builtin.convert_to_boolean(verify)
+
+        # cant pass these into the Session anymore
+        self.timeout = timeout
+        self.cookies = cookies
+        self.verify = verify
+
+        # cant use hooks :(
+        s.url = url
+
+        self._cache.register(session, alias=alias)
+        return session
+
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
@@ -48,26 +93,42 @@ class RequestsKeywords(object):
 
         `verify` set to True if Requests should verify the certificate
         """
-
-        self.builtin.log('Creating session: %s' % alias, 'DEBUG')
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
-        s = session = requests.Session()
-        s.headers.update(headers)
-        s.auth = auth if auth else s.auth
-        s.proxies = proxies if proxies else  s.proxies
+        return self._create_session(alias, url, headers, cookies, auth,
+                                    timeout, proxies, verify)
 
-        s.verify = self.builtin.convert_to_boolean(verify)
 
-        # cant pass these into the Session anymore
-        self.timeout = timeout
-        self.cookies = cookies
-        self.verify = verify
+    def create_ntlm_session(self, alias, url, auth, headers={}, cookies=None,
+                            timeout=None, proxies=None, verify=False):
 
-        # cant use hooks :(
-        s.url = url
+        """ Create Session: create a HTTP session to a server
 
-        self._cache.register(session, alias=alias)
-        return session
+        `url` Base url of the server
+
+        `alias` Robot Framework alias to identify the session
+
+        `headers` Dictionary of default headers
+
+        `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
+
+        `timeout` connection timeout
+
+        `proxies` proxy server url
+
+        `verify` set to True if Requests should verify the certificate
+        """
+        if not HttpNtlmAuth:
+            raise AssertionError('Requests NTLM module not loaded')
+        elif len(auth) != 3:
+            raise AssertionError('Incorrect number of authentication arguments'
+                                 ' - expected 3, got {}'.format(len(auth)))
+        else:
+            ntlm_auth = HttpNtlmAuth('{}\\{}'.format(auth[0], auth[1]),
+                                     auth[2])
+            return self._create_session(alias, url, headers, cookies,
+                                        ntlm_auth, timeout, proxies, verify)
+
+
 
     def delete_all_sessions(self):
         """ Removes all the session objects """
@@ -81,7 +142,7 @@ class RequestsKeywords(object):
         """
         return json.loads(content)
 
-    
+
     def _get_url(self, session, uri):
         ''' Helpere method to get the full url
         '''
