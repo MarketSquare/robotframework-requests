@@ -28,9 +28,7 @@ Here is a sample test case.
 |                           | Should Be Equal As Strings       | ${resp.status_code} | 200                            |
 |                           | ${resp}=                         | Get                 | github                         | /users/bulkan        |
 |                           | Should Be Equal As Strings       | ${resp.status_code} | 200                            |
-|                           | ${jsondata}=                     | To JSON             | ${resp.content}                |
-|                           |                                  |                     |                                |
-|                           | Dictionary Should Contain Value  | `${jsondata}`       | Bulkan Savun Evcimen           |
+|                           | Dictionary Should Contain Value  | ${resp.json()}      | Bulkan Savun Evcimen           |
 
 
 RequestsLibrary, tries to follow the same API as requests. In the above example we load in the `RequestsLibrary` using the `Library` keyword.
@@ -49,8 +47,8 @@ Above we create two Sessions one to the _github api_ and the other to _google_. 
 
 After we create a Session we can send any of the following `Get, Post, Put, Delete, Head` requests. In the above example we send a GET request
 to the session with the alias _google_ and check the HTTP response code. Then send a another GET request but this time to the session with 
-the alias _github_ and pass in a `uri`. In this case it is `/users/bulkan` which will return a JSON string. `RequestsLibrary` provide a convenience 
-keyword for loading in a JSON string called `To JSON`.
+the alias _github_ and pass in a `uri`. In this case it is `/users/bulkan` which will return a JSON string. `RequestsLibrary` returned object provides 
+a method to get the content as a JSON object format called json().
 
 For more examples see the `tests` folder which contains testcase files that is used to test the keywords in this library againts [httpbin.org](http://httpbin.org).
 
