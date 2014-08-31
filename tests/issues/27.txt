@@ -16,9 +16,8 @@ Post Request With XML File
     Log  ${headers}
     ${resp}=  Post  httpbin  /post  files=${files}  headers=${headers}
 
-    ${jsondata}=  To Json  ${resp.content}
-    Log  ${jsondata}
+    Log  ${resp.json()}
 
-    Set Test Variable  ${req_headers}  ${jsondata['headers']}
+    Set Test Variable  ${req_headers}  ${resp.json()['headers']}
 
     Dictionary Should Contain Key  ${req_headers}  Authorization

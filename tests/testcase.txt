@@ -16,9 +16,7 @@ Get Requests
 
     ${resp}=  Get  github  /users/bulkan
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
-
-    Dictionary Should Contain Value  ${jsondata}  Bulkan Evcimen
+    Dictionary Should Contain Value  ${resp.json()}  Bulkan Evcimen
 
 Get Requests with Url Parameters
     [Tags]  get
@@ -45,8 +43,7 @@ Get With Auth
 
     ${resp}=  Get  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
-    Should Be Equal As Strings  ${jsondata['authenticated']}  True
+    Should Be Equal As Strings  ${resp.json()['authenticated']}  True
 
 
 Post Request With No Data
@@ -87,9 +84,8 @@ Post Requests
     ${data}=  Create Dictionary  name  bulkan  surname  evcimen
     ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
     ${resp}=  Post  httpbin  /post  data=${data}  headers=${headers}
-    ${jsondata}=  To Json  ${resp.content}
-    Dictionary Should Contain Value  ${jsondata['form']}  bulkan
-    Dictionary Should Contain Value  ${jsondata['form']}  evcimen
+    Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
+    Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
 
 
 Post With Unicode Data
@@ -98,8 +94,7 @@ Post With Unicode Data
     ${data}=  Create Dictionary  name  度假村
     ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
     ${resp}=  Post  httpbin  /post  data=${data}  headers=${headers}
-    ${jsondata}=  To Json  ${resp.content}
-    Dictionary Should Contain Value  ${jsondata['form']}  度假村
+    Dictionary Should Contain Value  ${resp.json()['form']}  度假村
 
 
 Post Request With File
@@ -110,8 +105,7 @@ Post Request With File
     ${files}=  Create Dictionary  file  ${file_data}
     ${resp}=  Post  httpbin  /post  files=${files}
 
-    ${jsondata}=  To Json  ${resp.content}
-    ${file}=  To Json  ${jsondata['files']['file']}
+    ${file}=  To Json  ${resp.json()['files']['file']}
     Dictionary Should Contain Key  ${file}  one
     Dictionary Should Contain Key  ${file}  two
 
@@ -122,9 +116,8 @@ Put Requests
     ${data}=  Create Dictionary  name  bulkan  surname  evcimen
     ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
     ${resp}=  Put  httpbin  /put  data=${data}  headers=${headers}
-    ${jsondata}=  To Json  ${resp.content}
-    Dictionary Should Contain Value  ${jsondata['form']}  bulkan
-    Dictionary Should Contain Value  ${jsondata['form']}  evcimen
+    Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
+    Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
 
 
 Head Request
@@ -147,9 +140,8 @@ Delete Request With Data
     ${resp}=  Delete  httpbin  /delete  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     Log  ${resp.content}
-    ${jsondata}=  To Json  ${resp.content}
-    Comment  Dictionary Should Contain Value  ${jsondata['data']}  bulkan
-    Comment  Dictionary Should Contain Value  ${jsondata['data']}  evcimen
+    Comment  Dictionary Should Contain Value  ${resp.json()['data']}  bulkan
+    Comment  Dictionary Should Contain Value  ${resp.json()['data']}  evcimen
 
 Patch Requests
     [Tags]    patch
@@ -157,6 +149,5 @@ Patch Requests
     ${data}=    Create Dictionary    name    bulkan    surname    evcimen
     ${headers}=    Create Dictionary    Content-Type    application/x-www-form-urlencoded
     ${resp}=    Patch    httpbin    /patch    data=${data}    headers=${headers}
-    ${jsondata}=    To Json    ${resp.content}
-    Dictionary Should Contain Value    ${jsondata['form']}    bulkan
-    Dictionary Should Contain Value    ${jsondata['form']}    evcimen
+    Dictionary Should Contain Value    ${resp.json()['form']}    bulkan
+    Dictionary Should Contain Value    ${resp.json()['form']}    evcimen
