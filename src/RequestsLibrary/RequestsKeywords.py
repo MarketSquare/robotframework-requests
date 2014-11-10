@@ -296,6 +296,29 @@ class RequestsKeywords(object):
 
 
 
+    def options(self, alias, uri, headers=None, cassette=None):
+        """ Send an OPTIONS request on the session object found using the
+        given `alias`
+
+        `alias` that will be used to identify the Session object in the cache
+
+        `uri` to send the OPTIONS request to
+
+        `headers` a dictionary of headers to use with the request
+
+        """
+
+        session = self._cache.switch(alias)
+        if cassette:
+            with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/OPTIONS', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
+                response = self.options_request(session, uri, headers)
+        else:
+            response = self.options_request(session, uri, headers)
+
+        return response
+
+
+
     def get_request(self, session, uri, headers, params):
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
@@ -350,6 +373,14 @@ class RequestsKeywords(object):
 
     def head_request(self, session, uri, headers):
         resp = session.head(self._get_url(session, uri), headers=headers,
+                            cookies=self.cookies, timeout=self.timeout)
+
+        # store the last response object
+        session.last_resp = resp
+        return resp
+
+    def options_request(self, session, uri, headers):
+        resp = session.options(self._get_url(session, uri), headers=headers,
                             cookies=self.cookies, timeout=self.timeout)
 
         # store the last response object

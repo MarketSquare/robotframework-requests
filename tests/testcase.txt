@@ -126,6 +126,13 @@ Head Request
     Should Be Equal As Strings  ${resp.status_code}  200
 
 
+Options Request
+    Create Session  httpbin  http://httpbin.org
+    ${resp}=  Options  httpbin  /headers
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Dictionary Should Contain Key  ${resp.headers}  allow
+
+
 Delete Request With No Data
     [Tags]  delete
     Create Session  httpbin  http://httpbin.org
