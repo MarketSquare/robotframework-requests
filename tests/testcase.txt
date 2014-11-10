@@ -158,3 +158,86 @@ Patch Requests
     ${resp}=    Patch    httpbin    /patch    data=${data}    headers=${headers}
     Dictionary Should Contain Value    ${resp.json()['form']}    bulkan
     Dictionary Should Contain Value    ${resp.json()['form']}    evcimen
+
+Get Request With Redirection
+    [Tags]  get
+    Create Session  httpbin  http://httpbin.org
+
+    ${resp}=  Get  httpbin  /redirect/1
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+    ${resp}=  Get  httpbin  /redirect/1  allow_redirects=${true}
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Get Request Without Redirection
+    [Tags]  get
+    Create Session  httpbin  http://httpbin.org
+
+    ${resp}=  Get  httpbin  /redirect/1  allow_redirects=${false}
+    ${status}=  Convert To String  ${resp.status_code}
+    Should Start With  ${status}  30
+
+Options Request With Redirection
+    [Tags]  options
+    Create Session  httpbin  http://httpbin.org
+
+    ${resp}=  Options  httpbin  /redirect/1
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+    ${resp}=  Options  httpbin  /redirect/1  allow_redirects=${true}
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Head Request With Redirection
+    [Tags]  head
+    Create Session  httpbin  http://httpbin.org
+
+    ${resp}=  Head  httpbin  /redirect/1  allow_redirects=${true}
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Head Request Without Redirection
+    [Tags]  head
+    Create Session  httpbin  http://httpbin.org
+
+    ${resp}=  Head  httpbin  /redirect/1
+    ${status}=  Convert To String  ${resp.status_code}
+    Should Start With  ${status}  30
+
+    ${resp}=  Head  httpbin  /redirect/1  allow_redirects=${false}
+    ${status}=  Convert To String  ${resp.status_code}
+    Should Start With  ${status}  30
+
+Post Request With Redirection
+    [Tags]  post
+    Create Session  jigsaw  http://jigsaw.w3.org
+
+    ${resp}=  Post  jigsaw  /HTTP/300/302.html
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+    ${resp}=  Post  jigsaw  /HTTP/300/302.html  allow_redirects=${true}
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Post Request Without Redirection
+    [Tags]  post
+    Create Session  jigsaw  http://jigsaw.w3.org
+
+    ${resp}=  Post  jigsaw  /HTTP/300/302.html  allow_redirects=${false}
+    ${status}=  Convert To String  ${resp.status_code}
+    Should Start With  ${status}  30
+
+Put Request With Redirection
+    [Tags]  put
+    Create Session  jigsaw  http://jigsaw.w3.org
+
+    ${resp}=  Put  jigsaw  /HTTP/300/302.html
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+    ${resp}=  Put  jigsaw  /HTTP/300/302.html  allow_redirects=${true}
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Put Request Without Redirection
+    [Tags]  put
+    Create Session  jigsaw  http://jigsaw.w3.org
+
+    ${resp}=  Put  jigsaw  /HTTP/300/302.html  allow_redirects=${false}
+    ${status}=  Convert To String  ${resp.status_code}
+    Should Start With  ${status}  30
