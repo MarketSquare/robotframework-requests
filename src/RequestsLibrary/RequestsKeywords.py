@@ -135,30 +135,17 @@ class RequestsKeywords(object):
 
         self._cache.empty_cache()
 
-    def to_json(self, content):
+    def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
 
         `content` String content to convert into JSON
         """
-        return json.loads(content)
+        if pretty_print:
+            json_ = self._json_pretty_print(content)
+        else:
+            json_ = json.loads(content)
         
-    def _json_pretty_print(self, content):
-        """ Pretty print a JSON object
-        
-        'content'  JSON object to pretty print
-        """
-        temp = json.loads(content)
-        return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
-
-
-    def _get_url(self, session, uri):
-        ''' Helpere method to get the full url
-        '''
-        url = session.url
-        if uri:
-            slash = '' if uri.startswith('/') else '/'
-            url = "%s%s%s" %(session.url, slash, uri)
-        return url
+        return json_
 
     def get(self, alias, uri, headers=None, cassette=None, params={}, allow_redirects=None,pretty_print=False):
         """ Send a GET request on the session object found using the
@@ -180,7 +167,7 @@ class RequestsKeywords(object):
             response = self.get_request(session, uri, headers, params, redir)
             
         if pretty_print:
-            temp = self._json_pretty_print(response.content
+            resonse.content = self._json_pretty_print(response.content)
 
         return response
 
@@ -337,7 +324,7 @@ class RequestsKeywords(object):
 
 
 
-    def get_request(self, session, uri, headers, params, allow_redirects):
+    def _get_request(self, session, uri, headers, params, allow_redirects):
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
                            params=params,
@@ -348,7 +335,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def post_request(self, session, uri, data, headers, files, allow_redirects):
+    def _post_request(self, session, uri, data, headers, files, allow_redirects):
         resp = session.post(self._get_url(session, uri),
                             data=data, headers=headers,
                             files=files,
@@ -360,7 +347,7 @@ class RequestsKeywords(object):
         self.builtin.log("Post response: " + resp.content, 'DEBUG')
         return resp
 
-    def patch_request(self, session, uri, data, headers, files, allow_redirects):
+    def _patch_request(self, session, uri, data, headers, files, allow_redirects):
         resp = session.patch(self._get_url(session, uri),
                             data=data, headers=headers,
                             files=files,
@@ -372,7 +359,7 @@ class RequestsKeywords(object):
         self.builtin.log("Patch response: " + resp.content, 'DEBUG')
         return resp
 
-    def put_request(self, session, uri, data, headers, allow_redirects):
+    def _put_request(self, session, uri, data, headers, allow_redirects):
         resp = session.put(self._get_url(session, uri),
                            data=data, headers=headers,
                            cookies=self.cookies, timeout=self.timeout,
@@ -384,7 +371,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def delete_request(self, session, uri, data, headers, allow_redirects):
+    def _delete_request(self, session, uri, data, headers, allow_redirects):
         resp = session.delete(self._get_url(session, uri), data=data,
                               headers=headers, cookies=self.cookies,
                               timeout=self.timeout,
@@ -394,7 +381,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def head_request(self, session, uri, headers, allow_redirects):
+    def _head_request(self, session, uri, headers, allow_redirects):
         resp = session.head(self._get_url(session, uri), headers=headers,
                             cookies=self.cookies, timeout=self.timeout,
                             allow_redirects=allow_redirects)
@@ -403,7 +390,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def options_request(self, session, uri, headers, allow_redirects):
+    def _options_request(self, session, uri, headers, allow_redirects):
         resp = session.options(self._get_url(session, uri), headers=headers,
                             cookies=self.cookies, timeout=self.timeout,
                             allow_redirects=allow_redirects)
@@ -411,3 +398,21 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         return resp
+
+    def _get_url(self, session, uri):
+        ''' Helpere method to get the full url
+        '''
+        url = session.url
+        if uri:
+            slash = '' if uri.startswith('/') else '/'
+            url = "%s%s%s" %(session.url, slash, uri)
+        return url
+
+    def _json_pretty_print(self, content):
+        """ Pretty print a JSON object
+        
+        'content'  JSON object to pretty print
+        """
+        temp = json.loads(content)
+        return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
+
