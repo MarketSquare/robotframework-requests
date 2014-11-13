@@ -147,7 +147,8 @@ class RequestsKeywords(object):
         
         'content'  JSON object to pretty print
         """
-        return json.dumps(content, sort_keys=True, indent=4, separators=(',', ': '))
+        temp = json.loads(content)
+        return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
 
 
     def _get_url(self, session, uri):
