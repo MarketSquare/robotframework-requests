@@ -142,7 +142,7 @@ class RequestsKeywords(object):
         """
         return json.loads(content)
         
-    def json_pretty_print(self, content):
+    def _json_pretty_print(self, content):
         """ Pretty print a JSON object
         
         'content'  JSON object to pretty print
@@ -160,7 +160,7 @@ class RequestsKeywords(object):
             url = "%s%s%s" %(session.url, slash, uri)
         return url
 
-    def get(self, alias, uri, headers=None, cassette=None, params={}, allow_redirects=None):
+    def get(self, alias, uri, headers=None, cassette=None, params={}, allow_redirects=None,pretty_print=False):
         """ Send a GET request on the session object found using the
             given `alias`
 
@@ -178,6 +178,9 @@ class RequestsKeywords(object):
                 response = self.get_request(session, uri, headers, params, redir)
         else:
             response = self.get_request(session, uri, headers, params, redir)
+            
+        if pretty_print:
+            temp = self._json_pretty_print(response.content
 
         return response
 
