@@ -141,6 +141,13 @@ class RequestsKeywords(object):
         `content` String content to convert into JSON
         """
         return json.loads(content)
+        
+    def json_pretty_print(self, content):
+        """ Pretty print a JSON object
+        
+        'content'  JSON object to pretty print
+        """
+        return json.dumps(content, sort_keys=True, indent=4, separators=(',', ': '))
 
 
     def _get_url(self, session, uri):
