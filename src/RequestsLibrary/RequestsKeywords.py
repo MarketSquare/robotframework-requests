@@ -147,7 +147,7 @@ class RequestsKeywords(object):
         
         return json_
 
-    def get(self, alias, uri, headers=None, pretty_print=False, cassette=None, params={}, allow_redirects=None):
+    def get(self, alias, uri, headers=None, cassette=None, params={}, allow_redirects=None):
         """ Send a GET request on the session object found using the
             given `alias`
 
