@@ -147,7 +147,7 @@ class RequestsKeywords(object):
         
         return json_
 
-    def get(self, alias, uri, headers=None, cassette=None, params={}, allow_redirects=None,pretty_print=False):
+    def get(self, alias, uri, headers=None, pretty_print=False, cassette=None, params={}, allow_redirects=None):
         """ Send a GET request on the session object found using the
             given `alias`
 
@@ -162,13 +162,10 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/GET', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.get_request(session, uri, headers, params, redir)
+                response = self._get_request(session, uri, headers, params, redir)
         else:
-            response = self.get_request(session, uri, headers, params, redir)
+            response = self._get_request(session, uri, headers, params, redir)
             
-        if pretty_print:
-            resonse.content = self._json_pretty_print(response.content)
-
         return response
 
 
