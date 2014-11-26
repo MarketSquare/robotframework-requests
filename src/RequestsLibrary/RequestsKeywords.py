@@ -139,6 +139,8 @@ class RequestsKeywords(object):
         """ Convert a string to a JSON object
 
         `content` String content to convert into JSON
+
+        'pretty_print' If defined, will output JSON is pretty print format
         """
         if pretty_print:
             json_ = self._json_pretty_print(content)
@@ -190,9 +192,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/POST', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.post_request(session, uri, data, headers, files, redir)
+                response = self._post_request(session, uri, data, headers, files, redir)
         else:
-            response = self.post_request(session, uri, data, headers, files, redir)
+            response = self._post_request(session, uri, data, headers, files, redir)
 
         return response
 
@@ -217,9 +219,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/PATCH', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.patch_request(session, uri, data, headers, files, redir)
+                response = self._patch_request(session, uri, data, headers, files, redir)
         else:
-            response = self.patch_request(session, uri, data, headers, files, redir)
+            response = self._patch_request(session, uri, data, headers, files, redir)
 
         return response
 
@@ -240,9 +242,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/PUT', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.put_request(session, uri, data, headers, redir)
+                response = self._put_request(session, uri, data, headers, redir)
         else:
-            response = self.put_request(session, uri, data, headers, redir)
+            response = self._put_request(session, uri, data, headers, redir)
 
         return response
 
@@ -265,9 +267,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/DELETE', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.delete_request(session, uri, data, headers, redir)
+                response = self._delete_request(session, uri, data, headers, redir)
         else:
-            response = self.delete_request(session, uri, data, headers, redir)
+            response = self._delete_request(session, uri, data, headers, redir)
 
         return response
 
@@ -289,9 +291,9 @@ class RequestsKeywords(object):
         redir = False if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/HEAD', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.head_request(session, uri, headers, redir)
+                response = self._head_request(session, uri, headers, redir)
         else:
-            response = self.head_request(session, uri, headers, redir)
+            response = self._head_request(session, uri, headers, redir)
 
         return response
 
@@ -313,9 +315,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/OPTIONS', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.options_request(session, uri, headers, redir)
+                response = self._options_request(session, uri, headers, redir)
         else:
-            response = self.options_request(session, uri, headers, redir)
+            response = self._options_request(session, uri, headers, redir)
 
         return response
 
