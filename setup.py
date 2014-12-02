@@ -32,10 +32,9 @@ setup(name         = 'robotframework-requests',
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
       package_data = {'RequestsLibrary': ['tests/*.txt']},
-      install_requires=[
+      requires=[
           'robotframework',
-          'requests',
-          'vcrpy'
+          'requests'
       ],
 )
 
