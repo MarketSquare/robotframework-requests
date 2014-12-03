@@ -180,7 +180,7 @@ class RequestsKeywords(object):
 
         `alias` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        `uri` to send the POST request to
 
         `data` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
