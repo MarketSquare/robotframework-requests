@@ -135,22 +135,19 @@ class RequestsKeywords(object):
 
         self._cache.empty_cache()
 
-    def to_json(self, content):
+    def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
 
         `content` String content to convert into JSON
+
+        'pretty_print' If defined, will output JSON is pretty print format
         """
-        return json.loads(content)
-
-
-    def _get_url(self, session, uri):
-        ''' Helpere method to get the full url
-        '''
-        url = session.url
-        if uri:
-            slash = '' if uri.startswith('/') else '/'
-            url = "%s%s%s" %(session.url, slash, uri)
-        return url
+        if pretty_print:
+            json_ = self._json_pretty_print(content)
+        else:
+            json_ = json.loads(content)
+        
+        return json_
 
     def get(self, alias, uri, headers=None, cassette=None, params={}, allow_redirects=None):
         """ Send a GET request on the session object found using the
@@ -167,10 +164,10 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/GET', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.get_request(session, uri, headers, params, redir)
+                response = self._get_request(session, uri, headers, params, redir)
         else:
-            response = self.get_request(session, uri, headers, params, redir)
-
+            response = self._get_request(session, uri, headers, params, redir)
+            
         return response
 
 
@@ -195,9 +192,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/POST', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.post_request(session, uri, data, headers, files, redir)
+                response = self._post_request(session, uri, data, headers, files, redir)
         else:
-            response = self.post_request(session, uri, data, headers, files, redir)
+            response = self._post_request(session, uri, data, headers, files, redir)
 
         return response
 
@@ -222,9 +219,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/PATCH', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.patch_request(session, uri, data, headers, files, redir)
+                response = self._patch_request(session, uri, data, headers, files, redir)
         else:
-            response = self.patch_request(session, uri, data, headers, files, redir)
+            response = self._patch_request(session, uri, data, headers, files, redir)
 
         return response
 
@@ -245,9 +242,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/PUT', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.put_request(session, uri, data, headers, redir)
+                response = self._put_request(session, uri, data, headers, redir)
         else:
-            response = self.put_request(session, uri, data, headers, redir)
+            response = self._put_request(session, uri, data, headers, redir)
 
         return response
 
@@ -270,9 +267,9 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/DELETE', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.delete_request(session, uri, data, headers, redir)
+                response = self._delete_request(session, uri, data, headers, redir)
         else:
-            response = self.delete_request(session, uri, data, headers, redir)
+            response = self._delete_request(session, uri, data, headers, redir)
 
         return response
 
@@ -294,9 +291,9 @@ class RequestsKeywords(object):
         redir = False if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/HEAD', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.head_request(session, uri, headers, redir)
+                response = self._head_request(session, uri, headers, redir)
         else:
-            response = self.head_request(session, uri, headers, redir)
+            response = self._head_request(session, uri, headers, redir)
 
         return response
 
@@ -318,15 +315,15 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         if cassette:
             with vcr.use_cassette(cassette, serializer='json', cassette_library_dir = 'cassettes/OPTIONS', record_mode='new_episodes', match_on=['url', 'method', 'headers', 'body']):
-                response = self.options_request(session, uri, headers, redir)
+                response = self._options_request(session, uri, headers, redir)
         else:
-            response = self.options_request(session, uri, headers, redir)
+            response = self._options_request(session, uri, headers, redir)
 
         return response
 
 
 
-    def get_request(self, session, uri, headers, params, allow_redirects):
+    def _get_request(self, session, uri, headers, params, allow_redirects):
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
                            params=params,
@@ -337,7 +334,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def post_request(self, session, uri, data, headers, files, allow_redirects):
+    def _post_request(self, session, uri, data, headers, files, allow_redirects):
         resp = session.post(self._get_url(session, uri),
                             data=data, headers=headers,
                             files=files,
@@ -349,7 +346,7 @@ class RequestsKeywords(object):
         self.builtin.log("Post response: " + resp.content, 'DEBUG')
         return resp
 
-    def patch_request(self, session, uri, data, headers, files, allow_redirects):
+    def _patch_request(self, session, uri, data, headers, files, allow_redirects):
         resp = session.patch(self._get_url(session, uri),
                             data=data, headers=headers,
                             files=files,
@@ -361,7 +358,7 @@ class RequestsKeywords(object):
         self.builtin.log("Patch response: " + resp.content, 'DEBUG')
         return resp
 
-    def put_request(self, session, uri, data, headers, allow_redirects):
+    def _put_request(self, session, uri, data, headers, allow_redirects):
         resp = session.put(self._get_url(session, uri),
                            data=data, headers=headers,
                            cookies=self.cookies, timeout=self.timeout,
@@ -373,7 +370,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def delete_request(self, session, uri, data, headers, allow_redirects):
+    def _delete_request(self, session, uri, data, headers, allow_redirects):
         resp = session.delete(self._get_url(session, uri), data=data,
                               headers=headers, cookies=self.cookies,
                               timeout=self.timeout,
@@ -383,7 +380,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def head_request(self, session, uri, headers, allow_redirects):
+    def _head_request(self, session, uri, headers, allow_redirects):
         resp = session.head(self._get_url(session, uri), headers=headers,
                             cookies=self.cookies, timeout=self.timeout,
                             allow_redirects=allow_redirects)
@@ -392,7 +389,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         return resp
 
-    def options_request(self, session, uri, headers, allow_redirects):
+    def _options_request(self, session, uri, headers, allow_redirects):
         resp = session.options(self._get_url(session, uri), headers=headers,
                             cookies=self.cookies, timeout=self.timeout,
                             allow_redirects=allow_redirects)
@@ -400,3 +397,21 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         return resp
+
+    def _get_url(self, session, uri):
+        ''' Helpere method to get the full url
+        '''
+        url = session.url
+        if uri:
+            slash = '' if uri.startswith('/') else '/'
+            url = "%s%s%s" %(session.url, slash, uri)
+        return url
+
+    def _json_pretty_print(self, content):
+        """ Pretty print a JSON object
+        
+        'content'  JSON object to pretty print
+        """
+        temp = json.loads(content)
+        return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
+
