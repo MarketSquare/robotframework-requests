@@ -241,3 +241,35 @@ Put Request Without Redirection
     ${resp}=  Put  jigsaw  /HTTP/300/302.html  allow_redirects=${false}
     ${status}=  Convert To String  ${resp.status_code}
     Should Start With  ${status}  30
+
+Do Not Pretty Print a JSON object
+    [Tags]    json
+    Comment    Define json variable.
+    ${var}=   Create Dictionary   key_one   true     key_two     this is a test string
+    ${resp}=     Get  httpbin  /get    params=${var}
+    Set Suite Variable    ${resp}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Log    ${resp.content}
+    ${jsondata}=  To Json  ${resp.content}
+    Log    ${jsondata['args']}
+    Should Be Equal As Strings    ${jsondata['args']}    ${var}
+
+Pretty Print a JSON object
+    [Tags]    json
+    Comment    Define json variable.
+    Log    ${resp}
+    ${output}=    To Json    ${resp.content}    pretty_print=True
+    Log    ${output}
+    Should Contain    ${output}    "key_one": "true"
+    Should Contain    ${output}    "key_two": "this is a test string"
+    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
+
+Set Pretty Print to non-Boolean value
+    [Tags]    json
+    Comment    Define json variable.
+    Log    ${resp}
+    ${output}=    To Json    ${resp.content}    pretty_print="Hello"
+    Log    ${output}
+    Should Contain    ${output}    "key_one": "true"
+    Should Contain    ${output}    "key_two": "this is a test string"
+    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}

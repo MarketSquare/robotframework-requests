@@ -1,3 +1,2 @@
-vcrpy
 requests
 robotframework
