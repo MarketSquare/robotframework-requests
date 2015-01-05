@@ -205,7 +205,6 @@ class RequestsKeywords(object):
 
         `files` a dictionary of file names containing file data to POST to the server
         """
-        print "Deprication Warning  Use Post Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
