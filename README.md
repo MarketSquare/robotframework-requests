@@ -25,9 +25,9 @@ Here is a sample test case.
 | Get Requests              |                                  |                     |                                |
 |                           | Create Session                   | github              | http://api.github.com          |
 |                           | Create Session                   | google              | http://www.google.com          |
-|                           | ${resp}=                         | Get                 | google                         | /                    |
+|                           | ${resp}=                         | Get Request         | google                         | /                    |
 |                           | Should Be Equal As Strings       | ${resp.status_code} | 200                            |
-|                           | ${resp}=                         | Get                 | github                         | /users/bulkan        |
+|                           | ${resp}=                         | Get Request         | github                         | /users/bulkan        |
 |                           | Should Be Equal As Strings       | ${resp.status_code} | 200                            |
 |                           | Dictionary Should Contain Value  | ${resp.json()}      | Bulkan Savun Evcimen           |
 
