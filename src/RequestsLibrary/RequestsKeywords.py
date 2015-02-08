@@ -1,5 +1,6 @@
 import requests
 import json
+import ast
 #import vcr
 
 from urllib import urlencode
@@ -57,9 +58,12 @@ class RequestsKeywords(object):
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
-        s.proxies = proxies if proxies else  s.proxies
-
         s.verify = self.builtin.convert_to_boolean(verify)
+        if proxies:
+            s.proxies = ast.literal_eval(proxies)
+        else:
+            s.proxies = None
+                
 
         # cant pass these into the Session anymore
         self.timeout = timeout
