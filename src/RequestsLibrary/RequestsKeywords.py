@@ -48,7 +48,7 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
 
-        `proxies` proxy server url
+        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` set to True if Requests should verify the certificate
         """
@@ -89,7 +89,7 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
 
-        `proxies` proxy server url
+        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` set to True if Requests should verify the certificate
         """
@@ -113,7 +113,7 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
 
-        `proxies` proxy server url
+        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` set to True if Requests should verify the certificate
         """
@@ -169,7 +169,7 @@ class RequestsKeywords(object):
 
 
     def get(self, alias, uri, headers=None, params={}, allow_redirects=None):
-        """ * * *   Depricated - See Get Request now   * * *
+        """ * * *   Deprecated- See Get Request now   * * *
         
         Send a GET request on the session object found using the
         given `alias`
@@ -214,7 +214,7 @@ class RequestsKeywords(object):
 
 
     def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
-        """ * * *   Depricated - See Post Request now   * * *
+        """ * * *   Deprecated- See Post Request now   * * *
         
         Send a POST request on the session object found using the
         given `alias`
@@ -265,7 +265,7 @@ class RequestsKeywords(object):
 
 
     def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
-        """ * * *   Depricated - See Patch Request now   * * *
+        """ * * *   Deprecated- See Patch Request now   * * *
 
         Send a PATCH request on the session object found using the
         given `alias`
@@ -311,7 +311,7 @@ class RequestsKeywords(object):
 
 
     def put(self, alias, uri, data=None, headers=None, allow_redirects=None):
-        """ * * *   Depricated - See Put Request now   * * *
+        """ * * *   Deprecated- See Put Request now   * * *
 
         Send a PUT request on the session object found using the
         given `alias`
@@ -352,7 +352,7 @@ class RequestsKeywords(object):
 
 
     def delete(self, alias, uri, data=(), headers=None, allow_redirects=None):
-        """ * * *   Depricated - See Delete Request now   * * *
+        """ * * *   Deprecated- See Delete Request now   * * *
 
         Send a DELETE request on the session object found using the
         given `alias`
@@ -392,7 +392,7 @@ class RequestsKeywords(object):
 
 
     def head(self, alias, uri, headers=None, allow_redirects=None):
-        """ * * *   Depricated - See Head Request now   * * *
+        """ * * *   Deprecated- See Head Request now   * * *
 
         Send a HEAD request on the session object found using the
         given `alias`
@@ -432,7 +432,7 @@ class RequestsKeywords(object):
 
 
     def options(self, alias, uri, headers=None, allow_redirects=None):
-        """ * * *   Depricated - See Options Request now   * * *
+        """ * * *   Deprecated- See Options Request now   * * *
 
         Send an OPTIONS request on the session object found using the
         given `alias`

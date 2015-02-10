@@ -273,3 +273,10 @@ Set Pretty Print to non-Boolean value
     Should Contain    ${output}    "key_one": "true"
     Should Contain    ${output}    "key_two": "this is a test string"
     Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
+	
+ 
+Get Requests through a HTTP Proxy
+    ${proxies}=  Create Dictionary  http=http://acme.com:912  https=http://acme.com:913
+    Create Session  google  https://www.google.com  proxies=${proxies}  timeout=${5}
+    ${resp}=  Get Request  google  /  allow_redirects=True
+    Should Be Equal As Integers  ${resp.status_code}  200
