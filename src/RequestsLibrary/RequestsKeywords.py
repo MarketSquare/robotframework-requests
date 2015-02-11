@@ -7,6 +7,7 @@ from urllib import urlencode
 import robot
 
 from robot.libraries.BuiltIn import BuiltIn
+from robot.api import logger
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -94,6 +95,7 @@ class RequestsKeywords(object):
         `verify` set to True if Requests should verify the certificate
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
+        logger.info('Creating Session using : alias=%s, url=%s, headers=%s, cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s ' % (alias, url, headers, cookies, auth, timeout, proxies, verify))
         return self._create_session(alias, url, headers, cookies, auth,
                                     timeout, proxies, verify)
 
@@ -125,6 +127,7 @@ class RequestsKeywords(object):
         else:
             ntlm_auth = HttpNtlmAuth('{}\\{}'.format(auth[0], auth[1]),
                                      auth[2])
+            logger.info('Creating NTLM Session using : alias=%s, url=%s, headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, proxies=%s, verify=%s ' % (alias, url, headers, cookies, ntlm_auth, timeout, proxies, verify))
             return self._create_session(alias, url, headers, cookies,
                                         ntlm_auth, timeout, proxies, verify)
 
@@ -132,6 +135,7 @@ class RequestsKeywords(object):
 
     def delete_all_sessions(self):
         """ Removes all the session objects """
+        logger.info ('Delete All Sessions')
 
         self._cache.empty_cache()
 
@@ -146,6 +150,8 @@ class RequestsKeywords(object):
             json_ = self._json_pretty_print(content)
         else:
             json_ = json.loads(content)
+        logger.info ('To JSON using : content=%s ' % (content))
+        logger.info ('To JSON using : pretty_print=%s ' % (pretty_print))
         
         return json_
 
@@ -164,6 +170,7 @@ class RequestsKeywords(object):
         params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
         response = self._get_request(session, uri, headers, params, redir)
+        logger.info ('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
             
         return response
 
@@ -209,6 +216,7 @@ class RequestsKeywords(object):
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
         response = self._post_request(session, uri, data, headers, files, redir)
+        logger.info ('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
 
         return response
 
@@ -260,6 +268,7 @@ class RequestsKeywords(object):
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
         response = self._patch_request(session, uri, data, headers, files, redir)
+        logger.info ('Patch Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
 
         return response
 
@@ -306,6 +315,7 @@ class RequestsKeywords(object):
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
         response = self._put_request(session, uri, data, headers, redir)
+        logger.info ('Put Request using : alias=%s, uri=%s, data=%s, headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
@@ -347,6 +357,7 @@ class RequestsKeywords(object):
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
         response = self._delete_request(session, uri, data, headers, redir)
+        logger.info ('Delete Request using : alias=%s, uri=%s, data=%s, headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
@@ -387,6 +398,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
         response = self._head_request(session, uri, headers, redir)
+        logger.info ('Head Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s ' % (alias, uri, headers, redir))
 
         return response
 
@@ -427,6 +439,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
         response = self._options_request(session, uri, headers, redir)
+        logger.info ('Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s ' % (alias, uri, headers, redir))
 
         return response
 
