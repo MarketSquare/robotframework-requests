@@ -52,16 +52,18 @@ the alias _github_ and pass in a `uri`. In this case it is `/users/bulkan` which
 a method to get the content as a JSON object format called json().
 
 Here is another test case where an outbound http proxy is used.
+
 |                           |                                  |                     |                                |                      |
 | :------------------------ | :------------------------------- | :--------------     | :----------------------------- | :------------------- |
-| Settings                  |                                  |                     |                                |
-| Library                   | RequestsLibrary                  |                     |                                |
-| Test Cases                |                                  |                     |                                |
+| Settings                  |                                  |                     |                                |                      | 
+| Library                   | RequestsLibrary                  |                     |                                |                      |
+| Test Cases                |                                  |                     |                                |                      |
 | Proxy Requests            |                                  |                     |                                |
 |                           | ${proxies}=                      | Create Dictionary   | http=http://acme.com:912       | https=http://acme.com:913 |
-|                           | Create Session                   | github              | http://api.github.com          | proxies=${proxies}
+|                           | Create Session                   | github              | http://api.github.com          | proxies=${proxies}    |
 |                           | ${resp}=                         | Get Request         | google                         | /                    |
-|                           | Should Be Equal As Strings       | ${resp.status_code} | 200                            |
+|                           | Should Be Equal As Strings       | ${resp.status_code} | 200                            |                      |
+
 
 For more examples see the `tests` folder which contains testcase files that is used to test the keywords in this library against [httpbin.org](http://httpbin.org).
 
