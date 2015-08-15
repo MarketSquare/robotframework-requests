@@ -214,8 +214,11 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        file_parse = {}
+        for key, value in files.items():
+            file_parse.update({key : open(value, 'rb')})
         redir = True if allow_redirects is None else allow_redirects
-        response = self._post_request(session, uri, data, headers, files, redir)
+        response = self._post_request(session, uri, data, headers, file_parse, redir)
         logger.info ('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
 
         return response
@@ -242,8 +245,11 @@ class RequestsKeywords(object):
         print "Deprication Warning  Use Post Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        file_parse = {}
+        for key, value in files.items():
+            file_parse.update({key : open(value, 'rb')})
         redir = True if allow_redirects is None else allow_redirects
-        response = self._post_request(session, uri, data, headers, files, redir)
+        response = self._post_request(session, uri, data, headers, file_parse, redir)
 
         return response
 

@@ -87,8 +87,7 @@ Post With Unicode Data
 Post Request With File
     [Tags]    post
     Create Session    httpbin    http://httpbin.org
-    ${file_data}=    Get Binary File    ${CURDIR}${/}data.json
-    ${files}=    Create Dictionary    file    ${file_data}
+    ${files}=    Create Dictionary    file    ${CURDIR}${/}data.json
     ${resp}=    Post Request    httpbin    /post    files=${files}
     ${file}=    To Json    ${resp.json()['files']['file']}
     Dictionary Should Contain Key    ${file}    one
