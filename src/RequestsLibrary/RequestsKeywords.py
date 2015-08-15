@@ -39,19 +39,19 @@ class RequestsKeywords(object):
 
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` List of username & password for HTTP Basic Auth
+        ``auth`` List of username & password for HTTP Basic Auth
 
-        `timeout` connection timeout
+        ``timeout`` connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
+        ``verify`` set to True if Requests should verify the certificate
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
@@ -80,19 +80,19 @@ class RequestsKeywords(object):
 
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` List of username & password for HTTP Basic Auth
+        ``auth`` List of username & password for HTTP Basic Auth
 
-        `timeout` connection timeout
+        ``timeout`` connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
+        ``verify`` set to True if Requests should verify the certificate
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s ' % (alias, url, headers, cookies, auth, timeout, proxies, verify))
@@ -105,19 +105,19 @@ class RequestsKeywords(object):
 
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
+        ``auth`` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
-        `timeout` connection timeout
+        ``timeout`` connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
+        ``verify`` set to True if Requests should verify the certificate
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -142,9 +142,9 @@ class RequestsKeywords(object):
     def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
 
-        `content` String content to convert into JSON
+        ``content`` String content to convert into JSON
 
-        'pretty_print' If defined, will output JSON is pretty print format
+        ``pretty_print`` If defined, will output JSON is pretty print format
         """
         if pretty_print:
             json_ = self._json_pretty_print(content)
@@ -158,13 +158,13 @@ class RequestsKeywords(object):
 
     def get_request(self, alias, uri, headers=None, params={}, allow_redirects=None):
         """ Send a GET request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        ``uri`` to send the GET request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
         """
         session = self._cache.switch(alias)
         params = self._utf8_urlencode(params)
@@ -179,13 +179,13 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Get Request now   * * *
         
         Send a GET request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        ``uri`` to send the GET request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
         """
         print "Deprication Warning  Use Get Request in the future"
         session = self._cache.switch(alias)
@@ -198,24 +198,27 @@ class RequestsKeywords(object):
 
     def post_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
         """ Send a POST request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the POST request to
+        ``uri`` to send the POST request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `files` a dictionary of file names containing file data to POST to the server
+        ``files`` a dictionary of file names containing file data to POST to the server
         """
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        file_parse = {}
+        for key, value in files.items():
+            file_parse.update({key : open(value, 'rb')})
         redir = True if allow_redirects is None else allow_redirects
-        response = self._post_request(session, uri, data, headers, files, redir)
+        response = self._post_request(session, uri, data, headers, file_parse, redir)
         logger.info ('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
 
         return response
@@ -225,44 +228,47 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Post Request now   * * *
         
         Send a POST request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        ``uri`` to send the GET request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `files` a dictionary of file names containing file data to POST to the server
+        ``files`` a dictionary of file names containing file data to POST to the server
         """
         print "Deprication Warning  Use Post Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
+        file_parse = {}
+        for key, value in files.items():
+            file_parse.update({key : open(value, 'rb')})
         redir = True if allow_redirects is None else allow_redirects
-        response = self._post_request(session, uri, data, headers, files, redir)
+        response = self._post_request(session, uri, data, headers, file_parse, redir)
 
         return response
 
 
     def patch_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
         """ Send a PATCH request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PATCH request to
+        ``uri`` to send the PATCH request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `files` a dictionary of file names containing file data to PATCH to the server
+        ``files`` a dictionary of file names containing file data to PATCH to the server
         """
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
@@ -277,19 +283,19 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Patch Request now   * * *
 
         Send a PATCH request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PATCH request to
+        ``uri`` to send the PATCH request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `files` a dictionary of file names containing file data to PATCH to the server
+        ``files`` a dictionary of file names containing file data to PATCH to the server
         """
         print "Deprication Warning  Use Patch Request in the future"
         session = self._cache.switch(alias)
@@ -302,13 +308,13 @@ class RequestsKeywords(object):
 
     def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None):
         """ Send a PUT request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PUT request to
+        ``uri`` to send the PUT request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         session = self._cache.switch(alias)
@@ -324,13 +330,13 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Put Request now   * * *
 
         Send a PUT request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PUT request to
+        ``uri`` to send the PUT request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         print "Deprication Warning  Use Put Request in the future"
@@ -344,13 +350,13 @@ class RequestsKeywords(object):
 
     def delete_request(self, alias, uri, data=(), headers=None, allow_redirects=None):
         """ Send a DELETE request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the DELETE request to
+        ``uri`` to send the DELETE request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         session = self._cache.switch(alias)
@@ -366,13 +372,13 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Delete Request now   * * *
 
         Send a DELETE request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the DELETE request to
+        ``uri`` to send the DELETE request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         print "Deprication Warning  Use Delete Request in the future"
@@ -386,13 +392,13 @@ class RequestsKeywords(object):
 
     def head_request(self, alias, uri, headers=None, allow_redirects=None):
         """ Send a HEAD request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the HEAD request to
+        ``uri`` to send the HEAD request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         session = self._cache.switch(alias)
@@ -407,13 +413,13 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Head Request now   * * *
 
         Send a HEAD request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the HEAD request to
+        ``uri`` to send the HEAD request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         print "Deprication Warning  Use Head Request in the future"
@@ -426,13 +432,13 @@ class RequestsKeywords(object):
 
     def options_request(self, alias, uri, headers=None, allow_redirects=None):
         """ Send an OPTIONS request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the OPTIONS request to
+        ``uri`` to send the OPTIONS request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
 
@@ -448,13 +454,13 @@ class RequestsKeywords(object):
         """ * * *   Deprecated- See Options Request now   * * *
 
         Send an OPTIONS request on the session object found using the
-        given `alias`
+        given ``alias``
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the OPTIONS request to
+        ``uri`` to send the OPTIONS request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
         """
         print "Deprication Warning  Use Options Request in the future"

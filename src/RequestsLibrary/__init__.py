@@ -10,15 +10,22 @@ class RequestsLibrary(RequestsKeywords):
     https://github.com/kennethreitz/requests
 
 
-        Examples:
-        | Create Session | google | http://www.google.com |
-        | Create Session | github  | http://github.com/api/v2/json |
-        | ${resp} | Get  google  |  / |
-        | Should Be Equal As Strings |  ${resp.status_code} | 200 |
-        | ${resp} | Get  github  | /user/search/bulkan |
-        | Should Be Equal As Strings  |  ${resp.status_code} | 200 |
-        | ${jsondata}  | To Json |  ${resp.content} |
-        | Dictionary Should Contain Value | ${jsondata['users'][0]} | Bulkan Savun Evcimen |
+    = Examples =
+
+    | Create Session | google | http://www.google.com |
+    | Create Session | github  | http://github.com/api/v2/json |
+    | ${resp} | Get  google  |  / |
+    | Should Be Equal As Strings |  ${resp.status_code} | 200 |
+    | ${resp} | Get  github  | /user/search/bulkan |
+    | Should Be Equal As Strings  |  ${resp.status_code} | 200 |
+    | ${jsondata}  | To Json |  ${resp.content} |
+    | Dictionary Should Contain Value | ${jsondata['users'][0]} | Bulkan Savun Evcimen |
+
+    Example for File Upload:
+    | Create Session | client | https://localhost/api |
+    | &{files}  |  Create Dictionary  |  file=${CURDIR}${/}data${/}myfile.zip |
+    | ${resp} = | Post Request | client | /info | files=&{files} |
+    | Should Be Equal | ${resp.status_code} | ${200} |
 
     """
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
