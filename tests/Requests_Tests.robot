@@ -218,7 +218,7 @@ Do Not Pretty Print a JSON object
     Log    ${resp.content}
     ${jsondata}=    To Json    ${resp.content}
     Log    ${jsondata['args']}
-    Should Be Equal As Strings    ${jsondata['args']}    ${var}
+    Dictionaries Should Be Equal    ${jsondata['args']}    ${var}
 
 Pretty Print a JSON object
     [Tags]    json

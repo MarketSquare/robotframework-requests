@@ -35,7 +35,7 @@ class RequestsKeywords(object):
         return urlencode(utf8_data)
 
     def _create_session(self, alias, url, headers, cookies, auth,
-                        timeout, proxies, verify):
+                        timeout, proxies, verify, max_retries):
 
         """ Create Session: create a HTTP session to a server
 
@@ -52,6 +52,8 @@ class RequestsKeywords(object):
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` set to True if Requests should verify the certificate
+
+        `max_retries` The maximum number of retries each connection should attempt.
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
@@ -61,6 +63,11 @@ class RequestsKeywords(object):
         s.proxies = proxies if proxies else  s.proxies
 
         s.verify = self.builtin.convert_to_boolean(verify)
+
+        if max_retries > 0:
+            a = requests.adapters.HTTPAdapter(max_retries=max_retries)
+            s.mount('https://', a)
+            s.mount('http://', a)
 
         # cant pass these into the Session anymore
         self.timeout = timeout
@@ -76,7 +83,7 @@ class RequestsKeywords(object):
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
-                       verify=False):
+                       verify=False, max_retries=0):
 
         """ Create Session: create a HTTP session to a server
 
@@ -93,11 +100,13 @@ class RequestsKeywords(object):
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` set to True if Requests should verify the certificate
+
+        `max_retries` The maximum number of retries each connection should attempt.
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s ' % (alias, url, headers, cookies, auth, timeout, proxies, verify))
         return self._create_session(alias, url, headers, cookies, auth,
-                                    timeout, proxies, verify)
+                                    timeout, proxies, verify, max_retries)
 
 
     def create_ntlm_session(self, alias, url, auth, headers={}, cookies=None,
@@ -152,7 +161,7 @@ class RequestsKeywords(object):
             json_ = json.loads(content)
         logger.info ('To JSON using : content=%s ' % (content))
         logger.info ('To JSON using : pretty_print=%s ' % (pretty_print))
-        
+
         return json_
 
 
@@ -171,13 +180,13 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         response = self._get_request(session, uri, headers, params, redir)
         logger.info ('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
-            
+
         return response
 
 
     def get(self, alias, uri, headers=None, params={}, allow_redirects=None):
         """ * * *   Deprecated- See Get Request now   * * *
-        
+
         Send a GET request on the session object found using the
         given `alias`
 
@@ -192,7 +201,7 @@ class RequestsKeywords(object):
         params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
         response = self._get_request(session, uri, headers, params, redir)
-            
+
         return response
 
 
@@ -223,7 +232,7 @@ class RequestsKeywords(object):
 
     def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
         """ * * *   Deprecated- See Post Request now   * * *
-        
+
         Send a POST request on the session object found using the
         given `alias`
 
@@ -559,9 +568,8 @@ class RequestsKeywords(object):
 
     def _json_pretty_print(self, content):
         """ Pretty print a JSON object
-        
+
         'content'  JSON object to pretty print
         """
         temp = json.loads(content)
         return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
-
