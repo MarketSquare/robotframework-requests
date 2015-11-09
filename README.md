@@ -8,9 +8,10 @@ RequestsLibrary is a [Robot Framework](http://code.google.com/p/robotframework/)
 Usage
 =====
 
-Install robotframework-requests via `pip`
+Install robotframework-requests and it's dependencies via `pip`
 
 ```python
+pip install -U requests
 pip install -U robotframework-requests
 ```
 
