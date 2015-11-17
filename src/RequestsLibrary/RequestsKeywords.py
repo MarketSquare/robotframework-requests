@@ -152,7 +152,7 @@ class RequestsKeywords(object):
             json_ = json.loads(content)
         logger.info ('To JSON using : content=%s ' % (content))
         logger.info ('To JSON using : pretty_print=%s ' % (pretty_print))
-        
+
         return json_
 
 
@@ -171,7 +171,7 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         response = self._get_request(session, uri, headers, params, redir)
         logger.info ('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
-            
+
         return response
 
 
@@ -192,7 +192,7 @@ class RequestsKeywords(object):
         params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
         response = self._get_request(session, uri, headers, params, redir)
-            
+
         return response
 
 
@@ -213,7 +213,7 @@ class RequestsKeywords(object):
         `files` a dictionary of file names containing file data to POST to the server
         """
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+        data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
         response = self._post_request(session, uri, data, headers, files, redir)
         logger.info ('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
@@ -565,3 +565,16 @@ class RequestsKeywords(object):
         temp = json.loads(content)
         return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
 
+
+    def _format_data_according_to_header(self, data, headers):
+        if headers is not None and 'Content-Type' in headers:
+            if headers['Content-Type'].find("application/json") != -1:
+                data = json.dumps(data)
+            elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
+                data = self._utf8_urlencode(data)
+            else:
+                data = data
+        else:
+            data = data
+
+        return data

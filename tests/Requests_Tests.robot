@@ -211,14 +211,12 @@ Put Request Without Redirection
 Do Not Pretty Print a JSON object
     [Tags]    json
     Comment    Define json variable.
-    ${var}=    Create Dictionary    key_one    true    key_two    this is a test string
+    ${var}=    Create Dictionary    key_one=true    key_two=this is a test string
     ${resp}=    Get Request    httpbin    /get    params=${var}
     Set Suite Variable    ${resp}
     Should Be Equal As Strings    ${resp.status_code}    200
-    Log    ${resp.content}
     ${jsondata}=    To Json    ${resp.content}
-    Log    ${jsondata['args']}
-    Should Be Equal As Strings    ${jsondata['args']}    ${var}
+    Dictionaries Should Be Equal   ${jsondata['args']}    ${var}
 
 Pretty Print a JSON object
     [Tags]    json
