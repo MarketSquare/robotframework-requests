@@ -265,7 +265,7 @@ class RequestsKeywords(object):
         `files` a dictionary of file names containing file data to PATCH to the server
         """
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+        data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
         response = self._patch_request(session, uri, data, headers, files, redir)
         logger.info ('Patch Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
@@ -312,7 +312,7 @@ class RequestsKeywords(object):
 
         """
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+        data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
         response = self._put_request(session, uri, data, headers, redir)
         logger.info ('Put Request using : alias=%s, uri=%s, data=%s, headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
