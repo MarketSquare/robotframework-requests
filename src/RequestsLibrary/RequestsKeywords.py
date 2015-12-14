@@ -475,7 +475,7 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp        
         self.builtin.log('Response url: '+ resp.url, 'DEBUG')
-        self.builtin.log('Response headers: ' + '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
+        self.builtin.log('Response headers: ' + '\n'.join('{0}: {1}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
         self.builtin.log('Response status: '+ str(resp.status_code) + " " + resp.reason, 'DEBUG')
         return resp
 
@@ -490,7 +490,7 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         self.builtin.log('Response url: '+ resp.url, 'DEBUG')
-        self.builtin.log('Response headers: ' + '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
+        self.builtin.log('Response headers: ' + '\n'.join('{0}: {1}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
         self.builtin.log("Post response: " + resp.content, 'DEBUG')
         self.builtin.log('Response status: '+ str(resp.status_code) + " " + resp.reason, 'DEBUG')
         return resp
@@ -506,7 +506,7 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         self.builtin.log('Response url: '+ resp.url, 'DEBUG')
-        self.builtin.log('Response headers: ' + '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
+        self.builtin.log('Response headers: ' + '\n'.join('{0}: {1}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
         self.builtin.log("Patch response: " + resp.content, 'DEBUG')
         self.builtin.log('Response status: '+ str(resp.status_code) + " " + resp.reason, 'DEBUG')
         return resp
@@ -523,7 +523,7 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         self.builtin.log('Response url: '+ resp.url, 'DEBUG')
-        self.builtin.log('Response headers: ' + '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
+        self.builtin.log('Response headers: ' + '\n'.join('{0}: {1}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
         self.builtin.log('Response status: '+ str(resp.status_code) + " " + resp.reason, 'DEBUG')
         return resp
 
@@ -557,7 +557,7 @@ class RequestsKeywords(object):
         # store the last response object
         session.last_resp = resp
         self.builtin.log('Response url: '+ resp.url, 'DEBUG')
-        self.builtin.log('Response headers: ' + '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
+        self.builtin.log('Response headers: ' + '\n'.join('{0}: {1}'.format(k, v) for k, v in resp.headers.items()), 'DEBUG')
         self.builtin.log('Response status: '+ str(resp.status_code) + " " + resp.reason, 'DEBUG')
         return resp
 
