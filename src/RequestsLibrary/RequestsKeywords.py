@@ -1,8 +1,10 @@
 import requests
 import json
+import sys
 #import vcr
 
 from urllib import urlencode
+from requests.adapters import HTTPAdapter
 
 import robot
 
@@ -42,7 +44,7 @@ class RequestsKeywords(object):
         return urlencode(utf8_data)
 
     def _create_session(self, alias, url, headers, cookies, auth,
-                        timeout, proxies, verify, debug):
+                        timeout, proxies, verify, debug, max_retries):
 
         """ Create Session: create a HTTP session to a server
 
@@ -60,7 +62,9 @@ class RequestsKeywords(object):
 
         `verify` set to True if Requests should verify the certificate
         
-         `debug` enable http verbosity option more information https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel        
+        `debug` enable http verbosity option more information https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel        
+        
+        `max_retries` The maximum number of retries each connection should attempt.
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
@@ -70,7 +74,12 @@ class RequestsKeywords(object):
         s.proxies = proxies if proxies else  s.proxies
 
         s.verify = self.builtin.convert_to_boolean(verify)
-
+        
+        if max_retries > 0:
+            a = requests.adapters.HTTPAdapter(max_retries=max_retries)
+            s.mount('https://', a)
+            s.mount('http://', a)
+        
         # cant pass these into the Session anymore
         self.timeout = timeout
         self.cookies = cookies
@@ -83,7 +92,6 @@ class RequestsKeywords(object):
         if debug >= 1:
             import logging
             import httplib
-            import sys
             self.debug = debug
             httplib.HTTPConnection.debuglevel = self.debug
         
@@ -93,7 +101,7 @@ class RequestsKeywords(object):
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0):
+                       verify=False, debug=0, max_retries=0):
 
         """ Create Session: create a HTTP session to a server
 
@@ -111,17 +119,19 @@ class RequestsKeywords(object):
 
         `verify` set to True if Requests should verify the certificate
 
-         `debug` enable http verbosity option more information https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel        
+        `debug` enable http verbosity option more information https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel        
+        
+        `max_retries` The maximum number of retries each connection should attempt.
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None        
             
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, debug=%s ' % (alias, url, headers, cookies, auth, timeout, proxies, verify, debug))
         return self._create_session(alias, url, headers, cookies, auth,
-                                    timeout, proxies, verify, debug)
+                                    timeout, proxies, verify, debug, max_retries)
 
 
     def create_ntlm_session(self, alias, url, auth, headers={}, cookies=None,
-                            timeout=None, proxies=None, verify=False, debug=0):
+                            timeout=None, proxies=None, verify=False, debug=0, max_retries=0):
 
         """ Create Session: create a HTTP session to a server
 
@@ -139,7 +149,9 @@ class RequestsKeywords(object):
 
         `verify` set to True if Requests should verify the certificate
         
-         `debug` enable http verbosity option more information https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+        `debug` enable http verbosity option more information https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+        
+        `max_retries` The maximum number of retries each connection should attempt.        
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -151,7 +163,7 @@ class RequestsKeywords(object):
                                      auth[2])
             logger.info('Creating NTLM Session using : alias=%s, url=%s, headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, proxies=%s, verify=%s, debug=%s ' % (alias, url, headers, cookies, ntlm_auth, timeout, proxies, verify, debug))
             return self._create_session(alias, url, headers, cookies,
-                                        ntlm_auth, timeout, proxies, verify, debug)
+                                        ntlm_auth, timeout, proxies, verify, debug, max_retries)
 
 
 
@@ -178,7 +190,7 @@ class RequestsKeywords(object):
         return json_
 
 
-    def get_request(self, alias, uri, headers=None, params={}, allow_redirects=None):
+    def get_request(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -187,17 +199,19 @@ class RequestsKeywords(object):
         `uri` to send the GET request to
 
         `headers` a dictionary of headers to use with the request
+        
+        `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._get_request(session, uri, headers, params, redir)
+        response = self._get_request(session, uri, headers, params, redir, timeout)
         logger.info ('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
 
         return response
 
 
-    def get(self, alias, uri, headers=None, params={}, allow_redirects=None):
+    def get(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Get Request now   * * *
         
         Send a GET request on the session object found using the
@@ -208,17 +222,19 @@ class RequestsKeywords(object):
         `uri` to send the GET request to
 
         `headers` a dictionary of headers to use with the request
+        
+        `timeout` connection timeout
         """
         print "Deprication Warning  Use Get Request in the future"
         session = self._cache.switch(alias)
         params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._get_request(session, uri, headers, params, redir)
+        response = self._get_request(session, uri, headers, params, redir, timeout)
 
         return response
 
 
-    def post_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
+    def post_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -233,17 +249,19 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to POST to the server
+        
+        `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._post_request(session, uri, data, headers, files, redir)
+        response = self._post_request(session, uri, data, headers, files, redir, timeout)
         logger.info ('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
 
         return response
 
 
-    def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
+    def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Post Request now   * * *
         
         Send a POST request on the session object found using the
@@ -260,17 +278,19 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to POST to the server
+        
+        `timeout` connection timeout
         """
         print "Deprication Warning  Use Post Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._post_request(session, uri, data, headers, files, redir)
+        response = self._post_request(session, uri, data, headers, files, redir, timeout)
 
         return response
 
 
-    def patch_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
+    def patch_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
@@ -285,17 +305,19 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to PATCH to the server
+        
+        `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._patch_request(session, uri, data, headers, files, redir)
+        response = self._patch_request(session, uri, data, headers, files, redir, timeout)
         logger.info ('Patch Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s ' % (alias, uri, data, headers, files, redir))
 
         return response
 
 
-    def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None):
+    def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Patch Request now   * * *
 
         Send a PATCH request on the session object found using the
@@ -312,17 +334,19 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to PATCH to the server
+        
+        `timeout` connection timeout
         """
         print "Deprication Warning  Use Patch Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._patch_request(session, uri, data, headers, files, redir)
+        response = self._patch_request(session, uri, data, headers, files, redir, timeout)
 
         return response
 
 
-    def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None):
+    def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -332,17 +356,18 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
 
+        `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._put_request(session, uri, data, headers, redir)
+        response = self._put_request(session, uri, data, headers, redir, timeout)
         logger.info ('Put Request using : alias=%s, uri=%s, data=%s, headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
 
-    def put(self, alias, uri, data=None, headers=None, allow_redirects=None):
+    def put(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Put Request now   * * *
 
         Send a PUT request on the session object found using the
@@ -354,17 +379,18 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
 
+        `timeout` connection timeout
         """
         print "Deprication Warning  Use Put Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._put_request(session, uri, data, headers, redir)
+        response = self._put_request(session, uri, data, headers, redir, timeout)
 
         return response
 
 
-    def delete_request(self, alias, uri, data=(), headers=None, allow_redirects=None):
+    def delete_request(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -373,18 +399,19 @@ class RequestsKeywords(object):
         `uri` to send the DELETE request to
 
         `headers` a dictionary of headers to use with the request
-
+        
+        `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._delete_request(session, uri, data, headers, redir)
+        response = self._delete_request(session, uri, data, headers, redir, timeout)
         logger.info ('Delete Request using : alias=%s, uri=%s, data=%s, headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
 
-    def delete(self, alias, uri, data=(), headers=None, allow_redirects=None):
+    def delete(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Delete Request now   * * *
 
         Send a DELETE request on the session object found using the
@@ -395,13 +422,14 @@ class RequestsKeywords(object):
         `uri` to send the DELETE request to
 
         `headers` a dictionary of headers to use with the request
-
+        
+        `timeout` connection timeout
         """
         print "Deprication Warning  Use Delete Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._delete_request(session, uri, data, headers, redir)
+        response = self._delete_request(session, uri, data, headers, redir, timeout)
 
         return response
 
@@ -415,7 +443,6 @@ class RequestsKeywords(object):
         `uri` to send the HEAD request to
 
         `headers` a dictionary of headers to use with the request
-
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
@@ -425,7 +452,7 @@ class RequestsKeywords(object):
         return response
 
 
-    def head(self, alias, uri, headers=None, allow_redirects=None):
+    def head(self, alias, uri, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Head Request now   * * *
 
         Send a HEAD request on the session object found using the
@@ -436,7 +463,6 @@ class RequestsKeywords(object):
         `uri` to send the HEAD request to
 
         `headers` a dictionary of headers to use with the request
-
         """
         print "Deprication Warning  Use Head Request in the future"
         session = self._cache.switch(alias)
@@ -455,9 +481,7 @@ class RequestsKeywords(object):
         `uri` to send the OPTIONS request to
 
         `headers` a dictionary of headers to use with the request
-
         """
-
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
         response = self._options_request(session, uri, headers, redir)
@@ -468,7 +492,6 @@ class RequestsKeywords(object):
 
     def options(self, alias, uri, headers=None, allow_redirects=None):
         """ * * *   Deprecated- See Options Request now   * * *
-
         Send an OPTIONS request on the session object found using the
         given `alias`
 
@@ -477,7 +500,6 @@ class RequestsKeywords(object):
         `uri` to send the OPTIONS request to
 
         `headers` a dictionary of headers to use with the request
-
         """
         print "Deprication Warning  Use Options Request in the future"
         session = self._cache.switch(alias)
@@ -487,7 +509,12 @@ class RequestsKeywords(object):
         return response
 
 
-    def _get_request(self, session, uri, headers, params, allow_redirects):
+    def _get_request(self, session, uri, headers, params, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+        
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection
@@ -513,7 +540,12 @@ class RequestsKeywords(object):
         return resp
 
 
-    def _post_request(self, session, uri, data, headers, files, allow_redirects):
+    def _post_request(self, session, uri, data, headers, files, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+        
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection
@@ -540,7 +572,12 @@ class RequestsKeywords(object):
         return resp
 
 
-    def _patch_request(self, session, uri, data, headers, files, allow_redirects):
+    def _patch_request(self, session, uri, data, headers, files, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+        
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection
@@ -567,7 +604,12 @@ class RequestsKeywords(object):
         return resp
 
 
-    def _put_request(self, session, uri, data, headers, allow_redirects):
+    def _put_request(self, session, uri, data, headers, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+        
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection
@@ -592,7 +634,12 @@ class RequestsKeywords(object):
         return resp
 
 
-    def _delete_request(self, session, uri, data, headers, allow_redirects):
+    def _delete_request(self, session, uri, data, headers, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+            
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection    
@@ -616,7 +663,12 @@ class RequestsKeywords(object):
         return resp
 
 
-    def _head_request(self, session, uri, headers, allow_redirects):
+    def _head_request(self, session, uri, headers, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+        
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection        
@@ -638,7 +690,12 @@ class RequestsKeywords(object):
         return resp
 
 
-    def _options_request(self, session, uri, headers, allow_redirects):
+    def _options_request(self, session, uri, headers, allow_redirects, timeout=None):
+        if timeout:
+            self.timeout = float(timeout)
+        elif self.timeout:
+            self.timeout = float(self.timeout)
+            
         if self.debug >= 1:
             http_log = WritableObject() # A writable object
             sys.stdout = http_log   # Redirection            
