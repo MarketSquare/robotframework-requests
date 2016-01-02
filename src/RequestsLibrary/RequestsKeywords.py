@@ -22,25 +22,18 @@ except ImportError:
 from functools import wraps
 import time
 
-def retry(ExceptionToCheck, tries=3, delay=1.0, backoff=0.10, logger=None):
+def retry(ExceptionToCheck, logger=None):
     """
     Retry calling the decorated function using an exponential backoff.
     """
     def deco_retry(f):
-        def f_retry(*args, **kwargs):            
-            if f.func_globals['MAX_RETRIES'] and f.func_globals['MAX_DELAY'] \
-                and f.func_globals['MAX_BACKOFF']:
-                mtries = f.func_globals['MAX_RETRIES']
-                mdelay = f.func_globals['MAX_DELAY']
-                mbackoff = f.func_globals['MAX_BACKOFF']
-            else:
-                mtries, mdelay = tries, delay
-            while mtries >= 1:
+        def f_retry(self, *args, **kwargs):                       
+            mretries, mdelay, mbackoff = self.mretries, self.mdelay, self.mbackoff
+            while mretries >= 1:
                 try:
-                    return f(*args, **kwargs)
-                except ExceptionToCheck as e:
-                    # traceback.print_exc()
-                    half_interval = mdelay * backoff #interval size
+                    return f(self, *args, **kwargs)
+                except ExceptionToCheck as e:                    
+                    half_interval = mdelay * mbackoff #interval size
                     actual_delay = random.uniform(mdelay - half_interval, mdelay + half_interval)
                     msg = "%s, Retrying in %.2f seconds ..." % (str(e), actual_delay)
                     if logger:
@@ -48,9 +41,15 @@ def retry(ExceptionToCheck, tries=3, delay=1.0, backoff=0.10, logger=None):
                     else:
                         print msg
                     time.sleep(actual_delay)
-                    mtries -= 1
+                    mretries -= 1
                     mdelay *= 2
-            return f(*args, **kwargs)
+            else:
+                msg = "%s, Max. Retries reached quitting !!!" % (str(e))
+                if logger:
+                    logger.error(msg)
+                else:
+                    print msg
+            return f(self, *args, **kwargs)
         return f_retry  # true decorator
     return deco_retry
 
@@ -62,11 +61,6 @@ class WritableObject:
     def write(self, string):
         self.content.append(string)
 
-# Global variables for retries
-MAX_RETRIES = 0
-MAX_DELAY = 0.0
-MAX_BACKOFF = 0.0
-
 class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'    
 
@@ -74,6 +68,9 @@ class RequestsKeywords(object):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()        
         self.debug = 0
+        self.mretries = 0
+        self.mdelay = 0.0
+        self.mbackoff = 0.0
         
     def _utf8_urlencode(self, data):
         if type(data) is unicode:
@@ -114,11 +111,10 @@ class RequestsKeywords(object):
         `max_delay` The maximum number of delay each connection should attempt.
         """
         
-        # Bringing global variable and type casting since robot vars unicode
-        global MAX_RETRIES, MAX_DELAY, MAX_BACKOFF
-        MAX_RETRIES = int(max_retries)
-        MAX_DELAY = float(max_delay)
-        MAX_BACKOFF = float(max_backoff)
+        # Type casting since robot vars unicode
+        self.mretries = int(max_retries)
+        self.mdelay = float(max_delay)
+        self.mbackoff = float(max_backoff)
         
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
         s = session = requests.Session()
@@ -286,7 +282,7 @@ class RequestsKeywords(object):
 
         return json_
     
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def get_request(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
         """ Send a GET request on the session object found using the
         given `alias`
@@ -311,7 +307,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def get(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Get Request now   * * *
         
@@ -337,7 +333,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def post_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ Send a POST request on the session object found using the
         given `alias`
@@ -369,7 +365,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Post Request now   * * *
         
@@ -401,7 +397,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def patch_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
@@ -433,7 +429,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Patch Request now   * * *
 
@@ -464,7 +460,7 @@ class RequestsKeywords(object):
            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
@@ -489,7 +485,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def put(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Put Request now   * * *
 
@@ -515,7 +511,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def delete_request(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
@@ -540,7 +536,7 @@ class RequestsKeywords(object):
 
         return response
 
-    @retry(Exception, MAX_RETRIES, MAX_DELAY, MAX_BACKOFF, logger)
+    @retry(Exception, logger)
     def delete(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Delete Request now   * * *
 
