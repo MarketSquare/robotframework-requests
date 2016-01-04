@@ -9,6 +9,7 @@ import urlparse
 
 from urllib import urlencode
 from requests.auth import HTTPDigestAuth
+from requests.exceptions import RequestException
 
 import robot
 from robot.libraries.BuiltIn import BuiltIn
@@ -21,6 +22,9 @@ except ImportError:
 
 from functools import wraps
 import time
+
+class RetryException(RequestException):
+    pass
 
 def retry(ExceptionToCheck, logger=None):
     """
@@ -282,7 +286,7 @@ class RequestsKeywords(object):
 
         return json_
     
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def get_request(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
         """ Send a GET request on the session object found using the
         given `alias`
@@ -301,13 +305,13 @@ class RequestsKeywords(object):
         try:            
             response = self._get_request(session, uri, headers, params, redir, timeout)
         except:                        
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
         
         logger.info ('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def get(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Get Request now   * * *
         
@@ -329,11 +333,11 @@ class RequestsKeywords(object):
         try:
             response = self._get_request(session, uri, headers, params, redir, timeout)
         except:
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def post_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ Send a POST request on the session object found using the
         given `alias`
@@ -358,14 +362,14 @@ class RequestsKeywords(object):
         try:            
             response = self._post_request(session, uri, data, headers, files, redir, timeout)
         except:                        
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
         logger.info ('Post Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s ' \
                     % (alias, uri, data, headers, files, redir))
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Post Request now   * * *
         
@@ -393,11 +397,11 @@ class RequestsKeywords(object):
         try:
             response = self._post_request(session, uri, data, headers, files, redir, timeout)
         except:
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def patch_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
@@ -422,14 +426,14 @@ class RequestsKeywords(object):
         try:            
             response = self._patch_request(session, uri, data, headers, files, redir, timeout)
         except:
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
         logger.info ('Patch Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s ' \
                     % (alias, uri, data, headers, files, redir))
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Patch Request now   * * *
 
@@ -457,10 +461,10 @@ class RequestsKeywords(object):
         try:            
             response = self._patch_request(session, uri, data, headers, files, redir, timeout)
         except:                        
-           raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+           raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
@@ -479,13 +483,13 @@ class RequestsKeywords(object):
         try:            
             response = self._put_request(session, uri, data, headers, redir, timeout)
         except:            
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
         logger.info ('Put Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def put(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Put Request now   * * *
 
@@ -507,11 +511,11 @@ class RequestsKeywords(object):
         try:
             response = self._put_request(session, uri, data, headers, redir, timeout)
         except:
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def delete_request(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
@@ -529,14 +533,14 @@ class RequestsKeywords(object):
         try:            
             redir = True if allow_redirects is None else allow_redirects
         except:            
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
         response = self._delete_request(session, uri, data, headers, redir, timeout)
         logger.info ('Delete Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
-    @retry(Exception, logger)
+    @retry(RetryException, logger)
     def delete(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Delete Request now   * * *
 
@@ -558,7 +562,7 @@ class RequestsKeywords(object):
         try:
             response = self._delete_request(session, uri, data, headers, redir, timeout)
         except:
-            raise Exception("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
 
         return response
 
