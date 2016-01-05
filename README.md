@@ -11,6 +11,7 @@ Usage
 Install robotframework-requests and it's dependencies via `pip`
 
 ```python
+pip install -U requests
 pip install -U robotframework-requests
 ```
 
