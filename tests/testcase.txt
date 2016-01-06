@@ -45,6 +45,13 @@ Get With Auth
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Be Equal As Strings  ${resp.json()['authenticated']}  True
 
+Get With Digest Auth
+    [Tags]    get
+    ${auth}=    Create List    user    pass
+    Create Digest Session    httpbin    https://httpbin.org    auth=${auth}    debug=3
+    ${resp}=    Get Request    httpbin    /digest-auth/auth/user/pass
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Should Be Equal As Strings    ${resp.json()['authenticated']}    True
 
 Post Request With No Data
     [Tags]  post
@@ -62,7 +69,7 @@ Put Request With No Data
 
 Post Request With No Dictionary
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
+    Create Session  httpbin  http://httpbin.org    debug=3
     Set Test Variable  ${data}  some content
     ${resp}=  Post  httpbin  /post  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
@@ -90,7 +97,7 @@ Post Requests
 
 Post With Unicode Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
+    Create Session  httpbin  http://httpbin.org    debug=3
     ${data}=  Create Dictionary  name  度假村
     ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
     ${resp}=  Post  httpbin  /post  data=${data}  headers=${headers}
@@ -121,12 +128,14 @@ Put Requests
 
 
 Head Request
+    [Tags]  head
     Create Session  httpbin  http://httpbin.org
     ${resp}=  Head  httpbin  /headers
     Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Options Request
+    [Tags]  options
     Create Session  httpbin  http://httpbin.org
     ${resp}=  Options  httpbin  /headers
     Should Be Equal As Strings  ${resp.status_code}  200
@@ -142,7 +151,7 @@ Delete Request With No Data
 
 Delete Request With Data
     [Tags]  delete
-    Create Session  httpbin  http://httpbin.org
+    Create Session  httpbin  http://httpbin.org    debug=3
     ${data}=  Create Dictionary  name  bulkan  surname  evcimen
     ${resp}=  Delete  httpbin  /delete  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
@@ -161,7 +170,7 @@ Patch Requests
 
 Get Request With Redirection
     [Tags]  get
-    Create Session  httpbin  http://httpbin.org
+    Create Session  httpbin  http://httpbin.org    debug=3
 
     ${resp}=  Get  httpbin  /redirect/1
     Should Be Equal As Strings  ${resp.status_code}  200
@@ -218,7 +227,7 @@ Post Request With Redirection
 
 Post Request Without Redirection
     [Tags]  post
-    Create Session  jigsaw  http://jigsaw.w3.org
+    Create Session  jigsaw  http://jigsaw.w3.org    debug=3
 
     ${resp}=  Post  jigsaw  /HTTP/300/302.html  allow_redirects=${false}
     ${status}=  Convert To String  ${resp.status_code}
@@ -226,7 +235,7 @@ Post Request Without Redirection
 
 Put Request With Redirection
     [Tags]  put
-    Create Session  jigsaw  http://jigsaw.w3.org
+    Create Session  jigsaw  http://jigsaw.w3.org    debug=3
 
     ${resp}=  Put  jigsaw  /HTTP/300/302.html
     Should Be Equal As Strings  ${resp.status_code}  200
