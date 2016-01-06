@@ -5,7 +5,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta content="Robot Framework 2.8.7 (Python 2.7.8 on cygwin)" name="Generator">
+<meta content="Robot Framework 3.0 (Python 2.7.8 on win32)" name="Generator">
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAJEBoACtnfgA5cYYAERsiAEx2lAAbKkQAcazBACZCVwAcM1cAK0ucAAMDBQAnQncASG+FABkoVQAyWmgA6f8SgvH/Ij99+GLyIinyJfn/Yi//KSLzUy9iZogpIld3/4JVVTkid7vyUjNVNVJEAGOZ6Z7pXwAABpmZkRiLAAAGiJZpmGAAAEEt3SXdxAAATC7o/u3EAAC8MRZpjasAAAY1VVVTYAAABKqqqqpAAAAADKqq4AAAAAAAv4sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMADAADgAwAA4AcAAOAHAADgBwAAwAcAAOAHAADgDwAA8A8AAPg/AAD+fwAA">
 <style media="all" type="text/css">
 body {
@@ -32,49 +32,60 @@ a:hover, a:active {
     text-decoration: underline;
     color: black;
 }
-div.shortcuts {
+a:hover {
+    text-decoration: underline !important;
+}
+.shortcuts {
     margin: 1em 0;
     font-size: 0.9em;
 }
-div.shortcuts a {
+.shortcuts a {
     display: inline-block;
     text-decoration: none;
     white-space: nowrap;
     color: black;
 }
-div.shortcuts a::first-letter {
+.shortcuts a::first-letter {
     font-weight: bold;
-    font-size: 1.05em;
     letter-spacing: 0.1em;
 }
-div.shortcuts a:hover {
-    text-decoration: underline;
+.normal-first-letter::first-letter {
+    font-weight: normal !important;
+    letter-spacing: 0 !important;
 }
-table.keywords {
-    border: 2px solid black;
+.keywords {
+    border: 1px solid #ccc;
     border-collapse: collapse;
     empty-cells: show;
     margin: 0.3em 0;
     width: 100%;
 }
-table.keywords th, table.keywords td {
-    border: 2px solid black;
+.keywords th, .keywords td {
+    border: 1px solid #ccc;
     padding: 0.2em;
     vertical-align: top;
 }
-table.keywords th {
-    background: #bbb;
+.keywords th {
+    background: #ddd;
     color: black;
 }
-table.keywords td.kw {
+.kw, .args, .tags {
     min-width: 100px;
     max-width: 20%;
+}
+td.kw a {
+    color: inherit;
+    text-decoration: none;
     font-weight: bold;
 }
-table.keywords td.args {
-    min-width: 100px;
-    max-width: 20%;
+.args span {
     font-style: italic;
+    padding: 0 0.1em;
+}
+.tags a {
+    color: inherit;
+    text-decoration: none;
+    padding: 0 0.1em;
 }
 .footer {
     font-size: 0.9em;
@@ -93,11 +104,11 @@ table.keywords td.args {
     z-index: 1000;
 }
 #search {
-    width:30em;
+    width: 30em;
     display: none;
 }
 #open-search {
-    border: 2px solid black;
+    border: 2px solid #ccc;
     border-radius: 4px;
     width: 40px;
     height: 40px;
@@ -109,16 +120,16 @@ table.keywords td.args {
     background-size: 24px 24px;
 }
 #open-search:hover {
-    background-color: yellow;
+    background-color: #ccc;
 }
 fieldset {
     background: white;
-    border: 2px solid black;
+    border: 2px solid #ccc;
     border-radius: 4px;
     padding: 6px 8px;
 }
 fieldset fieldset {
-    border: 1px solid black;
+    border: 1px solid #ccc;
     margin: 4px 0;
 }
 #search-title {
@@ -164,9 +175,9 @@ a {
     width: 600px;
     margin: 100px auto 0 auto;
     padding: 20px;
-    color: #2A2A2E;
-    border: 1px solid #9A9A9E;
-    background: #FAFAFF;
+    color: black;
+    border: 1px solid #ccc;
+    background: #eee;
 }
 #javascript-disabled h1 {
     width: 100%;
@@ -194,14 +205,14 @@ a {
     margin-top: 0.1em;
 }
 .doc table {
-    border: 1px solid gray;
+    border: 1px solid #ccc;
     background: transparent;
     border-collapse: collapse;
     empty-cells: show;
     font-size: 0.9em;
 }
 .doc table th, .doc table td {
-    border: 1px solid gray;
+    border: 1px solid #ccc;
     background: transparent;
     padding: 0.1em 0.3em;
     height: 1.2em;
@@ -213,22 +224,22 @@ a {
 .doc pre {
     font-size: 1.1em;
     letter-spacing: 0.05em;
-    background: #F4F4FF;
+    background: #eee;
 }
 .doc code {
     padding: 0 0.2em;
     letter-spacing: 0.05em;
-    background: #F4F4FF;
+    background: #eee;
 }
 .doc li {
     list-style-position: inside;
     list-style-type: square;
 }
 .doc img {
-    border: 1px solid gray;
+    border: 1px solid #ccc;
 }
 .doc hr {
-    background: gray;
+    background: #ccc;
     height: 1px;
     border: 0;
 }
@@ -457,7 +468,7 @@ window.util = function () {
 jQuery.extend({highlight:function(e,t,n,r){if(e.nodeType===3){var i=e.data.match(t);if(i){var s=document.createElement(n||"span");s.className=r||"highlight";var o=e.splitText(i.index);o.splitText(i[0].length);var u=o.cloneNode(true);s.appendChild(u);o.parentNode.replaceChild(s,o);return 1}}else if(e.nodeType===1&&e.childNodes&&!/(script|style)/i.test(e.tagName)&&!(e.tagName===n.toUpperCase()&&e.className===r)){for(var a=0;a<e.childNodes.length;a++){a+=jQuery.highlight(e.childNodes[a],t,n,r)}}return 0}});jQuery.fn.unhighlight=function(e){var t={className:"highlight",element:"span"};jQuery.extend(t,e);return this.find(t.element+"."+t.className).each(function(){var e=this.parentNode;e.replaceChild(this.firstChild,this);e.normalize()}).end()};jQuery.fn.highlight=function(e,t){var n={className:"highlight",element:"span",caseSensitive:false,wordsOnly:false};jQuery.extend(n,t);if(e.constructor===String){e=[e]}e=jQuery.grep(e,function(e,t){return e!=""});e=jQuery.map(e,function(e,t){return e.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,"\\$&")});if(e.length==0){return this}var r=n.caseSensitive?"":"i";var i="("+e.join("|")+")";if(n.wordsOnly){i="\\b"+i+"\\b"}var s=new RegExp(i,r);return this.each(function(){jQuery.highlight(this,s,n.element,n.className)})}
 </script>
 <script type="text/javascript">
-libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">RequestsKeywords\x3c/span>.\x3c/p>","generated":"2015-02-10 07:55:10","inits":[],"keywords":[{"args":"alias, url, auth, headers={}, cookies=None, timeout=None, proxies=None, verify=False","doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><span class=\"name\">url\x3c/span> Base url of the server\x3c/p>\n<p><span class=\"name\">alias\x3c/span> Robot Framework alias to identify the session\x3c/p>\n<p><span class=\"name\">headers\x3c/span> Dictionary of default headers\x3c/p>\n<p><span class=\"name\">auth\x3c/span> ['DOMAIN', 'username', 'password'] for NTLM Authentication\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>\n<p><span class=\"name\">proxies\x3c/span> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><span class=\"name\">verify\x3c/span> set to True if Requests should verify the certificate\x3c/p>","name":"Create Ntlm Session","shortdoc":"Create Session: create a HTTP session to a server"},{"args":"alias, url, headers={}, cookies=None, auth=None, timeout=None, proxies=None, verify=False","doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><span class=\"name\">url\x3c/span> Base url of the server\x3c/p>\n<p><span class=\"name\">alias\x3c/span> Robot Framework alias to identify the session\x3c/p>\n<p><span class=\"name\">headers\x3c/span> Dictionary of default headers\x3c/p>\n<p><span class=\"name\">auth\x3c/span> List of username &amp; password for HTTP Basic Auth\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>\n<p><span class=\"name\">proxies\x3c/span> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><span class=\"name\">verify\x3c/span> set to True if Requests should verify the certificate\x3c/p>","name":"Create Session","shortdoc":"Create Session: create a HTTP session to a server"},{"args":"alias, uri, data=(), headers=None, allow_redirects=None","doc":"<p>* * *   Deprecated- See Delete Request now   * * *\x3c/p>\n<p>Send a DELETE request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the DELETE request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Delete","shortdoc":"* * *   Deprecated- See Delete Request now   * * *"},{"args":"","doc":"<p>Removes all the session objects\x3c/p>","name":"Delete All Sessions","shortdoc":"Removes all the session objects "},{"args":"alias, uri, data=(), headers=None, allow_redirects=None","doc":"<p>Send a DELETE request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the DELETE request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Delete Request","shortdoc":"Send a DELETE request on the session object found using the"},{"args":"alias, uri, headers=None, params={}, allow_redirects=None","doc":"<p>* * *   Deprecated- See Get Request now   * * *\x3c/p>\n<p>Send a GET request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the GET request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Get","shortdoc":"* * *   Deprecated- See Get Request now   * * *"},{"args":"alias, uri, headers=None, params={}, allow_redirects=None","doc":"<p>Send a GET request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the GET request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Get Request","shortdoc":"Send a GET request on the session object found using the"},{"args":"alias, uri, headers=None, allow_redirects=None","doc":"<p>* * *   Deprecated- See Head Request now   * * *\x3c/p>\n<p>Send a HEAD request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the HEAD request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Head","shortdoc":"* * *   Deprecated- See Head Request now   * * *"},{"args":"alias, uri, headers=None, allow_redirects=None","doc":"<p>Send a HEAD request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the HEAD request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Head Request","shortdoc":"Send a HEAD request on the session object found using the"},{"args":"alias, uri, headers=None, allow_redirects=None","doc":"<p>* * *   Deprecated- See Options Request now   * * *\x3c/p>\n<p>Send an OPTIONS request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the OPTIONS request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Options","shortdoc":"* * *   Deprecated- See Options Request now   * * *"},{"args":"alias, uri, headers=None, allow_redirects=None","doc":"<p>Send an OPTIONS request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the OPTIONS request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Options Request","shortdoc":"Send an OPTIONS request on the session object found using the"},{"args":"alias, uri, data={}, headers=None, files={}, allow_redirects=None","doc":"<p>* * *   Deprecated- See Patch Request now   * * *\x3c/p>\n<p>Send a PATCH request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PATCH request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as PATCH data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to PATCH to the server\x3c/p>","name":"Patch","shortdoc":"* * *   Deprecated- See Patch Request now   * * *"},{"args":"alias, uri, data={}, headers=None, files={}, allow_redirects=None","doc":"<p>Send a PATCH request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PATCH request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as PATCH data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to PATCH to the server\x3c/p>","name":"Patch Request","shortdoc":"Send a PATCH request on the session object found using the"},{"args":"alias, uri, data={}, headers=None, files={}, allow_redirects=None","doc":"<p>* * *   Deprecated- See Post Request now   * * *\x3c/p>\n<p>Send a POST request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the GET request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as POST data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to POST to the server\x3c/p>","name":"Post","shortdoc":"* * *   Deprecated- See Post Request now   * * *"},{"args":"alias, uri, data={}, headers=None, files={}, allow_redirects=None","doc":"<p>Send a POST request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the POST request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as POST data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to POST to the server\x3c/p>","name":"Post Request","shortdoc":"Send a POST request on the session object found using the"},{"args":"alias, uri, data=None, headers=None, allow_redirects=None","doc":"<p>* * *   Deprecated- See Put Request now   * * *\x3c/p>\n<p>Send a PUT request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PUT request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Put","shortdoc":"* * *   Deprecated- See Put Request now   * * *"},{"args":"alias, uri, data=None, headers=None, allow_redirects=None","doc":"<p>Send a PUT request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PUT request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","name":"Put Request","shortdoc":"Send a PUT request on the session object found using the"},{"args":"content, pretty_print=False","doc":"<p>Convert a string to a JSON object\x3c/p>\n<p><span class=\"name\">content\x3c/span> String content to convert into JSON\x3c/p>\n<p>'pretty_print' If defined, will output JSON is pretty print format\x3c/p>","name":"To Json","shortdoc":"Convert a string to a JSON object"}],"name":"RequestsKeywords","named_args":true,"scope":"global","version":""};
+libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for test library <code>RequestsKeywords\x3c/code>.\x3c/p>","generated":"2016-01-04 16:16:29","inits":[],"keywords":[{"args":["alias","url","auth","headers={}","cookies=None","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","max_delay=1.0","max_backoff=0.1"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><span class=\"name\">url\x3c/span> Base url of the server\x3c/p>\n<p><span class=\"name\">alias\x3c/span> Robot Framework alias to identify the session\x3c/p>\n<p><span class=\"name\">headers\x3c/span> Dictionary of default headers\x3c/p>\n<p><span class=\"name\">auth\x3c/span> ['DOMAIN', 'username', 'password'] for NTLM Authentication\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>\n<p><span class=\"name\">proxies\x3c/span> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><span class=\"name\">verify\x3c/span> set to True if Requests should verify the certificate\x3c/p>\n<p><span class=\"name\">debug\x3c/span> enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><span class=\"name\">max_retries\x3c/span> The maximum number of retries each connection should attempt.\x3c/p>\n<p><span class=\"name\">max_delay\x3c/span> The maximum number of delay each connection should attempt.\x3c/p>\n<p><span class=\"name\">max_backoff\x3c/span> Expoential backoff\x3c/p>","matched":true,"name":"Create Digest Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","url","auth","headers={}","cookies=None","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","max_delay=1.0","max_backoff=0.1"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><span class=\"name\">url\x3c/span> Base url of the server\x3c/p>\n<p><span class=\"name\">alias\x3c/span> Robot Framework alias to identify the session\x3c/p>\n<p><span class=\"name\">headers\x3c/span> Dictionary of default headers\x3c/p>\n<p><span class=\"name\">auth\x3c/span> ['DOMAIN', 'username', 'password'] for NTLM Authentication\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>\n<p><span class=\"name\">proxies\x3c/span> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><span class=\"name\">verify\x3c/span> set to True if Requests should verify the certificate\x3c/p>\n<p><span class=\"name\">debug\x3c/span> enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><span class=\"name\">max_retries\x3c/span> The maximum number of retries each connection should attempt.\x3c/p>\n<p><span class=\"name\">max_delay\x3c/span> The maximum number of delay each connection should attempt.\x3c/p>\n<p><span class=\"name\">max_backoff\x3c/span> Expoential backoff\x3c/p>","matched":true,"name":"Create Ntlm Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","url","headers={}","cookies=None","auth=None","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","max_delay=1.0","max_backoff=0.1"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><span class=\"name\">url\x3c/span> Base url of the server\x3c/p>\n<p><span class=\"name\">alias\x3c/span> Robot Framework alias to identify the session\x3c/p>\n<p><span class=\"name\">headers\x3c/span> Dictionary of default headers\x3c/p>\n<p><span class=\"name\">auth\x3c/span> List of username &amp; password for HTTP Basic Auth\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>\n<p><span class=\"name\">proxies\x3c/span> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><span class=\"name\">verify\x3c/span> set to True if Requests should verify the certificate\x3c/p>\n<p><span class=\"name\">debug\x3c/span> enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><span class=\"name\">max_retries\x3c/span> The maximum number of retries each connection should attempt.\x3c/p>\n<p><span class=\"name\">max_delay\x3c/span> The maximum number of delay each connection should attempt.\x3c/p>\n<p><span class=\"name\">max_backoff\x3c/span> Expoential backoff\x3c/p>","matched":true,"name":"Create Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","uri","data=()","headers=None","allow_redirects=None","timeout=None"],"doc":"<p>* * *   Deprecated- See Delete Request now   * * *\x3c/p>\n<p>Send a DELETE request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the DELETE request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Delete","shortdoc":"* * *   Deprecated- See Delete Request now   * * *","tags":[]},{"args":[],"doc":"<p>Removes all the session objects\x3c/p>","matched":true,"name":"Delete All Sessions","shortdoc":"Removes all the session objects","tags":[]},{"args":["alias","uri","data=()","headers=None","allow_redirects=None","timeout=None"],"doc":"<p>Send a DELETE request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the DELETE request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Delete Request","shortdoc":"Send a DELETE request on the session object found using the","tags":[]},{"args":["alias","uri","headers=None","params={}","allow_redirects=None","timeout=None"],"doc":"<p>* * *   Deprecated- See Get Request now   * * *\x3c/p>\n<p>Send a GET request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the GET request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Get","shortdoc":"* * *   Deprecated- See Get Request now   * * *","tags":[]},{"args":["alias","uri","headers=None","params={}","allow_redirects=None","timeout=None"],"doc":"<p>Send a GET request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the GET request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Get Request","shortdoc":"Send a GET request on the session object found using the","tags":[]},{"args":["alias","uri","headers=None","allow_redirects=None","timeout=None"],"doc":"<p>* * *   Deprecated- See Head Request now   * * *\x3c/p>\n<p>Send a HEAD request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the HEAD request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","matched":true,"name":"Head","shortdoc":"* * *   Deprecated- See Head Request now   * * *","tags":[]},{"args":["alias","uri","headers=None","allow_redirects=None"],"doc":"<p>Send a HEAD request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the HEAD request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","matched":true,"name":"Head Request","shortdoc":"Send a HEAD request on the session object found using the","tags":[]},{"args":["alias","uri","headers=None","allow_redirects=None"],"doc":"<p>* * *   Deprecated- See Options Request now   * * * Send an OPTIONS request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the OPTIONS request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","matched":true,"name":"Options","shortdoc":"* * *   Deprecated- See Options Request now   * * *","tags":[]},{"args":["alias","uri","headers=None","allow_redirects=None"],"doc":"<p>Send an OPTIONS request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the OPTIONS request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>","matched":true,"name":"Options Request","shortdoc":"Send an OPTIONS request on the session object found using the","tags":[]},{"args":["alias","uri","data={}","headers=None","files={}","allow_redirects=None","timeout=None"],"doc":"<p>* * *   Deprecated- See Patch Request now   * * *\x3c/p>\n<p>Send a PATCH request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PATCH request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as PATCH data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to PATCH to the server\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Patch","shortdoc":"* * *   Deprecated- See Patch Request now   * * *","tags":[]},{"args":["alias","uri","data={}","headers=None","files={}","allow_redirects=None","timeout=None"],"doc":"<p>Send a PATCH request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PATCH request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as PATCH data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to PATCH to the server\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Patch Request","shortdoc":"Send a PATCH request on the session object found using the","tags":[]},{"args":["alias","uri","data={}","headers=None","files={}","allow_redirects=None","timeout=None"],"doc":"<p>* * *   Deprecated- See Post Request now   * * *\x3c/p>\n<p>Send a POST request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the GET request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as POST data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to POST to the server\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Post","shortdoc":"* * *   Deprecated- See Post Request now   * * *","tags":[]},{"args":["alias","uri","data={}","headers=None","files={}","allow_redirects=None","timeout=None"],"doc":"<p>Send a POST request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the POST request to\x3c/p>\n<p><span class=\"name\">data\x3c/span> a dictionary of key-value pairs that will be urlencoded and sent as POST data or binary data that is sent as the raw body content\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">files\x3c/span> a dictionary of file names containing file data to POST to the server\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Post Request","shortdoc":"Send a POST request on the session object found using the","tags":[]},{"args":["alias","uri","data=None","headers=None","allow_redirects=None","timeout=None"],"doc":"<p>* * *   Deprecated- See Put Request now   * * *\x3c/p>\n<p>Send a PUT request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PUT request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Put","shortdoc":"* * *   Deprecated- See Put Request now   * * *","tags":[]},{"args":["alias","uri","data=None","headers=None","allow_redirects=None","timeout=None"],"doc":"<p>Send a PUT request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><span class=\"name\">alias\x3c/span> that will be used to identify the Session object in the cache\x3c/p>\n<p><span class=\"name\">uri\x3c/span> to send the PUT request to\x3c/p>\n<p><span class=\"name\">headers\x3c/span> a dictionary of headers to use with the request\x3c/p>\n<p><span class=\"name\">timeout\x3c/span> connection timeout\x3c/p>","matched":true,"name":"Put Request","shortdoc":"Send a PUT request on the session object found using the","tags":[]},{"args":["content","pretty_print=False"],"doc":"<p>Convert a string to a JSON object\x3c/p>\n<p><span class=\"name\">content\x3c/span> String content to convert into JSON\x3c/p>\n<p>'pretty_print' If defined, will output JSON is pretty print format\x3c/p>","matched":true,"name":"To Json","shortdoc":"Convert a string to a JSON object","tags":[]}],"name":"RequestsKeywords","named_args":true,"scope":"global","version":""};
 </script>
 <title></title>
 </head>
@@ -482,10 +493,13 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
         parseTemplates();
         document.title = libdoc.name;
         renderTemplate('base', libdoc, $('body'));
-        if (libdoc.inits.length > 0) {
+        if (libdoc.inits.length) {
             renderTemplate('importing', libdoc);
         }
         renderTemplate('shortcuts', libdoc);
+        if (libdoc.contains_tags) {
+            renderTemplate('tags', libdoc);
+        }
         renderTemplate('keywords', libdoc);
         renderTemplate('footer', libdoc);
         scrollToHash();
@@ -525,6 +539,13 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
         }
     }
 
+    function tagSearch(tag) {
+        var include = {tags: true, tagsExact: true};
+        markMatches(tag, include);
+        highlightMatches(tag, include);
+        $('#keywords-container').find('.kw-row').addClass('hide-unmatched');
+    }
+
     function doSearch() {
         var string = $('#search-string').val();
         var include = getIncludesAndDisableIfOnlyOneLeft();
@@ -541,38 +562,52 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
         var name = $('#include-name');
         var args = $('#include-args');
         var doc = $('#include-doc');
+        var tags = $('#include-tags');
         var include = {name: name.prop('checked'),
                        args: args.prop('checked'),
-                       doc: doc.prop('checked')};
-        if ((!include.name) && (!include.args)) {
+                       doc: doc.prop('checked'),
+                       tags: !!tags.prop('checked')};
+        if ((!include.name) && (!include.args) && (!include.doc)) {
+            tags.prop('disabled', true);
+        } else if ((!include.name) && (!include.args) && (!include.tags)) {
             doc.prop('disabled', true);
-        } else if ((!include.name) && (!include.doc)) {
+        } else if ((!include.name) && (!include.doc) && (!include.tags)) {
             args.prop('disabled', true);
-        } else if ((!include.args) && (!include.doc)) {
+        } else if ((!include.args) && (!include.doc) && (!include.tags)) {
             name.prop('disabled', true);
         } else {
             name.prop('disabled', false);
             args.prop('disabled', false);
             doc.prop('disabled', false);
+            tags.prop('disabled', false);
         }
         return include;
     }
 
-    function markMatches(string, include) {
-        var regexp = new RegExp(util.regexpEscape(string), 'i');
-        var result = {};
+    function markMatches(pattern, include) {
+        pattern = util.regexpEscape(pattern);
+        if (include.tagsExact) {
+            pattern = '^' + pattern + '$';
+        }
+        var regexp = new RegExp(pattern, 'i');
+        var test = regexp.test.bind(regexp);
+        var result = {contains_tags: libdoc.contains_tags};
         var matchCount = 0;
         result.keywords = util.map(libdoc.keywords, function (kw) {
             kw = $.extend({}, kw);
-            kw.matched = (include.name && regexp.test(kw.name) ||
-                          include.args && regexp.test(kw.args) ||
-                          include.doc && regexp.test($(kw.doc).text()));
+            kw.matched = (include.name && test(kw.name) ||
+                          include.args && test(kw.args) ||
+                          include.doc && test($(kw.doc).text()) ||
+                          include.tags && util.any(util.map(kw.tags, test)));
             if (kw.matched)
                 matchCount++;
             return kw
         });
         renderTemplate('shortcuts', result);
         renderTemplate('keywords', result);
+        if (libdoc.contains_tags) {
+            renderTemplate('tags', libdoc);
+        }
         var ending = matchCount != 1 ? 's.' : '.';
         $('#match-count').show().text(matchCount + ' matched keyword' + ending);
         $('#altogether-count').hide();
@@ -592,6 +627,16 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
         }
         if (include.doc) {
             keywords.find('.doc').highlight(string);
+        }
+        if (include.tags) {
+            var matches = keywords.find('.tags').find('a').add(
+                    $('#tags-container').find('a'));
+            if (include.tagsExact) {
+                matches = matches.filter(function (index, tag) {
+                    return $(tag).text().toUpperCase() == string.toUpperCase();
+                });
+            }
+            matches.highlight(string);
         }
     }
 
@@ -619,6 +664,9 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
     function resetKeywords() {
         renderTemplate('shortcuts', libdoc);
         renderTemplate('keywords', libdoc);
+        if (libdoc.contains_tags) {
+            renderTemplate('tags', libdoc);
+        }
         $('#match-count').hide();
         $('#altogether-count').show();
     }
@@ -653,6 +701,7 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
     </div>
     <div id="importing-container"></div>
     <div id="shortcuts-container"></div>
+    <div id="tags-container"></div>
     <div id="keywords-container"></div>
     <div id="footer-container"></div>
     <form id="search" action="javascript:void(0)">
@@ -667,6 +716,10 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
                 <label for="include-args">Arguments</label>
                 <input type="checkbox" id="include-doc" onclick="doSearch()" checked>
                 <label for="include-doc">Documentation</label>
+                {{if libdoc.contains_tags}}
+                <input type="checkbox" id="include-tags" onclick="doSearch()" checked>
+                <label for="include-tags">Tags</label>
+                {{/if}}
             </fieldset>
             <input type="checkbox" id="hide-unmatched" onclick="setMatchVisibility()" checked>
             <label for="hide-unmatched">Hide unmatched keywords</label>
@@ -690,7 +743,11 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
         </tr>
         {{each inits}}
         <tr class="kw-row">
-            <td class="args">${$value.args}</td>
+            <td class="args">
+            {{each args}}
+              <span>${$value}</span>{{if $index < args.length-1}}, {{/if}}
+            {{/each}}
+            </td>
             <td class="doc">{{html $value.doc}}</td>
         </tr>
         {{/each}}
@@ -709,23 +766,58 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
     </div>
 </script>
 
+<script type="text/x-jquery-tmpl" id="tags-template">
+    <h2 id="Tags">Tags</h2>
+    <div class='shortcuts'>
+        {{each all_tags}}
+        <a href="javascript:tagSearch('${$value}')"
+           title="Show tests with this tag">${$value}</a> &middot;
+        {{/each}}
+        <a href="javascript:resetKeywords()" class="normal-first-letter"
+           title="Show all tests">[Reset]</a>
+    </div>
+</script>
+
 <script type="text/x-jquery-tmpl" id="keywords-template">
     <h2 id="Keywords">Keywords</h2>
     <table border="1" class="keywords">
         <tr>
             <th class="kw">Keyword</th>
             <th class="args">Arguments</th>
+            {{if libdoc.contains_tags}}
+            <th class="tags">Tags</th>
+            {{/if}}
             <th class="doc">Documentation</th>
         </tr>
         {{each keywords}}
-        <tr class="kw-row {{if $value.matched === false}}no-{{/if}}match">
-            <td class="kw"><a name="${encodeURIComponent($value.name)}"></a>${$value.name}</td>
-            <td class="args">${$value.args}</td>
-            <td class="doc">{{html $value.doc}}</td>
-        </tr>
+            {{tmpl($value) 'keyword-template'}}
         {{/each}}
     </table>
 </script>
+
+<script type="text/x-jquery-tmpl" id="keyword-template">
+    <tr class="kw-row {{if matched === false}}no-{{/if}}match">
+        <td class="kw">
+            <a name="${name}" href="#${encodeURIComponent(name)}"
+               title="Link to this keyword">${name}</a>
+        </td>
+        <td class="args">
+            {{each args}}
+            <span>${$value}</span>{{if $index < args.length-1}}, {{/if}}
+            {{/each}}
+        </td>
+        {{if libdoc.contains_tags}}
+        <td class="tags">
+            {{each tags}}
+            <a href="javascript:tagSearch('${$value}')"
+               title="Show tests with this tag">${$value}</a>{{if $index < tags.length-1}}, {{/if}}
+            {{/each}}
+        </td>
+        {{/if}}
+        <td class="doc">{{html doc}}</td>
+    </tr>
+</script>
+
 
 <script type="text/x-jquery-tmpl" id="footer-template">
     <p class="footer">
@@ -738,3 +830,4 @@ libdoc = {"doc":"<p>Documentation for test library <span class=\"name\">Requests
 
 </body>
 </html>
+
