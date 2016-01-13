@@ -1,30 +1,27 @@
-import requests
-import random
-import json
-import sys
-import logging
 import httplib
+import json
+import random
+import sys
+import time
 import urlparse
-#import vcr
-
 from urllib import urlencode
-from requests.auth import HTTPDigestAuth
-from requests.exceptions import RequestException
 
+import requests
 import robot
-from robot.libraries.BuiltIn import BuiltIn
+from requests.exceptions import RequestException
 from robot.api import logger
+from robot.libraries.BuiltIn import BuiltIn
+
 
 try:
     from requests_ntlm import HttpNtlmAuth
 except ImportError:
     pass
 
-from functools import wraps
-import time
 
 class RetryException(RequestException):
     pass
+
 
 def retry(ExceptionToCheck, logger=None):
     """
@@ -37,7 +34,7 @@ def retry(ExceptionToCheck, logger=None):
                 try:
                     return f(self, *args, **kwargs)
                 except ExceptionToCheck as e:
-                    half_interval = mdelay * mbackoff #interval size
+                    half_interval = mdelay * mbackoff  # interval size
                     actual_delay = random.uniform(mdelay - half_interval, mdelay + half_interval)
                     msg = "%s, Retrying in %.2f seconds ..." % (str(e), actual_delay)
                     if logger:
@@ -60,10 +57,13 @@ def retry(ExceptionToCheck, logger=None):
 
 class WritableObject:
     ''' HTTP stream handler '''
+
     def __init__(self):
         self.content = []
+
     def write(self, string):
         self.content.append(string)
+
 
 class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
@@ -77,14 +77,14 @@ class RequestsKeywords(object):
         self.mbackoff = 0.0
 
     def _utf8_urlencode(self, data):
-        if type(data) is unicode:
+        if isinstance(data, unicode):
             return data.encode('utf-8')
 
-        if not type(data) is dict:
+        if not isinstance(data, dict):
             return data
 
         utf8_data = {}
-        for k,v in data.iteritems():
+        for k, v in data.iteritems():
             utf8_data[k] = unicode(v).encode('utf-8')
         return urlencode(utf8_data)
 
@@ -124,7 +124,7 @@ class RequestsKeywords(object):
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
-        s.proxies = proxies if proxies else  s.proxies
+        s.proxies = proxies if proxies else s.proxies
 
         s.verify = self.builtin.convert_to_boolean(verify)
 
@@ -186,8 +186,7 @@ class RequestsKeywords(object):
 
 
     def create_ntlm_session(self, alias, url, auth, headers={}, cookies=None,
-                            timeout=None, proxies=None, verify=False
-                            , debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
+                            timeout=None, proxies=None, verify=False, debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
 
         """ Create Session: create a HTTP session to a server
 
@@ -224,17 +223,17 @@ class RequestsKeywords(object):
                                      auth[2])
             logger.info('Creating NTLM Session using : alias=%s, url=%s, \
                         headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, \
-                        proxies=%s, verify=%s, debug=%s ' \
-                        % (alias, url, headers, cookies, ntlm_auth, \
-                        timeout, proxies, verify, debug))
+                        proxies=%s, verify=%s, debug=%s '
+                        % (alias, url, headers, cookies, ntlm_auth,
+                           timeout, proxies, verify, debug))
             return self._create_session(alias, url, headers, cookies,
                                         ntlm_auth, timeout, proxies, verify,
                                         debug, max_retries, max_delay, max_backoff)
 
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
-                                timeout=None, proxies=None, verify=False,
-                                debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
+                              timeout=None, proxies=None, verify=False,
+                              debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -262,11 +261,11 @@ class RequestsKeywords(object):
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
         return self._create_session(alias, url, headers, cookies, digest_auth,
-                        timeout, proxies, verify, debug, max_retries, max_delay, max_backoff)
+                                    timeout, proxies, verify, debug, max_retries, max_delay, max_backoff)
 
     def delete_all_sessions(self):
         """ Removes all the session objects """
-        logger.info ('Delete All Sessions')
+        logger.info('Delete All Sessions')
 
         self._cache.empty_cache()
 
@@ -281,8 +280,8 @@ class RequestsKeywords(object):
             json_ = self._json_pretty_print(content)
         else:
             json_ = json.loads(content)
-        logger.info ('To JSON using : content=%s ' % (content))
-        logger.info ('To JSON using : pretty_print=%s ' % (pretty_print))
+        logger.info('To JSON using : content=%s ' % (content))
+        logger.info('To JSON using : pretty_print=%s ' % (pretty_print))
 
         return json_
 
@@ -305,9 +304,9 @@ class RequestsKeywords(object):
         try:
             response = self._get_request(session, uri, headers, params, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
-        logger.info ('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
+        logger.info('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
 
         return response
 
@@ -333,7 +332,7 @@ class RequestsKeywords(object):
         try:
             response = self._get_request(session, uri, headers, params, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
         return response
 
@@ -362,9 +361,9 @@ class RequestsKeywords(object):
         try:
             response = self._post_request(session, uri, data, headers, files, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
-        logger.info ('Post Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s ' \
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+        logger.info('Post Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, files=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, files, redir))
 
         return response
@@ -397,7 +396,7 @@ class RequestsKeywords(object):
         try:
             response = self._post_request(session, uri, data, headers, files, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
         return response
 
@@ -426,9 +425,9 @@ class RequestsKeywords(object):
         try:
             response = self._patch_request(session, uri, data, headers, files, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
-        logger.info ('Patch Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s ' \
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+        logger.info('Patch Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, files=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, files, redir))
 
         return response
@@ -461,7 +460,7 @@ class RequestsKeywords(object):
         try:
             response = self._patch_request(session, uri, data, headers, files, redir, timeout)
         except:
-           raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
         return response
 
     @retry(RetryException, logger)
@@ -483,9 +482,10 @@ class RequestsKeywords(object):
         try:
             response = self._put_request(session, uri, data, headers, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
-        logger.info ('Put Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+        logger.info('Put Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, allow_redirects=%s '
+                    % (alias, uri, data, headers, redir))
 
         return response
 
@@ -511,7 +511,7 @@ class RequestsKeywords(object):
         try:
             response = self._put_request(session, uri, data, headers, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
         return response
 
@@ -533,10 +533,11 @@ class RequestsKeywords(object):
         try:
             redir = True if allow_redirects is None else allow_redirects
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
         response = self._delete_request(session, uri, data, headers, redir, timeout)
-        logger.info ('Delete Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
+        logger.info('Delete Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, allow_redirects=%s'
+                    % (alias, uri, data, headers, redir))
 
         return response
 
@@ -562,7 +563,7 @@ class RequestsKeywords(object):
         try:
             response = self._delete_request(session, uri, data, headers, redir, timeout)
         except:
-            raise RetryException("host=" + self.host + " uri: "+ uri + " not responding")
+            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
         return response
 
@@ -619,8 +620,8 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
         response = self._options_request(session, uri, headers, redir)
-        logger.info ('Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s '
-                        % (alias, uri, headers, redir))
+        logger.info('Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s '
+                    % (alias, uri, headers, redir))
 
         return response
 
@@ -651,7 +652,7 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.get(self._get_url(session, uri),
                                headers=headers,
@@ -681,13 +682,13 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.post(self._get_url(session, uri),
-                            data=data, headers=headers,
-                            files=files,
-                            cookies=self.cookies, timeout=self.timeout,
-                           allow_redirects=allow_redirects)
+                                data=data, headers=headers,
+                                files=files,
+                                cookies=self.cookies, timeout=self.timeout,
+                                allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
             # Remove empty lines
@@ -695,10 +696,10 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
         else:
             resp = session.post(self._get_url(session, uri),
-                            data=data, headers=headers,
-                            files=files,
-                            cookies=self.cookies, timeout=self.timeout,
-                           allow_redirects=allow_redirects)
+                                data=data, headers=headers,
+                                files=files,
+                                cookies=self.cookies, timeout=self.timeout,
+                                allow_redirects=allow_redirects)
 
         # store the last response object
         session.last_resp = resp
@@ -712,13 +713,13 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.patch(self._get_url(session, uri),
-                            data=data, headers=headers,
-                            files=files,
-                            cookies=self.cookies, timeout=self.timeout,
-                           allow_redirects=allow_redirects)
+                                 data=data, headers=headers,
+                                 files=files,
+                                 cookies=self.cookies, timeout=self.timeout,
+                                 allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
             # Remove empty lines
@@ -726,10 +727,10 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
         else:
             resp = session.patch(self._get_url(session, uri),
-                            data=data, headers=headers,
-                            files=files,
-                            cookies=self.cookies, timeout=self.timeout,
-                           allow_redirects=allow_redirects)
+                                 data=data, headers=headers,
+                                 files=files,
+                                 cookies=self.cookies, timeout=self.timeout,
+                                 allow_redirects=allow_redirects)
 
         # store the last response object
         session.last_resp = resp
@@ -743,12 +744,12 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.put(self._get_url(session, uri),
-                           data=data, headers=headers,
-                           cookies=self.cookies, timeout=self.timeout,
-                           allow_redirects=allow_redirects)
+                               data=data, headers=headers,
+                               cookies=self.cookies, timeout=self.timeout,
+                               allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
             # Remove empty lines
@@ -756,9 +757,9 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
         else:
             resp = session.put(self._get_url(session, uri),
-                           data=data, headers=headers,
-                           cookies=self.cookies, timeout=self.timeout,
-                           allow_redirects=allow_redirects)
+                               data=data, headers=headers,
+                               cookies=self.cookies, timeout=self.timeout,
+                               allow_redirects=allow_redirects)
 
         self.builtin.log("PUT response: %s DEBUG" % resp.content)
         # store the last response object
@@ -772,12 +773,12 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.delete(self._get_url(session, uri), data=data,
-                              headers=headers, cookies=self.cookies,
-                              timeout=self.timeout,
-                              allow_redirects=allow_redirects)
+                                  headers=headers, cookies=self.cookies,
+                                  timeout=self.timeout,
+                                  allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
             # Remove empty lines
@@ -785,9 +786,9 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
         else:
             resp = session.delete(self._get_url(session, uri), data=data,
-                              headers=headers, cookies=self.cookies,
-                              timeout=self.timeout,
-                              allow_redirects=allow_redirects)
+                                  headers=headers, cookies=self.cookies,
+                                  timeout=self.timeout,
+                                  allow_redirects=allow_redirects)
 
         # store the last response object
         session.last_resp = resp
@@ -800,11 +801,11 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.head(self._get_url(session, uri), headers=headers,
-                            cookies=self.cookies, timeout=self.timeout,
-                            allow_redirects=allow_redirects)
+                                cookies=self.cookies, timeout=self.timeout,
+                                allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
             # Remove empty lines
@@ -812,8 +813,8 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
         else:
             resp = session.head(self._get_url(session, uri), headers=headers,
-                            cookies=self.cookies, timeout=self.timeout,
-                            allow_redirects=allow_redirects)
+                                cookies=self.cookies, timeout=self.timeout,
+                                allow_redirects=allow_redirects)
 
         # store the last response object
         session.last_resp = resp
@@ -826,11 +827,11 @@ class RequestsKeywords(object):
             self.timeout = float(self.timeout)
 
         if self.debug >= 1:
-            http_log = WritableObject() # A writable object
+            http_log = WritableObject()  # A writable object
             sys.stdout = http_log   # Redirection
             resp = session.options(self._get_url(session, uri), headers=headers,
-                            cookies=self.cookies, timeout=self.timeout,
-                            allow_redirects=allow_redirects)
+                                   cookies=self.cookies, timeout=self.timeout,
+                                   allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
             # Remove empty lines
@@ -838,8 +839,8 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
         else:
             resp = session.options(self._get_url(session, uri), headers=headers,
-                            cookies=self.cookies, timeout=self.timeout,
-                            allow_redirects=allow_redirects)
+                                   cookies=self.cookies, timeout=self.timeout,
+                                   allow_redirects=allow_redirects)
 
         # store the last response object
         session.last_resp = resp
@@ -852,7 +853,7 @@ class RequestsKeywords(object):
         url = session.url
         if uri:
             slash = '' if uri.startswith('/') else '/'
-            url = "%s%s%s" %(session.url, slash, uri)
+            url = "%s%s%s" % (session.url, slash, uri)
         return url
 
 
