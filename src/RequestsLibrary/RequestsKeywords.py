@@ -41,10 +41,8 @@ class RequestsKeywords(object):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
-        self.max_retries = 0
 
-    def _create_session(self, alias, url, headers, cookies, auth,
-                        timeout, proxies, verify, debug, max_retries, max_delay, max_backoff):
+    def _create_session(self, alias, url, headers, cookies, auth, timeout, max_retries, proxies, verify, debug):
 
         """ Create Session: create a HTTP session to a server
 
@@ -58,26 +56,29 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
 
+        `max_retries` The maximum number of retries each connection should attempt.
+
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` set to True if Requests should verify the certificate
         
         `debug` enable http verbosity option more information 
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
-        `max_retries` The maximum number of retries each connection should attempt.
-        
-        `max_delay` The maximum number of delay each connection should attempt.
         """
-
-        # Type casting since robot vars unicode
-        self.max_retries = int(max_retries)
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else  s.proxies
+
+        if max_retries > 0:
+            http = requests.adapters.HTTPAdapter(max_retries=max_retries)
+            https = requests.adapters.HTTPAdapter(max_retries=max_retries)
+
+            # Replace the session's original adapters
+            s.mount('http://', http)
+            s.mount('https://', https)
 
         s.verify = self.builtin.convert_to_boolean(verify)
 
@@ -100,7 +101,7 @@ class RequestsKeywords(object):
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
+                       verify=False, debug=0, max_retries=3):
 
         """ Create Session: create a HTTP session to a server
 
@@ -122,10 +123,6 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel        
         
         `max_retries` The maximum number of retries each connection should attempt.
-        
-        `max_delay` The maximum number of delay each connection should attempt.
-        
-        `max_backoff` Expoential backoff
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
@@ -134,11 +131,11 @@ class RequestsKeywords(object):
                     debug=%s ' % (alias, url, headers, cookies, auth, timeout,
                                   proxies, verify, debug))
         return self._create_session(alias, url, headers, cookies, auth,
-                                    timeout, proxies, verify, debug, max_retries, max_delay, max_backoff)
+                                    timeout, max_retries, proxies, verify, debug)
 
     def create_ntlm_session(self, alias, url, auth, headers={}, cookies=None,
                             timeout=None, proxies=None, verify=False
-                            , debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
+                            , debug=0, max_retries=3):
 
         """ Create Session: create a HTTP session to a server
 
@@ -178,13 +175,13 @@ class RequestsKeywords(object):
                         proxies=%s, verify=%s, debug=%s ' \
                         % (alias, url, headers, cookies, ntlm_auth, \
                            timeout, proxies, verify, debug))
+
             return self._create_session(alias, url, headers, cookies,
-                                        ntlm_auth, timeout, proxies, verify,
-                                        debug, max_retries, max_delay, max_backoff)
+                                        ntlm_auth, timeout, max_retries, proxies, verify, debug)
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
                               timeout=None, proxies=None, verify=False,
-                              debug=0, max_retries=3, max_delay=1.0, max_backoff=0.10):
+                              debug=0, max_retries=3):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -211,8 +208,9 @@ class RequestsKeywords(object):
         `max_backoff` Expoential backoff
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
+
         return self._create_session(alias, url, headers, cookies, digest_auth,
-                                    timeout, proxies, verify, debug, max_retries, max_delay, max_backoff)
+                                    timeout, max_retries, proxies, verify, debug)
 
     def delete_all_sessions(self):
         """ Removes all the session objects """
@@ -591,8 +589,7 @@ class RequestsKeywords(object):
                            params=params,
                            allow_redirects=allow_redirects,
                            timeout=self._get_timeout(timeout),
-                           cookies=self.cookies,
-                           max_retries=self.max_retries)
+                           cookies=self.cookies)
 
         self._print_debug()
         # store the last response object
@@ -610,8 +607,7 @@ class RequestsKeywords(object):
                       headers=headers,
                       allow_redirects=allow_redirects,
                       timeout=self._get_timeout(timeout),
-                      cookies=self.cookies,
-                      max_retries=self.max_retries)
+                      cookies=self.cookies)
 
         self._print_debug()
 
@@ -629,8 +625,7 @@ class RequestsKeywords(object):
                               headers=headers,
                               allow_redirects=allow_redirects,
                               timeout=self._get_timeout(timeout),
-                              cookies=self.cookies,
-                              max_retries=self.max_retries)
+                              cookies=self.cookies)
 
         self._print_debug()
 
