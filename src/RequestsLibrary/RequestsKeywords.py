@@ -120,8 +120,8 @@ class RequestsKeywords(object):
         `verify` set to True if Requests should verify the certificate
 
         `debug` enable http verbosity option more information 
-                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel        
-        
+                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+
         `max_retries` The maximum number of retries each connection should attempt.
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
@@ -508,7 +508,7 @@ class RequestsKeywords(object):
 
         return response
 
-    def head_request(self, alias, uri, headers=None, allow_redirects=None):
+    def head_request(self, alias, uri, headers=None, allow_redirects=None, timeout=None):
         """ Send a HEAD request on the session object found using the
         given `alias`
 
@@ -520,7 +520,7 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
-        response = self._head_request(session, uri, headers, redir)
+        response = self._head_request(session, uri, headers, redir, timeout)
         logger.info('Head Request using : alias=%s, uri=%s, headers=%s, \
         allow_redirects=%s ' % (alias, uri, headers, redir))
 
@@ -541,11 +541,11 @@ class RequestsKeywords(object):
         print "Deprication Warning  Use Head Request in the future"
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
-        response = self._head_request(session, uri, headers, redir)
+        response = self._head_request(session, uri, headers, redir, timeout)
 
         return response
 
-    def options_request(self, alias, uri, headers=None, allow_redirects=None):
+    def options_request(self, alias, uri, headers=None, allow_redirects=None, timeout=None):
         """ Send an OPTIONS request on the session object found using the
         given `alias`
 
@@ -557,13 +557,13 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._options_request(session, uri, headers, redir)
+        response = self._options_request(session, uri, headers, redir, timeout)
         logger.info('Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s '
                     % (alias, uri, headers, redir))
 
         return response
 
-    def options(self, alias, uri, headers=None, allow_redirects=None):
+    def options(self, alias, uri, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Options Request now   * * *
         Send an OPTIONS request on the session object found using the
         given `alias`
@@ -577,7 +577,7 @@ class RequestsKeywords(object):
         print "Deprication Warning  Use Options Request in the future"
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._options_request(session, uri, headers, redir)
+        response = self._options_request(session, uri, headers, redir, timeout)
 
         return response
 
@@ -710,7 +710,7 @@ class RequestsKeywords(object):
         return urlencode(utf8_data)
 
     def _format_data_according_to_header(self, data, headers):
-        if headers is not None and 'Content-Type' in headers:
+        if data is not None and headers is not None and 'Content-Type' in headers:
             if headers['Content-Type'].find("application/json") != -1:
                 data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
