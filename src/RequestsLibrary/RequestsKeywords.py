@@ -480,7 +480,7 @@ class RequestsKeywords(object):
         return response
 
     @retry(RetryException, logger)
-    def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
+    def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None, params={}, timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -490,13 +490,17 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
 
+        `allow_redirects` requests redirection
+
+        `params` url parameters to append to the uri
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
         try:
-            response = self._put_request(session, uri, data, headers, redir, timeout)
+            response = self._put_request(session, uri, data, headers, redir, params, timeout)
         except:
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
@@ -524,7 +528,7 @@ class RequestsKeywords(object):
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
         try:
-            response = self._put_request(session, uri, data, headers, redir, timeout)
+            response = self._put_request(session, uri, data, headers, redir, timeout=timeout)
         except:
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
@@ -761,7 +765,9 @@ class RequestsKeywords(object):
             sys.stdout = http_log  # Redirection
             resp = session.put(self._get_url(session, uri),
                                data=data, headers=headers,
-                               cookies=self.cookies, timeout=self.timeout,
+                               cookies=self.cookies,
+                               params=params,
+                               timeout=self.timeout,
                                allow_redirects=allow_redirects)
             sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
             debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
@@ -771,7 +777,9 @@ class RequestsKeywords(object):
         else:
             resp = session.put(self._get_url(session, uri),
                                data=data, headers=headers,
-                               cookies=self.cookies, timeout=self.timeout,
+                               cookies=self.cookies,
+                               params=params,
+                               timeout=self.timeout,
                                allow_redirects=allow_redirects)
 
         self.builtin.log("PUT response: %s DEBUG" % resp.content)
