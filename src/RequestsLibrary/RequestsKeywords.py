@@ -1,5 +1,4 @@
 import requests
-import random
 import json
 import sys
 import logging
@@ -236,7 +235,6 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
-        params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(session, uri, params, headers, redir, timeout)
@@ -261,9 +259,6 @@ class RequestsKeywords(object):
         """
         print "Deprication Warning  Use Get Request in the future"
         session = self._cache.switch(alias)
-
-        if params:
-            params = self._utf8_urlencode(params)
 
         redir = True if allow_redirects is None else allow_redirects
 
@@ -574,7 +569,7 @@ class RequestsKeywords(object):
 
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
-                           params=params,
+                           params=self._utf8_urlencode(params),
                            allow_redirects=allow_redirects,
                            timeout=self._get_timeout(timeout),
                            cookies=self.cookies)
@@ -590,7 +585,7 @@ class RequestsKeywords(object):
         method = getattr(session, method_name)
         resp = method(self._get_url(session, uri),
                       data=data,
-                      params=params,
+                      params=self._utf8_urlencode(params),
                       files=files,
                       headers=headers,
                       allow_redirects=allow_redirects,
@@ -609,7 +604,7 @@ class RequestsKeywords(object):
 
         resp = session.delete(self._get_url(session, uri),
                               data=data,
-                              params=params,
+                              params=self._utf8_urlencode(params),
                               headers=headers,
                               allow_redirects=allow_redirects,
                               timeout=self._get_timeout(timeout),
