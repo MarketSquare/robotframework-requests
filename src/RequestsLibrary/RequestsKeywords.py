@@ -42,8 +42,6 @@ class RequestsKeywords(object):
         self.builtin = BuiltIn()
         self.debug = 0
         self.max_retries = 0
-        self.max_delay = 0.0
-        self.max_backoff = 0.0
 
     def _utf8_urlencode(self, data):
         if type(data) is unicode:
