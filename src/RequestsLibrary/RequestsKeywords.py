@@ -412,7 +412,8 @@ class RequestsKeywords(object):
 
         return response
 
-    def put_request(self, alias, uri, data=None, params=None, files=None, headers=None, allow_redirects=None, timeout=None):
+    def put_request(self, alias, uri, data=None, params=None, files=None, headers=None, allow_redirects=None,
+                    timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -592,8 +593,8 @@ class RequestsKeywords(object):
                            cookies=self.cookies)
 
         self._print_debug()
-        # store the last response object
-        session.last_resp = resp
+        session.last_resp = resp  # Store the last session object (@Kosuri Why?)
+
         return resp
 
     def _body_request(self, method_name, session, uri, data, params, files, headers, allow_redirects, timeout):
