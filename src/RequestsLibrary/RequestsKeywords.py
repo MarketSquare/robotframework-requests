@@ -78,7 +78,7 @@ class RequestsKeywords(object):
         s.verify = self.builtin.convert_to_boolean(verify)
 
         # cant pass these into the Session anymore
-        self.timeout = float(timeout)
+        self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
         self.verify = verify
 
