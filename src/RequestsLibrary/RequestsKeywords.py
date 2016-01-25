@@ -355,7 +355,11 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to POST to the server
-        
+
+        `allow_redirects` requests redirection
+
+        `params` url parameters to append to the uri
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -419,6 +423,10 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to PATCH to the server
+
+        `allow_redirects` requests redirection
+
+        `params` url parameters to append to the uri
         
         `timeout` connection timeout
         """
