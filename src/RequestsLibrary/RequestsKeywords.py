@@ -5,11 +5,9 @@ import sys
 import logging
 import httplib
 import urlparse
-# import vcr
 
 from urllib import urlencode
 from requests.auth import HTTPDigestAuth
-from requests.exceptions import RequestException
 
 import robot
 from robot.libraries.BuiltIn import BuiltIn
@@ -19,9 +17,6 @@ try:
     from requests_ntlm import HttpNtlmAuth
 except ImportError:
     pass
-
-from functools import wraps
-import time
 
 
 class WritableObject:
@@ -83,7 +78,7 @@ class RequestsKeywords(object):
         s.verify = self.builtin.convert_to_boolean(verify)
 
         # cant pass these into the Session anymore
-        self.timeout = timeout
+        self.timeout = float(timeout)
         self.cookies = cookies
         self.verify = verify
 
@@ -157,10 +152,6 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
         
         `max_retries` The maximum number of retries each connection should attempt.
-        
-        `max_delay` The maximum number of delay each connection should attempt.
-        
-        `max_backoff` Expoential backoff
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -202,10 +193,6 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
         
         `max_retries` The maximum number of retries each connection should attempt.
-        
-        `max_delay` The maximum number of delay each connection should attempt.
-        
-        `max_backoff` Expoential backoff
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
