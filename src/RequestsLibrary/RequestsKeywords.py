@@ -43,18 +43,6 @@ class RequestsKeywords(object):
         self.debug = 0
         self.max_retries = 0
 
-    def _utf8_urlencode(self, data):
-        if type(data) is unicode:
-            return data.encode('utf-8')
-
-        if not type(data) is dict:
-            return data
-
-        utf8_data = {}
-        for k, v in data.iteritems():
-            utf8_data[k] = unicode(v).encode('utf-8')
-        return urlencode(utf8_data)
-
     def _create_session(self, alias, url, headers, cookies, auth,
                         timeout, proxies, verify, debug, max_retries, max_delay, max_backoff):
 
@@ -84,8 +72,6 @@ class RequestsKeywords(object):
 
         # Type casting since robot vars unicode
         self.max_retries = int(max_retries)
-        self.max_delay = float(max_delay)
-        self.max_backoff = float(max_backoff)
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
         s = session = requests.Session()
@@ -715,6 +701,18 @@ class RequestsKeywords(object):
         """
         temp = json.loads(content)
         return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
+
+    def _utf8_urlencode(self, data):
+        if type(data) is unicode:
+            return data.encode('utf-8')
+
+        if not type(data) is dict:
+            return data
+
+        utf8_data = {}
+        for k, v in data.iteritems():
+            utf8_data[k] = unicode(v).encode('utf-8')
+        return urlencode(utf8_data)
 
     def _format_data_according_to_header(self, data, headers):
         if headers is not None and 'Content-Type' in headers:
