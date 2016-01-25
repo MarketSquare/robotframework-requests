@@ -24,45 +24,6 @@ from functools import wraps
 import time
 
 
-class RetryException(RequestException):
-    pass
-
-
-def retry(ExceptionToCheck, logger=None):
-    """
-    Retry calling the decorated function using an exponential backoff.
-    """
-
-    def deco_retry(f):
-        def f_retry(self, *args, **kwargs):
-            mretries, mdelay, mbackoff = self.mretries, self.mdelay, self.mbackoff
-            while mretries >= 1:
-                try:
-                    return f(self, *args, **kwargs)
-                except ExceptionToCheck as e:
-                    half_interval = mdelay * mbackoff  # interval size
-                    actual_delay = random.uniform(mdelay - half_interval, mdelay + half_interval)
-                    msg = "%s, Retrying in %.2f seconds ..." % (str(e), actual_delay)
-                    if logger:
-                        logger.warn(msg)
-                    else:
-                        print msg
-                    time.sleep(actual_delay)
-                    mretries -= 1
-                    mdelay *= 2
-            else:
-                msg = "%s, Max. Retries reached quitting !!!" % (str(e))
-                if logger:
-                    logger.error(msg)
-                else:
-                    print msg
-            return f(self, *args, **kwargs)
-
-        return f_retry  # true decorator
-
-    return deco_retry
-
-
 class WritableObject:
     ''' HTTP stream handler '''
 
@@ -80,9 +41,9 @@ class RequestsKeywords(object):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
-        self.mretries = 0
-        self.mdelay = 0.0
-        self.mbackoff = 0.0
+        self.max_retries = 0
+        self.max_delay = 0.0
+        self.max_backoff = 0.0
 
     def _utf8_urlencode(self, data):
         if type(data) is unicode:
@@ -124,9 +85,9 @@ class RequestsKeywords(object):
         """
 
         # Type casting since robot vars unicode
-        self.mretries = int(max_retries)
-        self.mdelay = float(max_delay)
-        self.mbackoff = float(max_backoff)
+        self.max_retries = int(max_retries)
+        self.max_delay = float(max_delay)
+        self.max_backoff = float(max_backoff)
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
         s = session = requests.Session()
@@ -291,8 +252,7 @@ class RequestsKeywords(object):
 
         return json_
 
-    @retry(RetryException, logger)
-    def get_request(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
+    def get_request(self, alias, uri, headers=None, params=None, allow_redirects=None, timeout=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -309,17 +269,14 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         params = self._utf8_urlencode(params)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._get_request(session, uri, headers, params, redir, timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._get_request(session, uri, params, headers, redir, timeout)
 
         logger.info('Get Request using : alias=%s, uri=%s, headers=%s ' % (alias, uri, headers))
 
         return response
 
-    @retry(RetryException, logger)
-    def get(self, alias, uri, headers=None, params={}, allow_redirects=None, timeout=None):
+    def get(self, alias, uri, params=None, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Get Request now   * * *
         
         Send a GET request on the session object found using the
@@ -335,17 +292,18 @@ class RequestsKeywords(object):
         """
         print "Deprication Warning  Use Get Request in the future"
         session = self._cache.switch(alias)
-        params = self._utf8_urlencode(params)
+
+        if params:
+            params = self._utf8_urlencode(params)
+
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._get_request(session, uri, headers, params, redir, timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._get_request(session, uri, params, headers, redir, timeout)
 
         return response
 
-    @retry(RetryException, logger)
-    def post_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, params={}, timeout=None):
+    def post_request(self, alias, uri, data=None, params=None, headers=None, files=None, allow_redirects=None,
+                     timeout=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -357,31 +315,29 @@ class RequestsKeywords(object):
                and sent as POST data
                or binary data that is sent as the raw body content
 
+        `params` url parameters to append to the uri
+
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to POST to the server
 
         `allow_redirects` requests redirection
 
-        `params` url parameters to append to the uri
-
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._post_request(session, uri, data, headers, files, redir, params, timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._body_request("post", session, uri, data, params, files, headers, redir, timeout)
+
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s ' \
                     % (alias, uri, data, headers, files, redir))
 
         return response
 
-    @retry(RetryException, logger)
-    def post(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
+    def post(self, alias, uri, data={}, headers=None, files=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Post Request now   * * *
         
         Send a POST request on the session object found using the
@@ -405,15 +361,13 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._post_request(session, uri, data, headers, files, redir, timeout=timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._body_request("post", session, uri, data, None, files, headers, redir, timeout)
 
         return response
 
-    @retry(RetryException, logger)
-    def patch_request(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, params={}, timeout=None):
+    def patch_request(self, alias, uri, data=None, params=None, headers=None, files=None, allow_redirects=None,
+                      timeout=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
@@ -438,17 +392,15 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._patch_request(session, uri, data, headers, files, redir, params, timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._body_request("patch", session, uri, data, params, files, headers, redir, timeout)
+
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s ' \
                     % (alias, uri, data, headers, files, redir))
 
         return response
 
-    @retry(RetryException, logger)
     def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Patch Request now   * * *
 
@@ -466,21 +418,19 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to PATCH to the server
-        
+
         `timeout` connection timeout
         """
         print "Deprication Warning  Use Patch Request in the future"
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._patch_request(session, uri, data, headers, files, redir, timeout=timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._body_request("patch", session, uri, data, None, files, headers, redir, timeout)
+
         return response
 
-    @retry(RetryException, logger)
-    def put_request(self, alias, uri, data=None, headers=None, allow_redirects=None, params={}, timeout=None):
+    def put_request(self, alias, uri, data=None, params=None, files=None, headers=None, allow_redirects=None, timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -499,16 +449,14 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(data, headers)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._put_request(session, uri, data, headers, redir, params, timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._body_request("put", session, uri, data, params, files, headers, redir, timeout)
+
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
-    @retry(RetryException, logger)
     def put(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Put Request now   * * *
 
@@ -527,15 +475,12 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._put_request(session, uri, data, headers, redir, timeout=timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._body_request("put", session, uri, data, None, None, headers, redir, timeout)
 
         return response
 
-    @retry(RetryException, logger)
-    def delete_request(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
+    def delete_request(self, alias, uri, data=(), params=None, headers=None, allow_redirects=None, timeout=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -549,17 +494,15 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
-        try:
-            redir = True if allow_redirects is None else allow_redirects
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
-        response = self._delete_request(session, uri, data, headers, redir, timeout)
+        redir = True if allow_redirects is None else allow_redirects
+
+        response = self._delete_request(session, uri, data, params, headers, redir, timeout)
+
         logger.info('Delete Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
         return response
 
-    @retry(RetryException, logger)
     def delete(self, alias, uri, data=(), headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Delete Request now   * * *
 
@@ -578,10 +521,8 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
-        try:
-            response = self._delete_request(session, uri, data, headers, redir, timeout)
-        except:
-            raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+
+        response = self._delete_request(session, uri, data, None, headers, redir, timeout)
 
         return response
 
@@ -658,213 +599,89 @@ class RequestsKeywords(object):
 
         return response
 
-    def _get_request(self, session, uri, headers, params, allow_redirects, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
+    def _get_request(self, session, uri, params, headers, allow_redirects, timeout):
+        self._capture_output()
 
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.get(self._get_url(session, uri),
+        resp = session.get(self._get_url(session, uri),
+                           headers=headers,
+                           params=params,
+                           allow_redirects=allow_redirects,
+                           timeout=self._get_timeout(timeout),
+                           cookies=self.cookies,
+                           max_retries=self.max_retries)
+
+        self._print_debug()
+        # store the last response object
+        session.last_resp = resp
+        return resp
+
+    def _body_request(self, method_name, session, uri, data, params, files, headers, allow_redirects, timeout):
+        self._capture_output()
+
+        method = getattr(session, method_name)
+        resp = method(self._get_url(session, uri),
+                      data=data,
+                      params=params,
+                      files=files,
+                      headers=headers,
+                      allow_redirects=allow_redirects,
+                      timeout=self._get_timeout(timeout),
+                      cookies=self.cookies,
+                      max_retries=self.max_retries)
+
+        self._print_debug()
+
+        session.last_resp = resp  # Store the last session object (@Kosuri Why?)
+        self.builtin.log(method_name + " response: " + resp.content, 'DEBUG')
+
+        return resp
+
+    def _delete_request(self, session, uri, data, params, headers, allow_redirects, timeout):
+        self._capture_output()
+
+        resp = session.delete(self._get_url(session, uri),
+                              data=data,
+                              params=params,
+                              headers=headers,
+                              allow_redirects=allow_redirects,
+                              timeout=self._get_timeout(timeout),
+                              cookies=self.cookies,
+                              max_retries=self.max_retries)
+
+        self._print_debug()
+
+        session.last_resp = resp  # Store the last session object (@Kosuri Why?)
+
+        return resp
+
+    def _head_request(self, session, uri, headers, allow_redirects, timeout):
+        self._capture_output()
+
+        resp = session.head(self._get_url(session, uri),
+                            headers=headers,
+                            allow_redirects=allow_redirects,
+                            timeout=self._get_timeout(timeout),
+                            cookies=self.cookies)
+
+        self._print_debug()
+
+        session.last_resp = resp  # Store the last session object (@Kosuri Why?)
+
+        return resp
+
+    def _options_request(self, session, uri, headers, allow_redirects, timeout):
+        self._capture_output()
+
+        resp = session.options(self._get_url(session, uri),
                                headers=headers,
-                               params=params,
-                               cookies=self.cookies, timeout=self.timeout,
-                               allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.get(self._get_url(session, uri),
-                               headers=headers,
-                               params=params,
-                               cookies=self.cookies, timeout=self.timeout,
-                               allow_redirects=allow_redirects)
-
-        # store the last response object
-        session.last_resp = resp
-        return resp
-
-    def _post_request(self, session, uri, data, headers, files, allow_redirects, params=None, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
-
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.post(self._get_url(session, uri),
-                                data=data, headers=headers,
-                                files=files,
-                                params=params,
-                                cookies=self.cookies, timeout=self.timeout,
-                                allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.post(self._get_url(session, uri),
-                                data=data, headers=headers,
-                                files=files,
-                                params=params,
-                                cookies=self.cookies, timeout=self.timeout,
-                                allow_redirects=allow_redirects)
-
-        # store the last response object
-        session.last_resp = resp
-        self.builtin.log("Post response: " + resp.content, 'DEBUG')
-        return resp
-
-    def _patch_request(self, session, uri, data, headers, files, allow_redirects, params=None, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
-
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.patch(self._get_url(session, uri),
-                                 data=data, headers=headers,
-                                 files=files,
-                                 params=params,
-                                 cookies=self.cookies, timeout=self.timeout,
-                                 allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.patch(self._get_url(session, uri),
-                                 data=data, headers=headers,
-                                 files=files,
-                                 params=params,
-                                 cookies=self.cookies, timeout=self.timeout,
-                                 allow_redirects=allow_redirects)
-
-        # store the last response object
-        session.last_resp = resp
-        self.builtin.log("Patch response: " + resp.content, 'DEBUG')
-        return resp
-
-    def _put_request(self, session, uri, data, headers, allow_redirects, params=None, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
-
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.put(self._get_url(session, uri),
-                               data=data, headers=headers,
                                cookies=self.cookies,
-                               params=params,
-                               timeout=self.timeout,
-                               allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.put(self._get_url(session, uri),
-                               data=data, headers=headers,
-                               cookies=self.cookies,
-                               params=params,
-                               timeout=self.timeout,
-                               allow_redirects=allow_redirects)
+                               allow_redirects=allow_redirects,
+                               timeout=self._get_timeout(timeout))
 
-        self.builtin.log("PUT response: %s DEBUG" % resp.content)
-        # store the last response object
-        session.last_resp = resp
-        return resp
+        self._print_debug()
 
-    def _delete_request(self, session, uri, data, headers, allow_redirects, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
+        session.last_resp = resp  # Store the last session object (@Kosuri Why?)
 
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.delete(self._get_url(session, uri), data=data,
-                                  headers=headers, cookies=self.cookies,
-                                  timeout=self.timeout,
-                                  allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.delete(self._get_url(session, uri), data=data,
-                                  headers=headers, cookies=self.cookies,
-                                  timeout=self.timeout,
-                                  allow_redirects=allow_redirects)
-
-        # store the last response object
-        session.last_resp = resp
-        return resp
-
-    def _head_request(self, session, uri, headers, allow_redirects, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
-
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.head(self._get_url(session, uri), headers=headers,
-                                cookies=self.cookies, timeout=self.timeout,
-                                allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.head(self._get_url(session, uri), headers=headers,
-                                cookies=self.cookies, timeout=self.timeout,
-                                allow_redirects=allow_redirects)
-
-        # store the last response object
-        session.last_resp = resp
-        return resp
-
-    def _options_request(self, session, uri, headers, allow_redirects, timeout=None):
-        if timeout:
-            self.timeout = float(timeout)
-        elif self.timeout:
-            self.timeout = float(self.timeout)
-
-        if self.debug >= 1:
-            http_log = WritableObject()  # A writable object
-            sys.stdout = http_log  # Redirection
-            resp = session.options(self._get_url(session, uri), headers=headers,
-                                   cookies=self.cookies, timeout=self.timeout,
-                                   allow_redirects=allow_redirects)
-            sys.stdout = sys.__stdout__  # Remember to reset sys.stdout!
-            debug_info = ''.join(http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
-            # Remove empty lines
-            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
-        else:
-            resp = session.options(self._get_url(session, uri), headers=headers,
-                                   cookies=self.cookies, timeout=self.timeout,
-                                   allow_redirects=allow_redirects)
-
-        # store the last response object
-        session.last_resp = resp
         return resp
 
     def _get_url(self, session, uri):
@@ -875,6 +692,23 @@ class RequestsKeywords(object):
             slash = '' if uri.startswith('/') else '/'
             url = "%s%s%s" % (session.url, slash, uri)
         return url
+
+    def _get_timeout(self, timeout):
+        return float(timeout) if timeout is not None else self.timeout
+
+    def _capture_output(self):
+        if self.debug >= 1:
+            self.http_log = WritableObject()
+            sys.stdout = self.http_log
+
+    def _print_debug(self):
+        if self.debug >= 1:
+            sys.stdout = sys.__stdout__  # Restore stdout
+            debug_info = ''.join(self.http_log.content).replace('\\r', '').decode('string_escape').replace('\'', '')
+
+            # Remove empty lines
+            debug_info = "\n".join([ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
+            self.builtin.log(debug_info, 'DEBUG')
 
     def _json_pretty_print(self, content):
         """ Pretty print a JSON object
