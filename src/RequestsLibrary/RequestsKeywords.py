@@ -3,7 +3,6 @@ import json
 import sys
 import logging
 import httplib
-import urlparse
 
 from urllib import urlencode
 from requests.auth import HTTPDigestAuth
@@ -81,8 +80,6 @@ class RequestsKeywords(object):
         self.cookies = cookies
         self.verify = verify
 
-        # cant use hooks :(
-        self.host = urlparse.urlparse(url).netloc
         s.url = url
 
         # Enable http verbosity
