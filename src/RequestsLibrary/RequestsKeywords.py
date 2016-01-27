@@ -5,6 +5,7 @@ import sys
 import time
 import urlparse
 from urllib import urlencode
+import functools
 
 import requests
 import robot
@@ -28,6 +29,7 @@ def retry(ExceptionToCheck, logger=None):
     Retry calling the decorated function using an exponential backoff.
     """
     def deco_retry(f):
+        @functools.wraps(f)
         def f_retry(self, *args, **kwargs):
             mretries, mdelay, mbackoff = self.mretries, self.mdelay, self.mbackoff
             while mretries >= 1:
@@ -85,7 +87,9 @@ class RequestsKeywords(object):
 
         utf8_data = {}
         for k, v in data.iteritems():
-            utf8_data[k] = unicode(v).encode('utf-8')
+            if isinstance(v, unicode):
+                v = v.encode('utf-8')
+            utf8_data[k] = v
         return urlencode(utf8_data)
 
     def _create_session(self, alias, url, headers, cookies, auth,
@@ -362,6 +366,8 @@ class RequestsKeywords(object):
             response = self._post_request(session, uri, data, headers, files, redir, timeout)
         except:
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+        if not isinstance(data, unicode):
+            data = data.decode('utf-8')
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, '
                     'headers=%s, files=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, files, redir))
@@ -395,7 +401,8 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
         try:
             response = self._post_request(session, uri, data, headers, files, redir, timeout)
-        except:
+        except Exception:
+            logger.error('Post request failed')
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
 
         return response
@@ -426,6 +433,8 @@ class RequestsKeywords(object):
             response = self._patch_request(session, uri, data, headers, files, redir, timeout)
         except:
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+        if not isinstance(data, unicode):
+            data = data.decode('utf-8')
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, '
                     'headers=%s, files=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, files, redir))
@@ -483,6 +492,8 @@ class RequestsKeywords(object):
             response = self._put_request(session, uri, data, headers, redir, timeout)
         except:
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
+        if not isinstance(data, unicode):
+            data = data.decode('utf-8')
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, '
                     'headers=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, redir))
@@ -535,6 +546,8 @@ class RequestsKeywords(object):
         except:
             raise RetryException("host=" + self.host + " uri: " + uri + " not responding")
         response = self._delete_request(session, uri, data, headers, redir, timeout)
+        if not isinstance(data, unicode):
+            data = data.decode('utf-8')
         logger.info('Delete Request using : alias=%s, uri=%s, data=%s, '
                     'headers=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, redir))
@@ -581,8 +594,9 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
         response = self._head_request(session, uri, headers, redir)
-        logger.info('Head Request using : alias=%s, uri=%s, headers=%s, \
-        allow_redirects=%s ' % (alias, uri, headers, redir))
+        logger.info('Head Request using : alias=%s, uri=%s, headers=%s, '
+                    'allow_redirects=%s '
+                    % (alias, uri, headers, redir))
 
         return response
 
@@ -873,8 +887,8 @@ class RequestsKeywords(object):
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
             else:
-                data = data
+                data = self._utf8_urlencode(data)
         else:
-            data = data
+            data = self._utf8_urlencode(data)
 
         return data
