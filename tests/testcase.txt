@@ -125,13 +125,55 @@ Post With Unicode Data
     Dictionary Should Contain Value  ${resp.json()['form']}  度假村
 
 
-Post Request With File
+Post Request With Unicode Data
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${data}=  Create Dictionary  name=度假村
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    Dictionary Should Contain Value  ${resp.json()['form']}  度假村
+
+
+Post Request With Binary Data in Dictionary
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
+    ${data}=  Create Dictionary  name=${file_data.strip()}
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+	Log		${resp.json()['form']}
+    Should Contain  ${resp.json()['form']['name']}  \u5ea6\u5047\u6751
+
+
+Post Request With Binary Data
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${data}=  Get Binary File  ${CURDIR}${/}data.json
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    Should Contain  ${resp.json()['form'].keys()[0]}  度假村
+
+
+Post With File
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
 
     ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
     ${files}=  Create Dictionary  file=${file_data}
     ${resp}=  Post  httpbin  /post  files=${files}
+
+    ${file}=  To Json  ${resp.json()['files']['file']}
+    Dictionary Should Contain Key  ${file}  one
+    Dictionary Should Contain Key  ${file}  two
+
+
+Post Request With File
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org
+
+    ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
+    ${files}=  Create Dictionary  file=${file_data}
+    ${resp}=  Post Request  httpbin  /post  files=${files}
 
     ${file}=  To Json  ${resp.json()['files']['file']}
     Dictionary Should Contain Key  ${file}  one
