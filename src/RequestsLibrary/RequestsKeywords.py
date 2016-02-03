@@ -47,15 +47,13 @@ class RequestsKeywords(object):
 
         `auth` List of username & password for HTTP Basic Auth
 
-        `timeout` connection timeout
-
-        `max_retries` The maximum number of retries each connection should attempt.
+        `timeout` Connection timeout
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
-        
-        `debug` enable http verbosity option more information 
+        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+
+        `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
         """
 
@@ -73,7 +71,7 @@ class RequestsKeywords(object):
             s.mount('http://', http)
             s.mount('https://', https)
 
-        s.verify = self.builtin.convert_to_boolean(verify)
+        s.verify = verify
 
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
@@ -104,13 +102,14 @@ class RequestsKeywords(object):
 
         `auth` List of username & password for HTTP Basic Auth
 
-        `timeout` connection timeout
+        `timeout` Connection timeout
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
+        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+	         Defaults to False.
 
-        `debug` enable http verbosity option more information 
+        `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
@@ -138,15 +137,16 @@ class RequestsKeywords(object):
 
         `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
-        `timeout` connection timeout
+        `timeout` Connection timeout
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
-        
-        `debug` enable http verbosity option more information 
+        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+	         Defaults to False.
+
+        `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
+
         `max_retries` The maximum number of retries each connection should attempt.
         """
         if not HttpNtlmAuth:
@@ -179,15 +179,16 @@ class RequestsKeywords(object):
 
         `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
-        `timeout` connection timeout
+        `timeout` Connection timeout
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` set to True if Requests should verify the certificate
-        
-        `debug` enable http verbosity option more information 
+        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+	         Defaults to False.
+
+        `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
+
         `max_retries` The maximum number of retries each connection should attempt.
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
