@@ -254,7 +254,7 @@ class RequestsKeywords(object):
         
         `timeout` connection timeout
         """
-        print "Deprication Warning  Use Get Request in the future"
+        logger.warn("Deprecation Warning: Use Get Request in the future")
         session = self._cache.switch(alias)
 
         redir = True if allow_redirects is None else allow_redirects
@@ -318,7 +318,7 @@ class RequestsKeywords(object):
         
         `timeout` connection timeout
         """
-        print "Deprication Warning  Use Post Request in the future"
+        logger.warn("Deprecation Warning: Use Post Request in the future")
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
@@ -382,7 +382,7 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        print "Deprication Warning  Use Patch Request in the future"
+        logger.warn("Deprecation Warning: Use Patch Request in the future")
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
@@ -433,7 +433,7 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        print "Deprication Warning  Use Put Request in the future"
+        logger.warn("Deprecation Warning: Use Put Request in the future")
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
@@ -479,7 +479,7 @@ class RequestsKeywords(object):
         
         `timeout` connection timeout
         """
-        print "Deprication Warning  Use Delete Request in the future"
+        logger.warn("Deprecation Warning: Use Delete Request in the future")
         session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
@@ -518,7 +518,7 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
         """
-        print "Deprication Warning  Use Head Request in the future"
+        logger.warn("Deprecation Warning: Use Head Request in the future")
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
         response = self._head_request(session, uri, headers, redir, timeout)
@@ -554,7 +554,7 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
         """
-        print "Deprication Warning  Use Options Request in the future"
+        logger.warn("Deprecation Warning: Use Options Request in the future")
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
         response = self._options_request(session, uri, headers, redir, timeout)
