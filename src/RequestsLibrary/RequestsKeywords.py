@@ -71,8 +71,21 @@ class RequestsKeywords(object):
             s.mount('http://', http)
             s.mount('https://', https)
 
-        s.verify = verify
-
+        # verify can be a Boolean or a String
+        if isinstance(verify, bool):
+          s.verify = verify
+        elif isinstance(verify, unicode) or isinstance(verify, str):
+          if verify == 'True':
+            s.verify = True
+          elif verify == 'False':
+            s.verify = False
+          else:
+            # a CA bundle path
+            s.verify = verify
+        else:
+          # not a Boolean nor a String
+          s.verify = verify
+		
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies

@@ -35,6 +35,12 @@ Get HTTPS & Verify Cert
     ${resp}=  Get  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
 
+Get HTTPS & Verify Cert with a CA bundle
+    [Tags]  get
+    Create Session    httpbin    https://httpbin.org   verify=${CURDIR}${/}cacert.pem
+
+    ${resp}=  Get  httpbin  /get
+    Should Be Equal As Strings  ${resp.status_code}  200
 
 Get With Auth
     [Tags]  get
