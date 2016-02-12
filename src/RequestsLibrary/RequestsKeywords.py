@@ -383,6 +383,8 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
+        if isinstance(data, str):
+            data = data.decode('utf-8')
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, files, redir))
@@ -481,6 +483,8 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
+        if isinstance(data, str):
+            data = data.decode('utf-8')
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, files, redir))
@@ -573,6 +577,8 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
+        if isinstance(data, str):
+            data = data.decode('utf-8')
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
@@ -644,6 +650,8 @@ class RequestsKeywords(object):
         response = self._delete_request(
             session, uri, data, params, headers, redir, timeout)
 
+        if isinstance(data, str):
+            data = data.decode('utf-8')
         logger.info('Delete Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
@@ -951,7 +959,9 @@ class RequestsKeywords(object):
 
         utf8_data = {}
         for k, v in data.iteritems():
-            utf8_data[k] = unicode(v).encode('utf-8')
+            if isinstance(v, unicode):
+                v = v.encode('utf-8')
+            utf8_data[k] = v
         return urlencode(utf8_data)
 
     def _format_data_according_to_header(self, data, headers):
@@ -960,12 +970,15 @@ class RequestsKeywords(object):
                 data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
+        else:
+            data = self._utf8_urlencode(data)
 
         return data
 
+    @staticmethod
     def _is_json(data):
         try:
             json.loads(data)
-        except ValueError:
+        except (TypeError, ValueError):
             return False
         return True
