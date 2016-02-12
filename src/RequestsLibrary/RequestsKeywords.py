@@ -1,15 +1,13 @@
-import requests
+import httplib
 import json
 import sys
-import logging
-import httplib
-
 from urllib import urlencode
-from requests.auth import HTTPDigestAuth
 
+import requests
 import robot
-from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
+from robot.libraries.BuiltIn import BuiltIn
+
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -61,7 +59,7 @@ class RequestsKeywords(object):
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
-        s.proxies = proxies if proxies else  s.proxies
+        s.proxies = proxies if proxies else s.proxies
 
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=max_retries)
@@ -73,19 +71,19 @@ class RequestsKeywords(object):
 
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
-          s.verify = verify
-        elif isinstance(verify, unicode) or isinstance(verify, str):
-          if verify == 'True':
-            s.verify = True
-          elif verify == 'False':
-            s.verify = False
-          else:
-            # a CA bundle path
             s.verify = verify
+        elif isinstance(verify, unicode) or isinstance(verify, str):
+            if verify == 'True':
+                s.verify = True
+            elif verify == 'False':
+                s.verify = False
+            else:
+                # a CA bundle path
+                s.verify = verify
         else:
-          # not a Boolean nor a String
-          s.verify = verify
-		
+            # not a Boolean nor a String
+            s.verify = verify
+
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
@@ -120,7 +118,7 @@ class RequestsKeywords(object):
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-	         Defaults to False.
+                 Defaults to False.
 
         `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
@@ -137,8 +135,7 @@ class RequestsKeywords(object):
                                     timeout, max_retries, proxies, verify, debug)
 
     def create_ntlm_session(self, alias, url, auth, headers={}, cookies=None,
-                            timeout=None, proxies=None, verify=False
-                            , debug=0, max_retries=3):
+                            timeout=None, proxies=None, verify=False, debug=0, max_retries=3):
 
         """ Create Session: create a HTTP session to a server
 
@@ -155,7 +152,7 @@ class RequestsKeywords(object):
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-	         Defaults to False.
+                 Defaults to False.
 
         `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
@@ -172,8 +169,8 @@ class RequestsKeywords(object):
                                      auth[2])
             logger.info('Creating NTLM Session using : alias=%s, url=%s, \
                         headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, \
-                        proxies=%s, verify=%s, debug=%s ' \
-                        % (alias, url, headers, cookies, ntlm_auth, \
+                        proxies=%s, verify=%s, debug=%s '
+                        % (alias, url, headers, cookies, ntlm_auth,
                            timeout, proxies, verify, debug))
 
             return self._create_session(alias, url, headers, cookies,
@@ -197,7 +194,7 @@ class RequestsKeywords(object):
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-	         Defaults to False.
+                 Defaults to False.
 
         `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
@@ -242,7 +239,7 @@ class RequestsKeywords(object):
         `params` url parameters to append to the uri
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -256,7 +253,7 @@ class RequestsKeywords(object):
 
     def get(self, alias, uri, params=None, headers=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Get Request now   * * *
-        
+
         Send a GET request on the session object found using the
         given `alias`
 
@@ -265,7 +262,7 @@ class RequestsKeywords(object):
         `uri` to send the GET request to
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Get Request in the future")
@@ -307,14 +304,14 @@ class RequestsKeywords(object):
         response = self._body_request("post", session, uri, data, params, files, headers, redir, timeout)
 
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s ' \
+                    headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, files, redir))
 
         return response
 
     def post(self, alias, uri, data={}, headers=None, files=None, allow_redirects=None, timeout=None):
         """ * * *   Deprecated- See Post Request now   * * *
-        
+
         Send a POST request on the session object found using the
         given `alias`
 
@@ -329,7 +326,7 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to POST to the server
-        
+
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Post Request in the future")
@@ -361,7 +358,7 @@ class RequestsKeywords(object):
         `allow_redirects` requests redirection
 
         `params` url parameters to append to the uri
-        
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -371,7 +368,7 @@ class RequestsKeywords(object):
         response = self._body_request("patch", session, uri, data, params, files, headers, redir, timeout)
 
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s ' \
+                    headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, files, redir))
 
         return response
@@ -465,7 +462,7 @@ class RequestsKeywords(object):
         `uri` to send the DELETE request to
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -490,7 +487,7 @@ class RequestsKeywords(object):
         `uri` to send the DELETE request to
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Delete Request in the future")
@@ -685,17 +682,17 @@ class RequestsKeywords(object):
 
     def _json_pretty_print(self, content):
         """ Pretty print a JSON object
-        
+
         'content'  JSON object to pretty print
         """
         temp = json.loads(content)
         return json.dumps(temp, sort_keys=True, indent=4, separators=(',', ': '))
 
     def _utf8_urlencode(self, data):
-        if type(data) is unicode:
+        if isinstance(data, unicode):
             return data.encode('utf-8')
 
-        if not type(data) is dict:
+        if not isinstance(data, dict):
             return data
 
         utf8_data = {}
