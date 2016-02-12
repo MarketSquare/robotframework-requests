@@ -59,6 +59,13 @@ Get With Digest Auth
     Should Be Equal As Strings    ${resp.status_code}    200
     Should Be Equal As Strings    ${resp.json()['authenticated']}    True
 
+Post Request With URL Params
+	[Tags]  post
+	Create Session  httpbin  http://httpbin.org
+	${params}=   Create Dictionary   key   value     key2     value2
+	${resp}=  Post Request  httpbin  /post		params=${params}
+	Should Be Equal As Strings  ${resp.status_code}  200
+
 Post Request With No Data
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
@@ -80,6 +87,14 @@ Post Request With No Dictionary
     ${resp}=  Post  httpbin  /post  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Contain  ${resp.content}  ${data}
+
+
+Put Request With URL Params
+	[Tags]  put
+	Create Session  httpbin  http://httpbin.org
+	${params}=   Create Dictionary   key   value     key2     value2
+	${resp}=  Put Request  httpbin  /put  params=${params}
+	Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Put Request With No Dictionary
@@ -146,6 +161,14 @@ Options Request
     ${resp}=  Options  httpbin  /headers
     Should Be Equal As Strings  ${resp.status_code}  200
     Dictionary Should Contain Key  ${resp.headers}  allow
+
+
+Delete Request With URL Params
+	[Tags]  delete
+	Create Session  httpbin  http://httpbin.org
+	${params}=   Create Dictionary   key   value     key2     value2
+	${resp}=  Delete Request  httpbin  /delete		${params}
+	Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Delete Request With No Data

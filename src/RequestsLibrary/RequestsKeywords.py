@@ -85,7 +85,7 @@ class RequestsKeywords(object):
         else:
           # not a Boolean nor a String
           s.verify = verify
-		
+
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
@@ -242,7 +242,7 @@ class RequestsKeywords(object):
         `params` url parameters to append to the uri
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -255,8 +255,8 @@ class RequestsKeywords(object):
         return response
 
     def get(self, alias, uri, params=None, headers=None, allow_redirects=None, timeout=None):
-        """ * * *   Deprecated- See Get Request now   * * *
-        
+        """ **Deprecated- See Get Request now**
+
         Send a GET request on the session object found using the
         given `alias`
 
@@ -265,7 +265,7 @@ class RequestsKeywords(object):
         `uri` to send the GET request to
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Get Request in the future")
@@ -313,8 +313,8 @@ class RequestsKeywords(object):
         return response
 
     def post(self, alias, uri, data={}, headers=None, files=None, allow_redirects=None, timeout=None):
-        """ * * *   Deprecated- See Post Request now   * * *
-        
+        """ **Deprecated- See Post Request now**
+
         Send a POST request on the session object found using the
         given `alias`
 
@@ -329,7 +329,7 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
 
         `files` a dictionary of file names containing file data to POST to the server
-        
+
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Post Request in the future")
@@ -361,7 +361,7 @@ class RequestsKeywords(object):
         `allow_redirects` requests redirection
 
         `params` url parameters to append to the uri
-        
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -377,7 +377,7 @@ class RequestsKeywords(object):
         return response
 
     def patch(self, alias, uri, data={}, headers=None, files={}, allow_redirects=None, timeout=None):
-        """ * * *   Deprecated- See Patch Request now   * * *
+        """ **Deprecated- See Patch Request now**
 
         Send a PATCH request on the session object found using the
         given `alias`
@@ -434,7 +434,7 @@ class RequestsKeywords(object):
         return response
 
     def put(self, alias, uri, data=None, headers=None, allow_redirects=None, timeout=None):
-        """ * * *   Deprecated- See Put Request now   * * *
+        """ **Deprecated- See Put Request now**
 
         Send a PUT request on the session object found using the
         given `alias`
@@ -465,7 +465,7 @@ class RequestsKeywords(object):
         `uri` to send the DELETE request to
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
@@ -490,7 +490,7 @@ class RequestsKeywords(object):
         `uri` to send the DELETE request to
 
         `headers` a dictionary of headers to use with the request
-        
+
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Delete Request in the future")
@@ -521,7 +521,7 @@ class RequestsKeywords(object):
         return response
 
     def head(self, alias, uri, headers=None, allow_redirects=None, timeout=None):
-        """ * * *   Deprecated- See Head Request now   * * *
+        """ **Deprecated- See Head Request now**
 
         Send a HEAD request on the session object found using the
         given `alias`
@@ -558,7 +558,7 @@ class RequestsKeywords(object):
         return response
 
     def options(self, alias, uri, headers=None, allow_redirects=None, timeout=None):
-        """ * * *   Deprecated- See Options Request now   * * *
+        """ **Deprecated- See Options Request now**
         Send an OPTIONS request on the session object found using the
         given `alias`
 
@@ -685,7 +685,7 @@ class RequestsKeywords(object):
 
     def _json_pretty_print(self, content):
         """ Pretty print a JSON object
-        
+
         'content'  JSON object to pretty print
         """
         temp = json.loads(content)
@@ -704,14 +704,17 @@ class RequestsKeywords(object):
         return urlencode(utf8_data)
 
     def _format_data_according_to_header(self, data, headers):
-        if data is not None and headers is not None and 'Content-Type' in headers:
+        if data is not None and headers is not None and 'Content-Type' in headers and not _is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
                 data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
-            else:
-                data = data
-        else:
-            data = data
 
         return data
+
+    def _is_json(data):
+        try:
+            json_obj = json.loads(data)
+        except ValueError, e:
+            return False
+        return True
