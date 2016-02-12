@@ -127,10 +127,10 @@ class RequestsKeywords(object):
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
-        logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
-                    cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
-                    debug=%s ' % (alias, url, headers, cookies, auth, timeout,
-                                  proxies, verify, debug))
+        logger.info('Creating Session using : alias=%s, url=%s, headers=%s, '
+                    'cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, '
+                    'debug=%s'
+                    % (alias, url, headers, cookies, auth, timeout, proxies, verify, debug))
         return self._create_session(alias, url, headers, cookies, auth,
                                     timeout, max_retries, proxies, verify, debug)
 
@@ -167,9 +167,9 @@ class RequestsKeywords(object):
         else:
             ntlm_auth = HttpNtlmAuth('{}\\{}'.format(auth[0], auth[1]),
                                      auth[2])
-            logger.info('Creating NTLM Session using : alias=%s, url=%s, \
-                        headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, \
-                        proxies=%s, verify=%s, debug=%s '
+            logger.info('Creating NTLM Session using : alias=%s, url=%s, '
+                        'headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, '
+                        'proxies=%s, verify=%s, debug=%s'
                         % (alias, url, headers, cookies, ntlm_auth,
                            timeout, proxies, verify, debug))
 
@@ -303,8 +303,8 @@ class RequestsKeywords(object):
 
         response = self._body_request("post", session, uri, data, params, files, headers, redir, timeout)
 
-        logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s '
+        logger.info('Post Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, files=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, files, redir))
 
         return response
@@ -367,8 +367,8 @@ class RequestsKeywords(object):
 
         response = self._body_request("patch", session, uri, data, params, files, headers, redir, timeout)
 
-        logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s '
+        logger.info('Patch Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, files=%s, allow_redirects=%s'
                     % (alias, uri, data, headers, files, redir))
 
         return response
@@ -425,8 +425,9 @@ class RequestsKeywords(object):
 
         response = self._body_request("put", session, uri, data, params, files, headers, redir, timeout)
 
-        logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
+        logger.info('Put Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, allow_redirects=%s'
+                    % (alias, uri, data, headers, redir))
 
         return response
 
@@ -471,8 +472,9 @@ class RequestsKeywords(object):
 
         response = self._delete_request(session, uri, data, params, headers, redir, timeout)
 
-        logger.info('Delete Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
+        logger.info('Delete Request using : alias=%s, uri=%s, data=%s, '
+                    'headers=%s, allow_redirects=%s'
+                    % (alias, uri, data, headers, redir))
 
         return response
 
@@ -512,8 +514,9 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
         response = self._head_request(session, uri, headers, redir, timeout)
-        logger.info('Head Request using : alias=%s, uri=%s, headers=%s, \
-        allow_redirects=%s ' % (alias, uri, headers, redir))
+        logger.info('Head Request using : alias=%s, uri=%s, headers=%s, '
+                    'allow_redirects=%s'
+                    % (alias, uri, headers, redir))
 
         return response
 
@@ -549,7 +552,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
         response = self._options_request(session, uri, headers, redir, timeout)
-        logger.info('Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s '
+        logger.info('Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s'
                     % (alias, uri, headers, redir))
 
         return response
