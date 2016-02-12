@@ -16,6 +16,7 @@ License :: Public Domain
 Operating System :: OS Independent
 Programming Language :: Python
 Topic :: Software Development :: Testing
+Framework :: Robot Framework
 """[1:-1]
 
 setup(name         = 'robotframework-requests',
