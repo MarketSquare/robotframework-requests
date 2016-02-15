@@ -83,13 +83,7 @@ class RequestsKeywords(object):
         if isinstance(verify, bool):
             s.verify = verify
         elif isinstance(verify, unicode) or isinstance(verify, str):
-            if verify == 'True':
-                s.verify = True
-            elif verify == 'False':
-                s.verify = False
-            else:
-                # a CA bundle path
-                s.verify = verify
+            self.builtin.convert_to_boolean(verify)
         else:
             # not a Boolean nor a String
             s.verify = verify
