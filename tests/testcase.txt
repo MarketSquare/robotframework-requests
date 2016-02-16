@@ -21,7 +21,7 @@ Get Requests
 Get Requests with Url Parameters
     [Tags]  get
     Create Session  httpbin     http://httpbin.org
-    ${params}=   Create Dictionary   key   value     key2     value2
+    ${params}=   Create Dictionary   key=value     key2=value2
     ${resp}=     Get  httpbin  /get    params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
 
@@ -109,8 +109,8 @@ Put Request With No Dictionary
 Post Requests
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
-    ${data}=  Create Dictionary  name  bulkan  surname  evcimen
-    ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
+    ${data}=  Create Dictionary  name=bulkan  surname=evcimen
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post  httpbin  /post  data=${data}  headers=${headers}
     Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
     Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
@@ -119,10 +119,52 @@ Post Requests
 Post With Unicode Data
     [Tags]  post
     Create Session  httpbin  http://httpbin.org    debug=3
-    ${data}=  Create Dictionary  name  度假村
-    ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
+    ${data}=  Create Dictionary  name=度假村
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post  httpbin  /post  data=${data}  headers=${headers}
     Dictionary Should Contain Value  ${resp.json()['form']}  度假村
+
+
+Post Request With Unicode Data
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${data}=  Create Dictionary  name=度假村
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    Dictionary Should Contain Value  ${resp.json()['form']}  度假村
+
+
+Post Request With Binary Data in Dictionary
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
+    ${data}=  Create Dictionary  name=${file_data.strip()}
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+	Log		${resp.json()['form']}
+    Should Contain  ${resp.json()['form']['name']}  \u5ea6\u5047\u6751
+
+
+Post Request With Binary Data
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${data}=  Get Binary File  ${CURDIR}${/}data.json
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    Should Contain  ${resp.json()['form'].keys()[0]}  度假村
+
+
+Post With File
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org
+
+    ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
+    ${files}=  Create Dictionary  file=${file_data}
+    ${resp}=  Post  httpbin  /post  files=${files}
+
+    ${file}=  To Json  ${resp.json()['files']['file']}
+    Dictionary Should Contain Key  ${file}  one
+    Dictionary Should Contain Key  ${file}  two
 
 
 Post Request With File
@@ -130,8 +172,8 @@ Post Request With File
     Create Session  httpbin  http://httpbin.org
 
     ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
-    ${files}=  Create Dictionary  file  ${file_data}
-    ${resp}=  Post  httpbin  /post  files=${files}
+    ${files}=  Create Dictionary  file=${file_data}
+    ${resp}=  Post Request  httpbin  /post  files=${files}
 
     ${file}=  To Json  ${resp.json()['files']['file']}
     Dictionary Should Contain Key  ${file}  one
@@ -141,8 +183,8 @@ Post Request With File
 Put Requests
     [Tags]  put
     Create Session  httpbin  http://httpbin.org
-    ${data}=  Create Dictionary  name  bulkan  surname  evcimen
-    ${headers}=  Create Dictionary  Content-Type  application/x-www-form-urlencoded
+    ${data}=  Create Dictionary  name=bulkan  surname=evcimen
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Put  httpbin  /put  data=${data}  headers=${headers}
     Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
     Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
@@ -181,7 +223,7 @@ Delete Request With No Data
 Delete Request With Data
     [Tags]  delete
     Create Session  httpbin  http://httpbin.org    debug=3
-    ${data}=  Create Dictionary  name  bulkan  surname  evcimen
+    ${data}=  Create Dictionary  name=bulkan  surname=evcimen
     ${resp}=  Delete  httpbin  /delete  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     Log  ${resp.content}
@@ -191,8 +233,8 @@ Delete Request With Data
 Patch Requests
     [Tags]    patch
     Create Session    httpbin    http://httpbin.org
-    ${data}=    Create Dictionary    name    bulkan    surname    evcimen
-    ${headers}=    Create Dictionary    Content-Type    application/x-www-form-urlencoded
+    ${data}=    Create Dictionary    name=bulkan    surname=evcimen
+    ${headers}=    Create Dictionary    Content-Type=application/x-www-form-urlencoded
     ${resp}=    Patch    httpbin    /patch    data=${data}    headers=${headers}
     Dictionary Should Contain Value    ${resp.json()['form']}    bulkan
     Dictionary Should Contain Value    ${resp.json()['form']}    evcimen
