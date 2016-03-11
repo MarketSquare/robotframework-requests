@@ -137,6 +137,7 @@ class RequestsKeywords(object):
                     cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
                     debug=%s ' % (alias, url, headers, cookies, auth, timeout,
                                   proxies, verify, debug))
+
         return self._create_session(
             alias,
             url,
@@ -366,7 +367,7 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(data, headers)
+        data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -382,6 +383,7 @@ class RequestsKeywords(object):
 
         if isinstance(data, str):
             data = data.decode('utf-8')
+
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, files, redir))
@@ -466,7 +468,7 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(data, headers)
+        data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -560,7 +562,7 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(data, headers)
+        data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -961,7 +963,9 @@ class RequestsKeywords(object):
             utf8_data[k] = v
         return urlencode(utf8_data)
 
-    def _format_data_according_to_header(self, data, headers):
+    def _format_data_according_to_header(self, session, data, headers):
+        headers = self._merge_headers(session, headers)
+
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
                 data = json.dumps(data)
@@ -971,6 +975,17 @@ class RequestsKeywords(object):
             data = self._utf8_urlencode(data)
 
         return data
+
+    @staticmethod
+    def _merge_headers(session, headers):
+        if headers is None:
+            headers = {}
+        else:
+            headers.copy()
+
+        headers.update(session.headers)
+
+        return headers
 
     @staticmethod
     def _is_json(data):
