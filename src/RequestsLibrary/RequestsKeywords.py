@@ -981,7 +981,7 @@ class RequestsKeywords(object):
         if headers is None:
             headers = {}
         else:
-            headers.copy()
+            headers = headers.copy()
 
         headers.update(session.headers)
 
