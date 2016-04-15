@@ -2,12 +2,12 @@ import httplib
 import json
 import sys
 from urllib import urlencode
+from requests.packages.urllib3.util import Retry
 
 import requests
 import robot
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
-
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -42,6 +42,7 @@ class RequestsKeywords(object):
             auth,
             timeout,
             max_retries,
+            backoff_factor,
             proxies,
             verify,
             debug):
@@ -56,6 +57,10 @@ class RequestsKeywords(object):
         `auth` List of username & password for HTTP Basic Auth
 
         `timeout` Connection timeout
+        
+        `max_retries` The maximum number of retries each connection should attempt.
+        
+        `backoff_factor` The pause between for each retry
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
@@ -71,11 +76,11 @@ class RequestsKeywords(object):
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else s.proxies
 
-        max_retries = self.builtin.convert_to_integer(max_retries)
+        max_retries = self.builtin.convert_to_integer(max_retries)        
 
         if max_retries > 0:
-            http = requests.adapters.HTTPAdapter(max_retries=max_retries)
-            https = requests.adapters.HTTPAdapter(max_retries=max_retries)
+            http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
+            https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
 
             # Replace the session's original adapters
             s.mount('http://', http)
@@ -108,7 +113,7 @@ class RequestsKeywords(object):
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0, max_retries=3):
+                       verify=False, debug=0, max_retries=3, backoff_factor=0.10):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -130,6 +135,8 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
+        
+        `backoff_factor` The pause between for each retry
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
@@ -146,6 +153,7 @@ class RequestsKeywords(object):
             auth,
             timeout,
             max_retries,
+            backoff_factor,
             proxies,
             verify,
             debug)
@@ -161,7 +169,8 @@ class RequestsKeywords(object):
             proxies=None,
             verify=False,
             debug=0,
-            max_retries=3):
+            max_retries=3,
+            backoff_factor=0.10):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -183,6 +192,8 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
+        
+        `backoff_factor` The pause between for each retry
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -206,13 +217,14 @@ class RequestsKeywords(object):
                 ntlm_auth,
                 timeout,
                 max_retries,
+                backoff_factor,
                 proxies,
                 verify,
                 debug)
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
                               timeout=None, proxies=None, verify=False,
-                              debug=0, max_retries=3):
+                              debug=0, max_retries=3,backoff_factor=0.10):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -234,6 +246,8 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
+        
+        `backoff_factor` The pause between for each retry
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
@@ -245,6 +259,7 @@ class RequestsKeywords(object):
             digest_auth,
             timeout,
             max_retries,
+            backoff_factor,
             proxies,
             verify,
             debug)
