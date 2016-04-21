@@ -2,9 +2,10 @@ import httplib
 import json
 import sys
 from urllib import urlencode
-from requests.packages.urllib3.util import Retry
 
 import requests
+import logging
+from requests.packages.urllib3.util import Retry
 import robot
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
@@ -45,7 +46,8 @@ class RequestsKeywords(object):
             backoff_factor,
             proxies,
             verify,
-            debug):
+            debug,
+            disable_warnings):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -68,6 +70,8 @@ class RequestsKeywords(object):
 
         `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+        
+        `disable_warnings` Disable requests warning useful when you have large number of testcases                
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
@@ -81,7 +85,17 @@ class RequestsKeywords(object):
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
             https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-
+            
+            # Disable requests warnings, useful when you have large number of testcase
+            # you will observe drastical changes in Robot log.html and output.xml files size 
+            if disable_warnings:
+                logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
+                logging.getLogger().setLevel(logging.ERROR)
+                requests_log = logging.getLogger("requests")
+                requests_log.setLevel(logging.ERROR)
+                requests_log.propagate = True
+            
+            
             # Replace the session's original adapters
             s.mount('http://', http)
             s.mount('https://', https)
@@ -113,7 +127,7 @@ class RequestsKeywords(object):
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0, max_retries=3, backoff_factor=0.10):
+                       verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -137,6 +151,8 @@ class RequestsKeywords(object):
         `max_retries` The maximum number of retries each connection should attempt.
         
         `backoff_factor` The pause between for each retry
+        
+        `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
@@ -156,7 +172,8 @@ class RequestsKeywords(object):
             backoff_factor,
             proxies,
             verify,
-            debug)
+            debug,
+            disable_warnings)
 
     def create_ntlm_session(
             self,
@@ -170,7 +187,8 @@ class RequestsKeywords(object):
             verify=False,
             debug=0,
             max_retries=3,
-            backoff_factor=0.10):
+            backoff_factor=0.10,
+            disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -194,6 +212,8 @@ class RequestsKeywords(object):
         `max_retries` The maximum number of retries each connection should attempt.
         
         `backoff_factor` The pause between for each retry
+        
+        `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -220,11 +240,12 @@ class RequestsKeywords(object):
                 backoff_factor,
                 proxies,
                 verify,
-                debug)
+                debug,
+                disable_warnings)
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
                               timeout=None, proxies=None, verify=False,
-                              debug=0, max_retries=3,backoff_factor=0.10):
+                              debug=0, max_retries=3,backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
         `url` Base url of the server
@@ -248,6 +269,8 @@ class RequestsKeywords(object):
         `max_retries` The maximum number of retries each connection should attempt.
         
         `backoff_factor` The pause between for each retry
+        
+        `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
@@ -262,7 +285,8 @@ class RequestsKeywords(object):
             backoff_factor,
             proxies,
             verify,
-            debug)
+            debug,
+            disable_warnings)
 
     def delete_all_sessions(self):
         """ Removes all the session objects """
