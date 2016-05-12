@@ -80,7 +80,7 @@ class RequestsKeywords(object):
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else s.proxies
 
-        max_retries = self.builtin.convert_to_integer(max_retries)        
+        max_retries = int(max_retries)        
 
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
