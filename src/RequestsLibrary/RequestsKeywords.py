@@ -310,7 +310,7 @@ class RequestsKeywords(object):
 
         'pretty_print' If defined, will output JSON is pretty print format
         """
-        if not isinstance(content, str):
+        if hasattr(content, 'decode'):
             content = content.decode('utf-8')
         if pretty_print:
             json_ = self._json_pretty_print(content)
