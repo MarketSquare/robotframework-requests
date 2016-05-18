@@ -14,4 +14,6 @@ install:
   - "pip install -r requirements.txt"
 
 script:
-  - pybot -P src -L DEBUG tests
+  - touch debug.log
+  - pybot -P src -L DEBUG -b debug.log tests
+  - cat debug.log
