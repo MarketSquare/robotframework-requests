@@ -1,7 +1,13 @@
-import httplib
+try:
+    import http.client as httplib
+except ImportError:
+    import httplib
 import json
 import sys
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 import requests
 import logging
@@ -59,9 +65,9 @@ class RequestsKeywords(object):
         `auth` List of username & password for HTTP Basic Auth
 
         `timeout` Connection timeout
-        
+
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
@@ -70,32 +76,32 @@ class RequestsKeywords(object):
 
         `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
-        `disable_warnings` Disable requests warning useful when you have large number of testcases                
-        """
 
+        `disable_warnings` Disable requests warning useful when you have large number of testcases
+        """
+        debug = int(debug)
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
         s.proxies = proxies if proxies else s.proxies
 
-        max_retries = self.builtin.convert_to_integer(max_retries)        
+        max_retries = self.builtin.convert_to_integer(max_retries)
 
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
             https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-            
+
             # Disable requests warnings, useful when you have large number of testcase
-            # you will observe drastical changes in Robot log.html and output.xml files size 
+            # you will observe drastical changes in Robot log.html and output.xml files size
             if disable_warnings:
                 logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
                 logging.getLogger().setLevel(logging.ERROR)
                 requests_log = logging.getLogger("requests")
                 requests_log.setLevel(logging.ERROR)
                 requests_log.propagate = True
-            
-            
+
+
             # Replace the session's original adapters
             s.mount('http://', http)
             s.mount('https://', https)
@@ -103,7 +109,7 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, unicode) or isinstance(verify, str):
+        elif isinstance(verify, str):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 verify = self.builtin.convert_to_boolean(verify)
         else:
@@ -149,12 +155,13 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
-        
+
         `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
+        debug = int(debug)
 
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
                     cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
@@ -210,11 +217,12 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
-        
+
         `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
+        debug = int(debug)
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
         elif len(auth) != 3:
@@ -267,12 +275,13 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
-        
+
         `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
+        debug = int(debug)
 
         return self._create_session(
             alias,
@@ -301,6 +310,8 @@ class RequestsKeywords(object):
 
         'pretty_print' If defined, will output JSON is pretty print format
         """
+        if not isinstance(content, str):
+            content = content.decode('utf-8')
         if pretty_print:
             json_ = self._json_pretty_print(content)
         else:
@@ -420,7 +431,8 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        if isinstance(data, str):
+        logger.debug(type(data))
+        if hasattr(data, 'decode'):
             data = data.decode('utf-8')
 
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
@@ -459,7 +471,7 @@ class RequestsKeywords(object):
         """
         logger.warn("Deprecation Warning: Use Post Request in the future")
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+#        data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -521,7 +533,7 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        if isinstance(data, str):
+        if hasattr(data, 'decode'):
             data = data.decode('utf-8')
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s '
@@ -559,7 +571,7 @@ class RequestsKeywords(object):
         """
         logger.warn("Deprecation Warning: Use Patch Request in the future")
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+#        data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -615,7 +627,7 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        if isinstance(data, str):
+        if hasattr(data, 'decode'):
             data = data.decode('utf-8')
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
@@ -645,7 +657,7 @@ class RequestsKeywords(object):
         """
         logger.warn("Deprecation Warning: Use Put Request in the future")
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+#        data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -682,13 +694,13 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+#        data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
             session, uri, data, params, headers, redir, timeout)
 
-        if isinstance(data, str):
+        if hasattr(data, 'decode'):
             data = data.decode('utf-8')
         logger.info('Delete Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
@@ -718,7 +730,7 @@ class RequestsKeywords(object):
         """
         logger.warn("Deprecation Warning: Use Delete Request in the future")
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+#        data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
@@ -874,7 +886,7 @@ class RequestsKeywords(object):
 
         # Store the last session object (@Kosuri Why?)
         session.last_resp = resp
-        self.builtin.log(method_name + " response: " + resp.content, 'DEBUG')
+        self.builtin.log(method_name + " response: " + str(resp.content), 'DEBUG')
 
         return resp
 
@@ -965,9 +977,9 @@ class RequestsKeywords(object):
             debug_info = ''.join(
                 self.http_log.content).replace(
                 '\\r',
-                '').decode('string_escape').replace(
-                '\'',
                 '')
+            #debug_info = debug_info.decode('string_escape')
+            debug_info = debug_info.replace("'", '')
 
             # Remove empty lines
             debug_info = "\n".join(
@@ -989,6 +1001,7 @@ class RequestsKeywords(object):
                 ': '))
 
     def _utf8_urlencode(self, data):
+        return data
         if isinstance(data, unicode):
             return data.encode('utf-8')
 
@@ -996,7 +1009,7 @@ class RequestsKeywords(object):
             return data
 
         utf8_data = {}
-        for k, v in data.iteritems():
+        for k, v in data.items():
             if isinstance(v, unicode):
                 v = v.encode('utf-8')
             utf8_data[k] = v

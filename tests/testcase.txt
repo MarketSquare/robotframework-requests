@@ -69,7 +69,7 @@ Post Request With URL Params
 Post Request With No Data
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
-    ${resp}=  Post Request  httpbin  /post  
+    ${resp}=  Post Request  httpbin  /post
     Should Be Equal As Strings  ${resp.status_code}  200
 
 
@@ -86,7 +86,7 @@ Post Request With No Dictionary
     Set Test Variable  ${data}  some content
     ${resp}=  Post Request  httpbin  /post  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    Should Contain  ${resp.content}  ${data}
+    Should Contain  ${resp.text}  ${data}
 
 
 Put Request With URL Params
@@ -103,7 +103,7 @@ Put Request With No Dictionary
     Set Test Variable  ${data}  some content
     ${resp}=  Put Request  httpbin  /put  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    Should Contain  ${resp.content}  ${data}
+    Should Contain  ${resp.text}  ${data}
 
 
 Post Requests
@@ -151,7 +151,7 @@ Post Request With Binary Data
     ${data}=  Get Binary File  ${CURDIR}${/}data.json
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
-    Should Contain  ${resp.json()['form'].keys()[0]}  度假村
+    Should Contain  ${resp.json()['form'].popitem()[0]}  度假村
 
 
 Post With File
@@ -351,4 +351,3 @@ Set Pretty Print to non-Boolean value
     Should Contain    ${output}    "key_one": "true"
     Should Contain    ${output}    "key_two": "this is a test string"
     Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
-	
