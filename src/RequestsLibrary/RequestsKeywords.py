@@ -111,7 +111,7 @@ class RequestsKeywords(object):
             s.verify = verify
         elif isinstance(verify, str):
             if verify.lower() == 'true' or verify.lower() == 'false':
-                verify = self.builtin.convert_to_boolean(verify)
+                s.verify = self.builtin.convert_to_boolean(verify)
         else:
             # not a Boolean nor a String
             s.verify = verify
