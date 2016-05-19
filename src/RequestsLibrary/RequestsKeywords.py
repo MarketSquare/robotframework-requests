@@ -22,6 +22,9 @@ except ImportError:
     pass
 
 
+is_python3 = sys.version_info.major == 3
+is_python2 = sys.version_info.major == 2
+
 class WritableObject:
     ''' HTTP stream handler '''
 
@@ -109,7 +112,7 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, str):
+        elif isinstance(verify, str) or (is_python2 and isinstance(verify, unicode)):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
         else:
@@ -431,7 +434,6 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        logger.debug(type(data))
         if hasattr(data, 'decode'):
             data = data.decode('utf-8')
 
@@ -1001,8 +1003,7 @@ class RequestsKeywords(object):
                 ': '))
 
     def _utf8_urlencode(self, data):
-        return data
-        if isinstance(data, unicode):
+        if hasattr(data, 'encode'):
             return data.encode('utf-8')
 
         if not isinstance(data, dict):
@@ -1010,7 +1011,7 @@ class RequestsKeywords(object):
 
         utf8_data = {}
         for k, v in data.items():
-            if isinstance(v, unicode):
+            if hasattr(v, 'encode'):
                 v = v.encode('utf-8')
             utf8_data[k] = v
         return urlencode(utf8_data)
