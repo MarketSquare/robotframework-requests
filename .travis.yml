@@ -3,9 +3,17 @@ language: python
 python:
   - "2.6"
   - "2.7"
+  - "3.4"
+  - "3.5"
 
-install: 
-  - "pip install -r requirements.txt --use-mirrors"
+env:
+  - ROBOT_INTERNAL_TRACES=yes
 
-script: 
-  - pybot -P src tests
+
+install:
+  - "pip install -r requirements.txt"
+
+script:
+  - touch debug.log
+  - pybot -P src -L DEBUG -b debug.log tests
+  - cat debug.log
