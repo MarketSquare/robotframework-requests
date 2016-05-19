@@ -22,8 +22,8 @@ except ImportError:
     pass
 
 
-is_python3 = sys.version_info.major == 3
-is_python2 = sys.version_info.major == 2
+is_python3 = sys.version_info[0] == 3
+is_python2 = sys.version_info[0] == 2
 
 class WritableObject:
     ''' HTTP stream handler '''
