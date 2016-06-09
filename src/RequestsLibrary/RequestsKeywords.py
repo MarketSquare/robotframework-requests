@@ -79,7 +79,7 @@ class RequestsKeywords(object):
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
-        s.trust_env = trust_env if trust_env else s.trust_env
+        s.trust_env = trust_env if trust_env is not None else s.trust_env
         s.proxies = proxies if proxies else s.proxies
 
         try:
@@ -131,7 +131,7 @@ class RequestsKeywords(object):
         return session
 
     def create_session(self, alias, url, headers={}, cookies=None,
-                       auth=None, timeout=None, trust_env=True, proxies=None,
+                       auth=None, timeout=None, trust_env=None, proxies=None,
                        verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
@@ -189,6 +189,7 @@ class RequestsKeywords(object):
             headers={},
             cookies=None,
             timeout=None,
+            trust_env=None,
             proxies=None,
             verify=False,
             debug=0,
@@ -244,13 +245,14 @@ class RequestsKeywords(object):
                 timeout,
                 max_retries,
                 backoff_factor,
+                trust_env,
                 proxies,
                 verify,
                 debug,
                 disable_warnings)
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
-                              timeout=None, proxies=None, verify=False,
+                              timeout=None, trust_env=None, proxies=None, verify=False,
                               debug=0, max_retries=3,backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
@@ -289,6 +291,7 @@ class RequestsKeywords(object):
             timeout,
             max_retries,
             backoff_factor,
+            trust_env,
             proxies,
             verify,
             debug,
