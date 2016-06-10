@@ -3,7 +3,10 @@
 from distutils.core import setup
 
 from os.path import abspath, dirname, join
-execfile(join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py'))
+filename = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
+exec(open(filename).read())
+
+import setuptools
 
 DESCRIPTION = """
 Robot Framework keyword library wrapper around the HTTP client library requests.
@@ -34,7 +37,8 @@ setup(name         = 'robotframework-requests',
       package_data = {'RequestsLibrary': ['tests/*.txt']},
       requires=[
           'robotframework',
-          'requests'
+          'requests',
+          'six',
       ],
 )
 
