@@ -59,9 +59,9 @@ class RequestsKeywords(object):
         `auth` List of username & password for HTTP Basic Auth
 
         `timeout` Connection timeout
-        
+
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
@@ -70,25 +70,25 @@ class RequestsKeywords(object):
 
         `debug` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
-        `disable_warnings` Disable requests warning useful when you have large number of testcases                
+
+        `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
-        s = session = requests.Session()
-        s.headers.update(headers)
-        s.auth = auth if auth else s.auth
-        s.proxies = proxies if proxies else s.proxies
+        self.s = self.session = requests.Session()
+        self.s.headers.update(headers)
+        self.s.auth = auth if auth else self.s.auth
+        self.s.proxies = proxies if proxies else self.s.proxies
 
         try:
             max_retries = int(max_retries)
         except ValueError as err:
-            raise ValueError("Error converting max_retries parameter: %s"   % err)        
+            raise ValueError("Error converting max_retries parameter: %s"   % err)
 
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
             https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-            
+
             # Disable requests warnings, useful when you have large number of testcase
             # you will observe drastical changes in Robot log.html and output.xml files size 
             if disable_warnings:
@@ -97,36 +97,36 @@ class RequestsKeywords(object):
                 requests_log = logging.getLogger("requests")
                 requests_log.setLevel(logging.ERROR)
                 requests_log.propagate = True
-            
-            
+
+
             # Replace the session's original adapters
-            s.mount('http://', http)
-            s.mount('https://', https)
+            self.s.mount('http://', http)
+            self.s.mount('https://', https)
 
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
-            s.verify = verify
+            self.s.verify = verify
         elif isinstance(verify, unicode) or isinstance(verify, str):
             if verify.lower() == 'true' or verify.lower() == 'false':
-                s.verify = self.builtin.convert_to_boolean(verify)
+                self.s.verify = self.builtin.convert_to_boolean(verify)
         else:
             # not a Boolean nor a String
-            s.verify = verify
+            self.s.verify = verify
 
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
         self.verify = verify
 
-        s.url = url
+        self.s.url = url
 
         # Enable http verbosity
         if debug >= 1:
             self.debug = int(debug)
             httplib.HTTPConnection.debuglevel = self.debug
 
-        self._cache.register(session, alias=alias)
-        return session
+        self._cache.register(self.session, alias=alias)
+        return self.session
 
     def create_session(self, alias, url, headers={}, cookies=None,
                        auth=None, timeout=None, proxies=None,
@@ -152,9 +152,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
-        
+
         `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
@@ -213,9 +213,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
-        
+
         `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         if not HttpNtlmAuth:
@@ -270,9 +270,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         `max_retries` The maximum number of retries each connection should attempt.
-        
+
         `backoff_factor` The pause between for each retry
-        
+
         `disable_warnings` Disable requests warning useful when you have large number of testcases
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
@@ -334,11 +334,11 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout)
+            self.session, uri, params, headers, redir, timeout)
 
         logger.info(
             'Get Request using : alias=%s, uri=%s, headers=%s ' %
@@ -368,12 +368,12 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Get Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
 
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout)
+            self.session, uri, params, headers, redir, timeout)
 
         return response
 
@@ -408,13 +408,13 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        self.session = self._cache.switch(alias)
+        data = self._format_data_according_to_header(self.session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
             "post",
-            session,
+            self.session,
             uri,
             data,
             params,
@@ -461,13 +461,13 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Post Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
             "post",
-            session,
+            self.session,
             uri,
             data,
             None,
@@ -509,13 +509,13 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        self.session = self._cache.switch(alias)
+        data = self._format_data_according_to_header(self.session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
             "patch",
-            session,
+            self.session,
             uri,
             data,
             params,
@@ -561,13 +561,13 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Patch Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
             "patch",
-            session,
+            self.session,
             uri,
             data,
             None,
@@ -603,13 +603,13 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        self.session = self._cache.switch(alias)
+        data = self._format_data_according_to_header(self.session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
             "put",
-            session,
+            self.session,
             uri,
             data,
             params,
@@ -647,13 +647,13 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Put Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
             "put",
-            session,
+            self.session,
             uri,
             data,
             None,
@@ -684,12 +684,12 @@ class RequestsKeywords(object):
 
         `timeout` connection timeout
         """
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
-            session, uri, data, params, headers, redir, timeout)
+            self.session, uri, data, params, headers, redir, timeout)
 
         if isinstance(data, str):
             data = data.decode('utf-8')
@@ -720,12 +720,12 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         logger.warn("Deprecation Warning: Use Delete Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         data = self._utf8_urlencode(data)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
-            session, uri, data, None, headers, redir, timeout)
+            self.session, uri, data, None, headers, redir, timeout)
 
         return response
 
@@ -745,9 +745,9 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
         """
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
-        response = self._head_request(session, uri, headers, redir, timeout)
+        response = self._head_request(self.session, uri, headers, redir, timeout)
         logger.info('Head Request using : alias=%s, uri=%s, headers=%s, \
         allow_redirects=%s ' % (alias, uri, headers, redir))
 
@@ -772,9 +772,9 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
         """
         logger.warn("Deprecation Warning: Use Head Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
-        response = self._head_request(session, uri, headers, redir, timeout)
+        response = self._head_request(self.session, uri, headers, redir, timeout)
 
         return response
 
@@ -794,9 +794,9 @@ class RequestsKeywords(object):
 
         `headers` a dictionary of headers to use with the request
         """
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._options_request(session, uri, headers, redir, timeout)
+        response = self._options_request(self.session, uri, headers, redir, timeout)
         logger.info(
             'Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s ' %
             (alias, uri, headers, redir))
@@ -821,9 +821,9 @@ class RequestsKeywords(object):
         `headers` a dictionary of headers to use with the request
         """
         logger.warn("Deprecation Warning: Use Options Request in the future")
-        session = self._cache.switch(alias)
+        self.session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._options_request(session, uri, headers, redir, timeout)
+        response = self._options_request(self.session, uri, headers, redir, timeout)
 
         return response
 
@@ -845,8 +845,8 @@ class RequestsKeywords(object):
                            cookies=self.cookies)
 
         self._print_debug()
-        # Store the last session object (@Kosuri Why?)
-        session.last_resp = resp
+        # Store the last session object
+        self.session.last_resp = resp
 
         return resp
 
@@ -875,8 +875,8 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
-        session.last_resp = resp
+        # Store the last session object
+        self.session.last_resp = resp
         self.builtin.log(method_name + " response: " + resp.content, 'DEBUG')
 
         return resp
@@ -902,8 +902,8 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
-        session.last_resp = resp
+        # Store the last session object
+        self.session.last_resp = resp
 
         return resp
 
@@ -918,8 +918,8 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
-        session.last_resp = resp
+        # Store the last session object 
+        self.session.last_resp = resp
 
         return resp
 
@@ -932,7 +932,7 @@ class RequestsKeywords(object):
             timeout):
         self._capture_output()
 
-        resp = session.options(self._get_url(session, uri),
+        resp = self.session.options(self._get_url(session, uri),
                                headers=headers,
                                cookies=self.cookies,
                                allow_redirects=allow_redirects,
@@ -941,17 +941,17 @@ class RequestsKeywords(object):
         self._print_debug()
 
         # Store the last session object (@Kosuri Why?)
-        session.last_resp = resp
+        self.session.last_resp = resp
 
         return resp
 
     def _get_url(self, session, uri):
         ''' Helper method to get the full url
         '''
-        url = session.url
+        url = self.session.url
         if uri:
             slash = '' if uri.startswith('/') else '/'
-            url = "%s%s%s" % (session.url, slash, uri)
+            url = "%s%s%s" % (self.session.url, slash, uri)
         return url
 
     def _get_timeout(self, timeout):

@@ -28,9 +28,16 @@ Get Requests with Url Parameters
     ${jsondata}=  To Json  ${resp.content}
     Should be Equal     ${jsondata['args']}     ${params}
 
-Get HTTPS & Verify Cert
+Get HTTPS & Verify Cert True
     [Tags]  get
     Create Session    httpbin    https://httpbin.org   verify=True
+
+    ${resp}=  Get Request  httpbin  /get
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Get HTTPS & Verify Cert False
+    [Tags]  get
+    Create Session    httpbin    https://httpbin.org   verify=False
 
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
