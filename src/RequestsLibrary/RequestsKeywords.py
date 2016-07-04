@@ -42,6 +42,7 @@ class RequestsKeywords(object):
             cookies,
             auth,
             timeout,
+            trust_env,
             max_retries,
             backoff_factor,
             proxies,
@@ -78,6 +79,7 @@ class RequestsKeywords(object):
         self.s = self.session = requests.Session()
         self.s.headers.update(headers)
         self.s.auth = auth if auth else self.s.auth
+        self.s.trust_env = trust_env if trust_env is not None else self.s.trust_env
         self.s.proxies = proxies if proxies else self.s.proxies
 
         try:
@@ -129,7 +131,7 @@ class RequestsKeywords(object):
         return self.session
 
     def create_session(self, alias, url, headers={}, cookies=None,
-                       auth=None, timeout=None, proxies=None,
+                       auth=None, timeout=None, trust_env=None, proxies=None,
                        verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
@@ -171,6 +173,7 @@ class RequestsKeywords(object):
             cookies,
             auth,
             timeout,
+            trust_env,
             max_retries,
             backoff_factor,
             proxies,
@@ -186,6 +189,7 @@ class RequestsKeywords(object):
             headers={},
             cookies=None,
             timeout=None,
+            trust_env=None,
             proxies=None,
             verify=False,
             debug=0,
@@ -239,6 +243,7 @@ class RequestsKeywords(object):
                 cookies,
                 ntlm_auth,
                 timeout,
+                trust_env,
                 max_retries,
                 backoff_factor,
                 proxies,
@@ -247,7 +252,7 @@ class RequestsKeywords(object):
                 disable_warnings)
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
-                              timeout=None, proxies=None, verify=False,
+                              timeout=None, trust_env=None, proxies=None, verify=False,
                               debug=0, max_retries=3,backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
@@ -284,6 +289,7 @@ class RequestsKeywords(object):
             cookies,
             digest_auth,
             timeout,
+            trust_env,
             max_retries,
             backoff_factor,
             proxies,
