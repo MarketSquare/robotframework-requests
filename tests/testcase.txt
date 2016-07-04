@@ -66,12 +66,20 @@ Get With Digest Auth
     Should Be Equal As Strings    ${resp.status_code}    200
     Should Be Equal As Strings    ${resp.json()['authenticated']}    True
 
+Get With Disable Or Bypass Proxy
+    [Tags]    get
+    [Timeout]    1 minute    Get With Disable Or Bypass Proxy Testcase didn't finish in 1 minute
+    
+    Create Session    gitscm   http://git-scm.com    trust_env=${False}
+    ${resp}=    Get Request    gitscm    /docs/git-config
+    Should Be Equal As Strings    ${resp.status_code}    200
+
 Post Request With URL Params
-	[Tags]  post
-	Create Session  httpbin  http://httpbin.org
-	&{params}=   Create Dictionary   key=value     key2=value2
-	${resp}=  Post Request  httpbin  /post		params=${params}
-	Should Be Equal As Strings  ${resp.status_code}  200
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org
+    &{params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=  Post Request  httpbin  /post		params=${params}
+    Should Be Equal As Strings  ${resp.status_code}  200
 
 Post Request With No Data
     [Tags]  post
@@ -97,11 +105,11 @@ Post Request With No Dictionary
 
 
 Put Request With URL Params
-	[Tags]  put
-	Create Session  httpbin  http://httpbin.org
-	&{params}=   Create Dictionary   key=value     key2=value2
-	${resp}=  Put Request  httpbin  /put  params=${params}
-	Should Be Equal As Strings  ${resp.status_code}  200
+    [Tags]  put
+    Create Session  httpbin  http://httpbin.org
+    &{params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=  Put Request  httpbin  /put  params=${params}
+    Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Put Request With No Dictionary
@@ -148,7 +156,7 @@ Post Request With Binary Data in Dictionary
     &{data}=  Create Dictionary  name=${file_data.strip()}
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
-	Log		${resp.json()['form']}
+    Log     ${resp.json()['form']}
     Should Contain  ${resp.json()['form']['name']}  \u5ea6\u5047\u6751
 
 
@@ -213,11 +221,11 @@ Options Request
 
 
 Delete Request With URL Params
-	[Tags]  delete
-	Create Session  httpbin  http://httpbin.org
-	&{params}=   Create Dictionary   key=value     key2=value2
-	${resp}=  Delete Request  httpbin  /delete		${params}
-	Should Be Equal As Strings  ${resp.status_code}  200
+    [Tags]  delete
+    Create Session  httpbin  http://httpbin.org
+    &{params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=  Delete Request  httpbin  /delete     ${params}
+    Should Be Equal As Strings  ${resp.status_code}  200
 
 
 Delete Request With No Data
@@ -358,4 +366,4 @@ Set Pretty Print to non-Boolean value
     Should Contain    ${output}    "key_one": "true"
     Should Contain    ${output}    "key_two": "this is a test string"
     Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
-	
+

@@ -61,6 +61,8 @@ class RequestsKeywords(object):
 
         `timeout` Connection timeout
 
+        `trust_env` Trust environment settings for proxy configuration, default authentication and similar.
+
         `max_retries` The maximum number of retries each connection should attempt.
 
         `backoff_factor` The pause between for each retry
@@ -145,6 +147,8 @@ class RequestsKeywords(object):
 
         `timeout` Connection timeout
 
+        `trust_env` Trust environment settings for proxy configuration, default authentication and similar.
+
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
@@ -162,8 +166,8 @@ class RequestsKeywords(object):
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
-                    cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
-                    debug=%s ' % (alias, url, headers, cookies, auth, timeout,
+                    cookies=%s, auth=%s, timeout=%s, trust_env=%s, proxies=%s, verify=%s, \
+                    debug=%s ' % (alias, url, headers, cookies, auth, timeout, trust_env,
                                   proxies, verify, debug))
 
         return self._create_session(
@@ -208,6 +212,8 @@ class RequestsKeywords(object):
 
         `timeout` Connection timeout
 
+        `trust_env` Trust environment settings for proxy configuration, default authentication and similar.
+
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
@@ -232,9 +238,9 @@ class RequestsKeywords(object):
                                      auth[2])
             logger.info('Creating NTLM Session using : alias=%s, url=%s, \
                         headers=%s, cookies=%s, ntlm_auth=%s, timeout=%s, \
-                        proxies=%s, verify=%s, debug=%s '
+                        trust_env=%s, proxies=%s, verify=%s, debug=%s '
                         % (alias, url, headers, cookies, ntlm_auth,
-                           timeout, proxies, verify, debug))
+                           timeout, trust_env, proxies, verify, debug))
 
             return self._create_session(
                 alias,
@@ -265,6 +271,8 @@ class RequestsKeywords(object):
         `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
         `timeout` Connection timeout
+
+        `trust_env` Trust environment settings for proxy configuration, default authentication and similar.
 
         `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
