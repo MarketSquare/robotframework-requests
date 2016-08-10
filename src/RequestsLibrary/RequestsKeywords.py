@@ -685,7 +685,7 @@ class RequestsKeywords(object):
         `timeout` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
+        data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
