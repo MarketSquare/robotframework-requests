@@ -423,12 +423,9 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        if isinstance(data, str):
-            data = data.decode('utf-8')
-
-        logger.info('Post Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s '
-                    % (alias, uri, data, headers, files, redir))
+        dataStr = self._format_data_to_log_string_according_to_header(data, headers)
+        logger.info('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s '
+                    % (alias, uri, dataStr, headers, files, redir))
 
         return response
 
@@ -1017,6 +1014,17 @@ class RequestsKeywords(object):
             data = self._utf8_urlencode(data)
 
         return data
+
+    def _format_data_to_log_string_according_to_header(self, data, headers):
+        dataStr = "<empty>"
+        if data is not None and headers is not None and 'Content-Type' in headers:
+            if (headers['Content-Type'].find("application/json") != -1) or \
+                    (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
+                dataStr = data
+            else:
+                dataStr = "<" + headers['Content-Type'] + ">"
+
+        return dataStr
 
     @staticmethod
     def _merge_headers(session, headers):
