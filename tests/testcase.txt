@@ -86,7 +86,7 @@ Post Request With No Dictionary
     Set Test Variable  ${data}  some content
     ${resp}=  Post Request  httpbin  /post  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    Should Contain  ${resp.content}  ${data}
+    Should Contain  ${resp.text}  ${data}
 
 
 Put Request With URL Params
@@ -103,7 +103,7 @@ Put Request With No Dictionary
     Set Test Variable  ${data}  some content
     ${resp}=  Put Request  httpbin  /put  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    Should Contain  ${resp.content}  ${data}
+    Should Contain  ${resp.text}  ${data}
 
 
 Post Requests
@@ -151,7 +151,9 @@ Post Request With Binary Data
     ${data}=  Get Binary File  ${CURDIR}${/}data.json
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
-    Should Contain  ${resp.json()['form'].keys()[0]}  度假村
+    Log		${resp.json()['form']}
+    ${value}=  evaluate  list(${resp.json()}['form'].keys())[0]
+    Should Contain  ${value}  度假村
 
 Post Request With Arbitrary Binary Data
     [Tags]  post
