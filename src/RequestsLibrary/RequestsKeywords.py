@@ -1,4 +1,3 @@
-import httplib
 import json
 import sys
 from urllib import urlencode
@@ -10,6 +9,11 @@ import robot
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 
+try:  # Python 3
+    from http.client import HTTPConnection
+except ImportError:
+    from httplib import HTTPConnection
+    
 try:
     from requests_ntlm import HttpNtlmAuth
 except ImportError:
@@ -123,7 +127,7 @@ class RequestsKeywords(object):
         # Enable http verbosity
         if debug >= 1:
             self.debug = int(debug)
-            httplib.HTTPConnection.debuglevel = self.debug
+            HTTPConnection.debuglevel = self.debug
 
         self._cache.register(session, alias=alias)
         return session
