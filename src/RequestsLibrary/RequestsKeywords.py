@@ -1020,7 +1020,7 @@ class RequestsKeywords(object):
         if data is not None and headers is not None and 'Content-Type' in headers:
             if (headers['Content-Type'].find("application/json") != -1) or \
                     (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
-                dataStr = data
+                dataStr = data.decode('utf-8')
             else:
                 dataStr = "<" + headers['Content-Type'] + ">"
 
