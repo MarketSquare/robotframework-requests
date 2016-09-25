@@ -1,5 +1,5 @@
-from RequestsKeywords import RequestsKeywords
-from version import VERSION
+from .RequestsKeywords import RequestsKeywords
+from .version import VERSION
 
 _version_ = VERSION
 

@@ -1,7 +1,5 @@
-import httplib
 import json
 import sys
-from urllib import urlencode
 
 import requests
 import logging
@@ -9,6 +7,8 @@ from requests.packages.urllib3.util import Retry
 import robot
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+
+from RequestsLibrary.compat import httplib, urlencode, PY3
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -106,7 +106,7 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, unicode) or isinstance(verify, str):
+        elif isinstance(verify, str) or isinstance(verify, unicode):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
         else:
@@ -121,7 +121,7 @@ class RequestsKeywords(object):
         s.url = url
 
         # Enable http verbosity
-        if debug >= 1:
+        if int(debug) >= 1:
             self.debug = int(debug)
             httplib.HTTPConnection.debuglevel = self.debug
 
@@ -304,6 +304,9 @@ class RequestsKeywords(object):
 
         'pretty_print' If defined, will output JSON is pretty print format
         """
+        if PY3:
+            if isinstance(content, bytes):
+                content = content.decode(encoding='utf-8')
         if pretty_print:
             json_ = self._json_pretty_print(content)
         else:
@@ -422,7 +425,6 @@ class RequestsKeywords(object):
             headers,
             redir,
             timeout)
-
         dataStr = self._format_data_to_log_string_according_to_header(data, headers)
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, dataStr, headers, files, redir))
@@ -521,7 +523,7 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        if isinstance(data, str):
+        if isinstance(data, bytes):
             data = data.decode('utf-8')
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s '
@@ -615,7 +617,7 @@ class RequestsKeywords(object):
             redir,
             timeout)
 
-        if isinstance(data, str):
+        if isinstance(data, bytes):
             data = data.decode('utf-8')
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
@@ -688,7 +690,7 @@ class RequestsKeywords(object):
         response = self._delete_request(
             session, uri, data, params, headers, redir, timeout)
 
-        if isinstance(data, str):
+        if isinstance(data, bytes):
             data = data.decode('utf-8')
         logger.info('Delete Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
@@ -874,7 +876,8 @@ class RequestsKeywords(object):
 
         # Store the last session object (@Kosuri Why?)
         session.last_resp = resp
-        self.builtin.log(method_name + " response: " + resp.content, 'DEBUG')
+
+        self.builtin.log(method_name + ' response: ' + resp.text, 'DEBUG')
 
         return resp
 
@@ -962,12 +965,20 @@ class RequestsKeywords(object):
     def _print_debug(self):
         if self.debug >= 1:
             sys.stdout = sys.__stdout__  # Restore stdout
-            debug_info = ''.join(
-                self.http_log.content).replace(
-                '\\r',
-                '').decode('string_escape').replace(
-                '\'',
-                '')
+            if PY3:
+                debug_info = ''.join(
+                    self.http_log.content).replace(
+                    '\\r',
+                    '').replace(
+                    '\'',
+                    '')
+            else:
+                debug_info = ''.join(
+                    self.http_log.content).replace(
+                    '\\r',
+                    '').decode('string_escape').replace(
+                    '\'',
+                    '')
 
             # Remove empty lines
             debug_info = "\n".join(
@@ -989,15 +1000,16 @@ class RequestsKeywords(object):
                 ': '))
 
     def _utf8_urlencode(self, data):
-        if isinstance(data, unicode):
+
+        if self._is_string_type(data):
             return data.encode('utf-8')
 
         if not isinstance(data, dict):
             return data
 
         utf8_data = {}
-        for k, v in data.iteritems():
-            if isinstance(v, unicode):
+        for k, v in data.items():
+            if self._is_string_type(v):
                 v = v.encode('utf-8')
             utf8_data[k] = v
         return urlencode(utf8_data)
@@ -1020,7 +1032,10 @@ class RequestsKeywords(object):
         if data is not None and headers is not None and 'Content-Type' in headers:
             if (headers['Content-Type'].find("application/json") != -1) or \
                     (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
-                dataStr = data.decode('utf-8')
+                if isinstance(data, bytes):
+                    dataStr = data.decode('utf-8')
+                else:
+                    dataStr = data
             else:
                 dataStr = "<" + headers['Content-Type'] + ">"
 
@@ -1044,3 +1059,11 @@ class RequestsKeywords(object):
         except (TypeError, ValueError):
             return False
         return True
+
+    @staticmethod
+    def _is_string_type(data):
+        if PY3 and isinstance(data, str):
+            return True
+        elif not PY3 and isinstance(data, unicode):
+            return True
+        return False
