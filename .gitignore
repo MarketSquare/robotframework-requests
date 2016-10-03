@@ -17,4 +17,4 @@ include/
 lib/
 test.py
 bin/
-
+src/robotframework_requests.egg-info/
