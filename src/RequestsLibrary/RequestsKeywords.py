@@ -421,6 +421,8 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
+               or passed as such for multipart form data if ``files`` is also
+                  defined
 
         ``params`` url parameters to append to the uri
 
@@ -433,7 +435,8 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        if not files:
+            data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
