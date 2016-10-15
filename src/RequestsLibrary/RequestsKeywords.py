@@ -114,6 +114,8 @@ class RequestsKeywords(object):
                 requests_log = logging.getLogger("requests")
                 requests_log.setLevel(logging.ERROR)
                 requests_log.propagate = True
+                if not verify:
+                    requests.packages.urllib3.disable_warnings()
             
             
             # Replace the session's original adapters
