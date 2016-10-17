@@ -173,12 +173,11 @@ Post Request With File
 Post Request With Data and File
     [Tags]    post
     Create Session    httpbin    http://httpbin.org
-    &{headers}=    Create Dictionary    Content-Type=application/octet-stream
     &{data}=    Create Dictionary    name=mallikarjunarao    surname=kosuri
     Create File    foobar.txt    content=foobar
     ${file_data}=    Get File    foobar.txt
     &{files}=    Create Dictionary    file=${file_data}
-    ${resp}=    Post Request    httpbin    /post    files=${files}    data=${data}    headers=${headers}
+    ${resp}=    Post Request    httpbin    /post    files=${files}    data=${data}
     Should Be Equal As Strings    ${resp.status_code}    200
     
 Put Requests
