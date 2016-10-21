@@ -886,7 +886,8 @@ class RequestsKeywords(object):
                            params=self._utf8_urlencode(params),
                            allow_redirects=allow_redirects,
                            timeout=self._get_timeout(timeout),
-                           cookies=self.cookies)
+                           cookies=self.cookies,
+                           verify=self.verify)
 
         self._print_debug()
         # Store the last session object (@Kosuri Why?)
@@ -915,7 +916,8 @@ class RequestsKeywords(object):
                       headers=headers,
                       allow_redirects=allow_redirects,
                       timeout=self._get_timeout(timeout),
-                      cookies=self.cookies)
+                      cookies=self.cookies,
+                      verify=self.verify)
 
         self._print_debug()
 
@@ -943,7 +945,8 @@ class RequestsKeywords(object):
                               headers=headers,
                               allow_redirects=allow_redirects,
                               timeout=self._get_timeout(timeout),
-                              cookies=self.cookies)
+                              cookies=self.cookies,
+                              verify=self.verify)
 
         self._print_debug()
 
@@ -959,7 +962,8 @@ class RequestsKeywords(object):
                             headers=headers,
                             allow_redirects=allow_redirects,
                             timeout=self._get_timeout(timeout),
-                            cookies=self.cookies)
+                            cookies=self.cookies,
+                            verify=self.verify)
 
         self._print_debug()
 
@@ -981,7 +985,8 @@ class RequestsKeywords(object):
                                headers=headers,
                                cookies=self.cookies,
                                allow_redirects=allow_redirects,
-                               timeout=self._get_timeout(timeout))
+                               timeout=self._get_timeout(timeout),
+                               verify=self.verify)
 
         self._print_debug()
 
