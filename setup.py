@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
-
 from os.path import abspath, dirname, join
+
+try:
+    from setuptools import setup
+except ImportError as error:
+    from distutils.core import setup
 
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
 
@@ -37,7 +40,7 @@ setup(name         = 'robotframework-requests',
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
       package_data = {'RequestsLibrary': ['tests/*.txt']},
-      requires=[
+      install_requires=[
           'robotframework',
           'requests'
       ],
