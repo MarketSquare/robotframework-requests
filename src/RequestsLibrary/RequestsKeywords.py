@@ -105,22 +105,21 @@ class RequestsKeywords(object):
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
             https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-            
-            # Disable requests warnings, useful when you have large number of testcase
-            # you will observe drastical changes in Robot log.html and output.xml files size 
-            if disable_warnings:
-                logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
-                logging.getLogger().setLevel(logging.ERROR)
-                requests_log = logging.getLogger("requests")
-                requests_log.setLevel(logging.ERROR)
-                requests_log.propagate = True
-                if not verify:
-                    requests.packages.urllib3.disable_warnings()
-            
-            
+
             # Replace the session's original adapters
             s.mount('http://', http)
             s.mount('https://', https)
+
+        # Disable requests warnings, useful when you have large number of testcase
+        # you will observe drastical changes in Robot log.html and output.xml files size
+        if disable_warnings:
+            logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
+            logging.getLogger().setLevel(logging.ERROR)
+            requests_log = logging.getLogger("requests")
+            requests_log.setLevel(logging.ERROR)
+            requests_log.propagate = True
+            if not verify:
+                requests.packages.urllib3.disable_warnings()
 
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
