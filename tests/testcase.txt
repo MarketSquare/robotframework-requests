@@ -37,6 +37,22 @@ Get HTTPS & Verify Cert with a CA bundle
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
 
+Get HTTPS & Verify Cert with CA file missing
+    [Tags]  get
+    Create Session    httpbin    https://httpbin.org   verify=${CURDIR}${/}doesnotexist.pem
+    Run Keyword And Expect Error  TypeError:*  Get Request  httpbin  /get
+
+Get HTTPS & Verify Cert with a Single Certificate Chain
+    [Tags]  get
+    Create Session    httpbin    https://httpbin.org   verify=${CURDIR}${/}httpbin.chain.pem
+    ${resp}=  Get Request  httpbin  /get
+    Should Be Equal As Strings  ${resp.status_code}  200
+
+Get HTTPS & Verify Cert with a Non Matching Certificate Chain
+    [Tags]  get
+    Create Session    httpbin    https://httpbin.org   verify=${CURDIR}${/}github.chain.pem
+    Run Keyword And Expect Error  SSLError:*'certificate verify failed'*  Get Request  httpbin  /get
+
 Get With Auth
     [Tags]  get
     ${auth}=  Create List  user   passwd
