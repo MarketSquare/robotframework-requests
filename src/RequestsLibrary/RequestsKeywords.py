@@ -124,17 +124,19 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, str) or isinstance(verify, unicode):
-            if verify.lower() == 'true' or verify.lower() == 'false':
-                s.verify = self.builtin.convert_to_boolean(verify)
+        elif (isinstance(verify, str) or isinstance(verify, unicode)) \
+             and (verify.lower() == 'true' or verify.lower() == 'false'):
+            # boolean in a string 
+            s.verify = self.builtin.convert_to_boolean(verify)
         else:
-            # not a Boolean nor a String
+            # string referencing a CAfile
             s.verify = verify
 
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
-        self.verify = verify if self.builtin.convert_to_boolean(verify) != True else None
+        # self.verify = verify if self.builtin.convert_to_boolean(verify) != True else None
+        self.verify = s.verify
 
         s.url = url
 
