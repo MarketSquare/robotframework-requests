@@ -127,9 +127,9 @@ class RequestsKeywords(object):
         elif isinstance(verify, str) or isinstance(verify, unicode):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
-        else:
-            # not a Boolean nor a String
-            s.verify = verify
+            else:
+                # String for CA_BUNDLE, not a Boolean String
+                s.verify = verify
 
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
