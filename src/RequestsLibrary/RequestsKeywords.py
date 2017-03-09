@@ -130,6 +130,9 @@ class RequestsKeywords(object):
             else:
                 # String for CA_BUNDLE, not a Boolean String
                 s.verify = verify
+        else:
+            # not a Boolean nor a String
+            s.verify = verify
 
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
