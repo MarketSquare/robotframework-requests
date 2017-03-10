@@ -342,6 +342,7 @@ class RequestsKeywords(object):
             alias,
             uri,
             headers=None,
+            json=None,
             params=None,
             allow_redirects=None,
             timeout=None):
@@ -355,7 +356,9 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``headers`` a dictionary of headers to use with the request
-        
+
+        ``json`` json data to send in the body of the :class:`Request`.
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout        
@@ -364,11 +367,11 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout)
+            session, uri, params, headers, json, redir, timeout)
 
         logger.info(
-            'Get Request using : alias=%s, uri=%s, headers=%s ' %
-            (alias, uri, headers))
+            'Get Request using : alias=%s, uri=%s, headers=%s json=%s' %
+            (alias, uri, headers, json))
 
         return response
 
@@ -401,7 +404,7 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout)
+            session, uri, params, headers, redir, timeout, json)
 
         return response
 
@@ -879,12 +882,14 @@ class RequestsKeywords(object):
             uri,
             params,
             headers,
+            json,
             allow_redirects,
             timeout):
         self._capture_output()
 
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
+                           json=json,
                            params=self._utf8_urlencode(params),
                            allow_redirects=allow_redirects,
                            timeout=self._get_timeout(timeout),
@@ -892,7 +897,7 @@ class RequestsKeywords(object):
                            verify=self.verify)
 
         self._print_debug()
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -923,7 +928,7 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         self.builtin.log(method_name + ' response: ' + resp.text, 'DEBUG')
@@ -952,7 +957,7 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -969,7 +974,7 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -992,7 +997,7 @@ class RequestsKeywords(object):
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -1121,3 +1126,4 @@ class RequestsKeywords(object):
         elif not PY3 and isinstance(data, unicode):
             return True
         return False
+
