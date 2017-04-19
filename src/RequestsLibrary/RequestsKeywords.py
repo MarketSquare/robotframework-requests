@@ -1087,16 +1087,21 @@ class RequestsKeywords(object):
         return data
 
     def _format_data_to_log_string_according_to_header(self, data, headers):
-        dataStr = "<empty>"
+        
         if data is not None and headers is not None and 'Content-Type' in headers:
             if (headers['Content-Type'].find("application/json") != -1) or \
                     (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
-                if isinstance(data, bytes):
-                    dataStr = data.decode('utf-8')
-                else:
-                    dataStr = data
+                dataStr = ""
             else:
                 dataStr = "<" + headers['Content-Type'] + ">"
+
+            if isinstance(data, bytes):
+                dataStr = dataStr + data.decode('utf-8')
+            else:
+                dataStr = dataStr + data
+
+        if dataStr is None:
+            dataStr = "<empty>"
 
         return dataStr
 
