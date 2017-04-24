@@ -35,13 +35,13 @@ Get Requests with Json Data
     Should Be Equal As Strings  ${resp.status_code}  200
 
 Get HTTPS & Verify Cert
-    [Tags]  get
+    [Tags]  get-cert
     Create Session    httpbin    https://httpbin.org   verify=True
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
 
 Get HTTPS & Verify Cert with a CA bundle
-    [Tags]  get
+    [Tags]  get-cert
     Create Session    httpbin    https://httpbin.org   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
@@ -49,7 +49,7 @@ Get HTTPS & Verify Cert with a CA bundle
 Get With Auth
     [Tags]  get
     ${auth}=  Create List  user   passwd
-    Create Session    httpbin    https://httpbin.org     auth=${auth}
+    Create Session    httpbin    http://httpbin.org     auth=${auth}
     ${resp}=  Get Request  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Be Equal As Strings  ${resp.json()['authenticated']}  True
@@ -57,7 +57,7 @@ Get With Auth
 Get With Digest Auth
     [Tags]    get
     ${auth}=    Create List    user    pass
-    Create Digest Session    httpbin    https://httpbin.org    auth=${auth}    debug=3
+    Create Digest Session    httpbin    http://httpbin.org    auth=${auth}    debug=3
     ${resp}=    Get Request    httpbin    /digest-auth/auth/user/pass
     Should Be Equal As Strings    ${resp.status_code}    200
     Should Be Equal As Strings    ${resp.json()['authenticated']}    True
