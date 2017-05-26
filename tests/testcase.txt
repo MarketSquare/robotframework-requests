@@ -46,6 +46,25 @@ Get HTTPS & Verify Cert with a CA bundle
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
 
+Get HTTPS with Client Side Certificates
+    [Tags]  get
+    @{client_certs}=    Create List     ${CURDIR}${/}clientcert.pem     ${CURDIR}${/}clientkey.pem
+    Create Client Cert Session  crtsession  https://server.cryptomix.com/secure     client_certs=@{client_certs}
+    ${resp}=    Get Request     crtsession  /
+    Should Be Equal As Strings  ${resp.status_code}     200
+    Should Contain  ${resp.text}    [SSL_SERVER_S_DN] => CN=server.cryptomix.com
+    Should Contain  ${resp.text}    [SSL_CLIENT_S_DN] => CN=testclient-rbf-requests.santafe,O=Client Endpoint,L=Santa Fe,ST=New Mexico,C=US
+
+Get HTTPS with Client Side Certificates & Verify Cert with a CA Bundle
+    [Tags]  get
+    @{client_certs}=    Create List     ${CURDIR}${/}clientcert.pem     ${CURDIR}${/}clientkey.pem
+    ${ca_cert}=     Set Variable    ${CURDIR}${/}cacert2.pem
+    Create Client Cert Session  crtsession  https://server.cryptomix.com/secure     client_certs=@{client_certs}    verify=${ca_cert}
+    ${resp}=    Get Request     crtsession  /
+    Should Be Equal As Strings  ${resp.status_code}     200
+    Should Contain  ${resp.text}    [SSL_SERVER_S_DN] => CN=server.cryptomix.com
+    Should Contain  ${resp.text}    [SSL_CLIENT_S_DN] => CN=testclient-rbf-requests.santafe,O=Client Endpoint,L=Santa Fe,ST=New Mexico,C=US
+
 Get With Auth
     [Tags]  get
     ${auth}=  Create List  user   passwd
