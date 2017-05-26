@@ -1,0 +1,12 @@
+version: '2.1'
+services:
+  httpssvr:
+    build:
+      context: .
+    cpuset: '0'
+    cpu_quota: 60000 
+    mem_limit: 200M
+    hostname: testserver-rbf-requests.santafe
+    container_name: https-svr-requiring-client-certs
+    ports:
+      - "443:443"

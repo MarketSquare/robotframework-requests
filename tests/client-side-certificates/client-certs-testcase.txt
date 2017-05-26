@@ -1,0 +1,14 @@
+*** Settings ***
+Library	RequestsLibrary
+
+*** Variables ***
+${https_server}=	https://localhost
+@{client_certs}=	${CURDIR}${/}clientcert.pem	${CURDIR}${/}clientkey.pem
+${ca_cert}=	${CURDIR}${/}cacert.pem
+
+*** Test Cases ***
+Get Requests
+	Create Client Cert Session	alias=crtsession	url=${https_server}	client_certs=@{client_certs}	verify=${ca_cert}
+	${resp}=	Get Request	crtsession	/
+	Should Be Equal As Strings	${resp.status_code}	200	
+	
