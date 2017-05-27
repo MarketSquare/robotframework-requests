@@ -53,13 +53,6 @@ Get HTTPS with Client Side Certificates
     ${resp}=    Get Request     crtsession  /
     Should Be Equal As Strings  ${resp.status_code}     200
 
-Get HTTPS with Client Side Certificates & Verify Cert
-    [Tags]  get
-    @{client_certs}=    Create List     ${CURDIR}${/}clientcert.pem     ${CURDIR}${/}clientkey.pem
-    Create Client Cert Session  crtsession  https://server.cryptomix.com/secure     client_certs=@{client_certs}    verify=True
-    ${resp}=    Get Request     crtsession  /
-    Should Be Equal As Strings  ${resp.status_code}     200
-
 Get With Auth
     [Tags]  get
     ${auth}=  Create List  user   passwd
