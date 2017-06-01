@@ -15,7 +15,7 @@ install:
   - "pip install -r requirements.txt"
 
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.6]];
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]];
     then pybot --noncritical get-cert -P src tests;
     else pybot -P src tests;
     fi
