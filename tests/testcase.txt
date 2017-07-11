@@ -32,7 +32,7 @@ Get Requests with Json Data
     ${resp}=     Get Request  httpbin  /get    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
-    Should Be Equal As Strings  ${resp.status_code}  200
+    # httpbin does not support this... Should be Equal     ${jsondata['json]}     ${data}
 
 Get HTTPS & Verify Cert
     [Tags]  get
@@ -68,6 +68,24 @@ Post Request With URL Params
     &{params}=   Create Dictionary   key=value     key2=value2
     ${resp}=  Post Request  httpbin  /post		params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
+
+Post Requests with Json Data
+    [Tags]  post
+    Create Session  httpbin     http://httpbin.org
+    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Post Request  httpbin  /post    json=${data}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    ${jsondata}=  To Json  ${resp.content}
+    Should be Equal     ${jsondata['json']}     ${data}
+
+Put Requests with Json Data
+    [Tags]  put
+    Create Session  httpbin     http://httpbin.org
+    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Put Request  httpbin  /put    json=${data}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    ${jsondata}=  To Json  ${resp.content}
+    Should be Equal     ${jsondata['json']}     ${data}
 
 Post Request With No Data
     [Tags]  post
