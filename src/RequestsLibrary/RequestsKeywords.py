@@ -639,11 +639,11 @@ class RequestsKeywords(object):
         ``uri`` to send the PUT request to
 
         ``data`` a dictionary of key-value pairs that will be urlencoded
-               and sent as POST data
+               and sent as PUT data
                or binary data that is sent as the raw body content
 
         ``json`` a value that will be json encoded
-               and sent as POST data if data is not specified
+               and sent as PUT data if data is not specified
 
         ``headers`` a dictionary of headers to use with the request
 
