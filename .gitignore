@@ -9,6 +9,7 @@ log.html
 output.xml
 debug.txt
 report.html
+foobar.txt
 
 ~*
 htmlcov
