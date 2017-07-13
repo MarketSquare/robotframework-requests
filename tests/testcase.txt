@@ -255,6 +255,15 @@ Delete Request With Data
     Comment  Dictionary Should Contain Value  ${resp.json()['data']}  bulkan
     Comment  Dictionary Should Contain Value  ${resp.json()['data']}  evcimen
 
+Delete Requests with Json Data
+    [Tags]  delete
+    Create Session  httpbin     http://httpbin.org
+    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Delete Request  httpbin  /delete    json=${data}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    ${jsondata}=  To Json  ${resp.content}
+    Should Be Equal     ${jsondata['json']}     ${data}
+
 Patch Requests
     [Tags]    patch
     Create Session    httpbin    http://httpbin.org
@@ -263,6 +272,15 @@ Patch Requests
     ${resp}=    Patch Request    httpbin    /patch    data=${data}    headers=${headers}
     Dictionary Should Contain Value    ${resp.json()['form']}    bulkan
     Dictionary Should Contain Value    ${resp.json()['form']}    evcimen
+
+Patch Requests with Json Data
+    [Tags]  patch
+    Create Session  httpbin     http://httpbin.org
+    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Patch Request  httpbin  /patch    json=${data}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    ${jsondata}=  To Json  ${resp.content}
+    Should Be Equal     ${jsondata['json']}     ${data}
 
 Get Request With Redirection
     [Tags]  get
