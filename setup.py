@@ -20,7 +20,7 @@ Robot Framework keyword library wrapper around the HTTP client library requests.
 
 CLASSIFIERS = """
 Development Status :: 5 - Production/Stable
-License :: Public Domain
+License :: OSI Approved :: MIT License
 Operating System :: OS Independent
 Programming Language :: Python
 Topic :: Software Development :: Testing
