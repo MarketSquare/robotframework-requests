@@ -124,6 +124,8 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
+            if not verify:
+                requests.packages.urllib3.disable_warnings()
         elif isinstance(verify, str) or isinstance(verify, unicode):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
