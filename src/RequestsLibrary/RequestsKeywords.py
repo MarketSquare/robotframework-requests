@@ -312,6 +312,58 @@ class RequestsKeywords(object):
             debug,
             disable_warnings)
 
+    def create_client_cert_session(self, alias, url, headers={}, cookies=None,
+                       client_certs=None, timeout=None, proxies=None,
+                       verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+        """ Create Session: create a HTTP session to a server
+
+        ``url`` Base url of the server
+
+        ``alias`` Robot Framework alias to identify the session
+
+        ``headers`` Dictionary of default headers
+
+        ``client_certs`` ['client certificate', 'client key'] PEM files containing the client key and certificate
+
+        ``timeout`` Connection timeout
+
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
+
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+                 Defaults to False.
+
+        ``debug`` Enable http verbosity option more information
+                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+
+        ``max_retries`` The maximum number of retries each connection should attempt.
+
+        ``backoff_factor`` The pause between for each retry
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+        """
+
+        logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
+                    cookies=%s, client_certs=%s, timeout=%s, proxies=%s, verify=%s, \
+                    debug=%s ' % (alias, url, headers, cookies, client_certs, timeout,
+                                  proxies, verify, debug))
+
+        session = self._create_session(
+            alias,
+            url,
+            headers,
+            cookies,
+            None,
+            timeout,
+            max_retries,
+            backoff_factor,
+            proxies,
+            verify,
+            debug,
+            disable_warnings)
+
+        session.cert = tuple(client_certs)
+        return session
+
     def delete_all_sessions(self):
         """ Removes all the session objects """
         logger.info('Delete All Sessions')
