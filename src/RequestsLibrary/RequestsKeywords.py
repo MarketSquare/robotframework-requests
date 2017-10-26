@@ -1148,7 +1148,9 @@ class RequestsKeywords(object):
                 else:
                     dataStr = data
             else:
-                dataStr = "<" + headers['Content-Type'] + ">"
+                dataStr = "<" + headers['Content-Type'] + ">" + data
+        else:
+            dataStr = data
 
         return dataStr
 
