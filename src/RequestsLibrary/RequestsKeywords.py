@@ -240,7 +240,11 @@ class RequestsKeywords(object):
         
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
-        logger.info(auth)
+
+        logger.info('Creating Custom Authenticated Session using : alias=%s, url=%s, headers=%s, \
+                    cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
+                    debug=%s ' % (alias, url, headers, cookies, auth, timeout,
+                                  proxies, verify, debug))
 
         return self._create_session(
             alias,
