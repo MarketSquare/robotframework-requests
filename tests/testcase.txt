@@ -11,7 +11,7 @@ Suite Teardown  Delete All Sessions
 Get Requests
     [Tags]  get
     Create Session  google  http://www.google.com
-    Create Session  github  https://api.github.com
+    Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  google  /
     Should Be Equal As Strings  ${resp.status_code}  200
     ${resp}=  Get Request  github  /users/bulkan
@@ -51,7 +51,7 @@ Get HTTPS & Verify Cert with a CA bundle
 Get With Auth
     [Tags]  get
     ${auth}=  Create List  user   passwd
-    Create Session    httpbin    https://httpbin.org     auth=${auth}
+    Create Session    httpbin    https://httpbin.org     auth=${auth}   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Be Equal As Strings  ${resp.json()['authenticated']}  True
@@ -59,7 +59,7 @@ Get With Auth
 Get With Custom Auth
     [Tags]  get
     ${auth}=    Get Custom Auth    user   passwd
-    Create Custom Session    httpbin    https://httpbin.org     auth=${auth}
+    Create Custom Session    httpbin    https://httpbin.org     auth=${auth}   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Be Equal As Strings  ${resp.json()['authenticated']}  True
@@ -67,7 +67,7 @@ Get With Custom Auth
 Get With Digest Auth
     [Tags]    get
     ${auth}=    Create List    user    pass
-    Create Digest Session    httpbin    https://httpbin.org    auth=${auth}    debug=3
+    Create Digest Session    httpbin    https://httpbin.org    auth=${auth}    debug=3   verify=${CURDIR}${/}cacert.pem
     ${resp}=    Get Request    httpbin    /digest-auth/auth/user/pass
     Should Be Equal As Strings    ${resp.status_code}    200
     Should Be Equal As Strings    ${resp.json()['authenticated']}    True
