@@ -3,6 +3,8 @@ Library  Collections
 Library  String
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
+Library  customAuthenticator.py
+
 Suite Teardown  Delete All Sessions
 
 *** Test Cases ***
@@ -50,6 +52,14 @@ Get With Auth
     [Tags]  get
     ${auth}=  Create List  user   passwd
     Create Session    httpbin    https://httpbin.org     auth=${auth}
+    ${resp}=  Get Request  httpbin  /basic-auth/user/passwd
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings  ${resp.json()['authenticated']}  True
+
+Get With Custom Auth
+    [Tags]  get
+    ${auth}=    Get Custom Auth    user   passwd
+    Create Custom Session    httpbin    https://httpbin.org     auth=${auth}
     ${resp}=  Get Request  httpbin  /basic-auth/user/passwd
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Be Equal As Strings  ${resp.json()['authenticated']}  True

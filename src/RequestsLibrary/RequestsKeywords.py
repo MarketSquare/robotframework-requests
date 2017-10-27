@@ -199,6 +199,63 @@ class RequestsKeywords(object):
             debug,
             disable_warnings)
 
+    def create_custom_session(
+            self,
+            alias,
+            url,
+            auth,
+            headers={},
+            cookies=None,
+            timeout=None,
+            proxies=None,
+            verify=False,
+            debug=0,
+            max_retries=3,
+            backoff_factor=0.10,
+            disable_warnings=0):
+        """ Create Session: create a HTTP session to a server
+
+        ``url`` Base url of the server
+
+        ``alias`` Robot Framework alias to identify the session
+
+        ``headers`` Dictionary of default headers
+
+        ``auth`` A Custom Authentication object to be passed on to the reqests library.  
+                http://docs.python-requests.org/en/master/user/advanced/#custom-authentication
+
+        ``timeout`` Connection timeout
+
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
+
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+                 Defaults to False.
+
+        ``debug`` Enable http verbosity option more information
+                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+
+        ``max_retries`` The maximum number of retries each connection should attempt.
+        
+        ``backoff_factor`` The pause between for each retry
+        
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+        """
+        logger.info(auth)
+
+        return self._create_session(
+            alias,
+            url,
+            headers,
+            cookies,
+            auth,
+            timeout,
+            max_retries,
+            backoff_factor,
+            proxies,
+            verify,
+            debug,
+            disable_warnings)
+
     def create_ntlm_session(
             self,
             alias,
