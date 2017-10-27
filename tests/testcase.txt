@@ -37,19 +37,26 @@ Get Requests with Json Data
     Should Be Equal As Strings  ${resp.status_code}  200
 
 Get HTTPS & Verify Cert
-    [Tags]  get
+    [Tags]  get     get-cert
     Create Session    httpbin    https://httpbin.org   verify=True
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
 
 Get HTTPS & Verify Cert with a CA bundle
-    [Tags]  get
+    [Tags]  get     get-cert
     Create Session    httpbin    https://httpbin.org   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  httpbin  /get
     Should Be Equal As Strings  ${resp.status_code}  200
 
+Get HTTPS with Client Side Certificates
+    [Tags]  get     get-cert
+    @{client_certs}=    Create List     ${CURDIR}${/}clientcert.pem     ${CURDIR}${/}clientkey.pem
+    Create Client Cert Session  crtsession  https://server.cryptomix.com/secure     client_certs=@{client_certs}
+    ${resp}=    Get Request     crtsession  /
+    Should Be Equal As Strings  ${resp.status_code}     200
+
 Get With Auth
-    [Tags]  get
+    [Tags]  get     get-cert
     ${auth}=  Create List  user   passwd
     Create Session    httpbin    https://httpbin.org     auth=${auth}   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  httpbin  /basic-auth/user/passwd
@@ -65,7 +72,7 @@ Get With Custom Auth
     Should Be Equal As Strings  ${resp.json()['authenticated']}  True
 
 Get With Digest Auth
-    [Tags]    get
+    [Tags]    get   get-cert
     ${auth}=    Create List    user    pass
     Create Digest Session    httpbin    https://httpbin.org    auth=${auth}    debug=3   verify=${CURDIR}${/}cacert.pem
     ${resp}=    Get Request    httpbin    /digest-auth/auth/user/pass
