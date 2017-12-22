@@ -76,6 +76,8 @@ class RequestsKeywords(object):
 
         ``headers`` Dictionary of default headers
 
+        ``cookies`` Dictionary of cookies
+
         ``auth`` List of username & password for HTTP Basic Auth
 
         ``timeout`` Connection timeout
@@ -152,7 +154,7 @@ class RequestsKeywords(object):
         self._cache.register(session, alias=alias)
         return session
 
-    def create_session(self, alias, url, headers={}, cookies=None,
+    def create_session(self, alias, url, headers={}, cookies={},
                        auth=None, timeout=None, proxies=None,
                        verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
@@ -162,6 +164,8 @@ class RequestsKeywords(object):
         ``alias`` Robot Framework alias to identify the session
 
         ``headers`` Dictionary of default headers
+
+        ``cookies`` Dictionary of cookies
 
         ``auth`` List of username & password for HTTP Basic Auth
 
@@ -208,7 +212,7 @@ class RequestsKeywords(object):
             url,
             auth,
             headers={},
-            cookies=None,
+            cookies={},
             timeout=None,
             proxies=None,
             verify=False,
@@ -223,6 +227,8 @@ class RequestsKeywords(object):
         ``alias`` Robot Framework alias to identify the session
 
         ``headers`` Dictionary of default headers
+
+        ``cookies`` Dictionary of cookies
 
         ``auth`` A Custom Authentication object to be passed on to the reqests library.
                 http://docs.python-requests.org/en/master/user/advanced/#custom-authentication
@@ -269,7 +275,7 @@ class RequestsKeywords(object):
             url,
             auth,
             headers={},
-            cookies=None,
+            cookies={},
             timeout=None,
             proxies=None,
             verify=False,
@@ -284,6 +290,8 @@ class RequestsKeywords(object):
         ``alias`` Robot Framework alias to identify the session
 
         ``headers`` Dictionary of default headers
+
+        ``cookies`` Dictionary of cookies
 
         ``auth`` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
@@ -331,7 +339,7 @@ class RequestsKeywords(object):
                 debug,
                 disable_warnings)
 
-    def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
+    def create_digest_session(self, alias, url, auth, headers={}, cookies={},
                               timeout=None, proxies=None, verify=False,
                               debug=0, max_retries=3,backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
@@ -341,6 +349,8 @@ class RequestsKeywords(object):
         ``alias`` Robot Framework alias to identify the session
 
         ``headers`` Dictionary of default headers
+
+        ``cookies`` Dictionary of cookies
 
         ``auth`` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
@@ -376,7 +386,7 @@ class RequestsKeywords(object):
             debug,
             disable_warnings)
 
-    def create_client_cert_session(self, alias, url, headers={}, cookies=None,
+    def create_client_cert_session(self, alias, url, headers={}, cookies={},
                        client_certs=None, timeout=None, proxies=None,
                        verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
@@ -386,6 +396,8 @@ class RequestsKeywords(object):
         ``alias`` Robot Framework alias to identify the session
 
         ``headers`` Dictionary of default headers
+
+        ``cookies`` Dictionary of cookies
 
         ``client_certs`` ['client certificate', 'client key'] PEM files containing the client key and certificate
 
