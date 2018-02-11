@@ -1191,9 +1191,7 @@ class RequestsKeywords(object):
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
-                if isinstance(data, types.GeneratorType):
-                    data = data
-                else:
+                if not isinstance(data, types.GeneratorType):
                     data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
