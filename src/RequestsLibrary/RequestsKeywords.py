@@ -28,9 +28,9 @@ class WritableObject:
 
 class RequestsKeywords(object):
     """``RequestsLibrary`` is a [http://code.google.com/p/robotframework/|Robot Framework] test library that uses the [https://github.com/kennethreitz/requests|Requests] HTTP client.
-    
+
     Here is an example testcase
-    
+
     | ***** Settings *****   |                                 |                     |                       |               |
     | Library                | Collections                     |                     |                       |               |
     | Library                | RequestsLibrary                 |                     |                       |               |
@@ -76,9 +76,9 @@ class RequestsKeywords(object):
         ``auth`` List of username & password for HTTP Basic Auth
 
         ``timeout`` Connection timeout
-        
+
         ``max_retries`` The maximum number of retries each connection should attempt.
-        
+
         ``backoff_factor`` The pause between for each retry
 
         ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
@@ -87,8 +87,8 @@ class RequestsKeywords(object):
 
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
-        ``disable_warnings`` Disable requests warning useful when you have large number of testcases                
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
@@ -100,7 +100,7 @@ class RequestsKeywords(object):
         try:
             max_retries = int(max_retries)
         except ValueError as err:
-            raise ValueError("Error converting max_retries parameter: %s"   % err)        
+            raise ValueError("Error converting max_retries parameter: %s"   % err)
 
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
@@ -173,9 +173,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` The maximum number of retries each connection should attempt.
-        
+
         ``backoff_factor`` The pause between for each retry
-        
+
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
@@ -221,7 +221,7 @@ class RequestsKeywords(object):
 
         ``headers`` Dictionary of default headers
 
-        ``auth`` A Custom Authentication object to be passed on to the reqests library.  
+        ``auth`` A Custom Authentication object to be passed on to the reqests library.
                 http://docs.python-requests.org/en/master/user/advanced/#custom-authentication
 
         ``timeout`` Connection timeout
@@ -235,9 +235,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` The maximum number of retries each connection should attempt.
-        
+
         ``backoff_factor`` The pause between for each retry
-        
+
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
 
@@ -295,9 +295,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` The maximum number of retries each connection should attempt.
-        
+
         ``backoff_factor`` The pause between for each retry
-        
+
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         if not HttpNtlmAuth:
@@ -352,9 +352,9 @@ class RequestsKeywords(object):
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` The maximum number of retries each connection should attempt.
-        
+
         ``backoff_factor`` The pause between for each retry
-        
+
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
@@ -474,7 +474,7 @@ class RequestsKeywords(object):
 
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
-        ``timeout`` connection timeout        
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -506,7 +506,7 @@ class RequestsKeywords(object):
         ``uri`` to send the GET request to
 
         ``headers`` a dictionary of headers to use with the request
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
@@ -600,7 +600,7 @@ class RequestsKeywords(object):
         ``headers`` a dictionary of headers to use with the request
 
         ``files`` a dictionary of file names containing file data to POST to the server
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
@@ -702,7 +702,7 @@ class RequestsKeywords(object):
         ``headers`` a dictionary of headers to use with the request
 
         ``files`` a dictionary of file names containing file data to PATCH to the server
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
@@ -747,7 +747,7 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``params`` url parameters to append to the uri
-        
+
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
@@ -790,7 +790,7 @@ class RequestsKeywords(object):
         ``uri`` to send the PUT request to
 
         ``headers`` a dictionary of headers to use with the request
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
@@ -830,7 +830,7 @@ class RequestsKeywords(object):
         ``uri`` to send the DELETE request to
 
         ``headers`` a dictionary of headers to use with the request
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
@@ -867,7 +867,7 @@ class RequestsKeywords(object):
         ``uri`` to send the DELETE request to
 
         ``headers`` a dictionary of headers to use with the request
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
@@ -895,7 +895,7 @@ class RequestsKeywords(object):
         ``alias`` that will be used to identify the Session object in the cache
 
         ``uri`` to send the HEAD request to
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
@@ -923,7 +923,7 @@ class RequestsKeywords(object):
         ``alias`` that will be used to identify the Session object in the cache
 
         ``uri`` to send the HEAD request to
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
@@ -948,7 +948,7 @@ class RequestsKeywords(object):
         ``alias`` that will be used to identify the Session object in the cache
 
         ``uri`` to send the OPTIONS request to
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
@@ -970,14 +970,14 @@ class RequestsKeywords(object):
             allow_redirects=None,
             timeout=None):
         """ **Deprecated- See Options Request now**
-        
+
         Send an OPTIONS request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
 
         ``uri`` to send the OPTIONS request to
-        
+
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
@@ -1191,7 +1191,10 @@ class RequestsKeywords(object):
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
-                data = json.dumps(data)
+                if isinstance(data, types.GeneratorType):
+                    data = data
+                else:
+                    data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
         else:
@@ -1239,4 +1242,3 @@ class RequestsKeywords(object):
         elif not PY3 and isinstance(data, unicode):
             return True
         return False
-
