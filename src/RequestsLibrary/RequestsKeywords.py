@@ -330,7 +330,7 @@ class RequestsKeywords(object):
 
     def create_digest_session(self, alias, url, auth, headers={}, cookies=None,
                               timeout=None, proxies=None, verify=False,
-                              debug=0, max_retries=3,backoff_factor=0.10, disable_warnings=0):
+                              debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -373,9 +373,20 @@ class RequestsKeywords(object):
             debug,
             disable_warnings)
 
-    def create_client_cert_session(self, alias, url, headers={}, cookies=None,
-                       client_certs=None, timeout=None, proxies=None,
-                       verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+    def     create_client_cert_session(
+            self, 
+            alias, 
+            url, 
+            headers={}, 
+            cookies=None,    
+            client_certs=None, 
+            timeout=None, 
+            proxies=None,
+            verify=False, 
+            debug=0, 
+            max_retries=3, 
+            backoff_factor=0.10, 
+            disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -479,45 +490,20 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._get_request(
-            session, uri, params, headers, json, redir, timeout)
+        #response = self._get_request(
+        #    session, uri, params, headers, json, redir, timeout)
+        response = self._common_request("get",
+                                        session,
+                                        uri,
+                                        params=params,
+                                        headers=headers,
+                                        json=json,
+                                        allow_redirects=redir,
+                                        timeout=timeout)
 
         logger.info(
             'Get Request using : alias=%s, uri=%s, headers=%s json=%s' %
             (alias, uri, headers, json))
-
-        return response
-
-    def get(
-            self,
-            alias,
-            uri,
-            params=None,
-            headers=None,
-            allow_redirects=None,
-            timeout=None):
-        """ **Deprecated- See Get Request now**
-
-        Send a GET request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the GET request to
-
-        ``headers`` a dictionary of headers to use with the request
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``timeout`` connection timeout
-        """
-        logger.warn("Deprecation Warning: Use Get Request in the future")
-        session = self._cache.switch(alias)
-
-        redir = True if allow_redirects is None else allow_redirects
-
-        response = self._get_request(
-            session, uri, params, headers, redir, timeout, json)
 
         return response
 
@@ -563,69 +549,20 @@ class RequestsKeywords(object):
             data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._body_request(
+        response = self._common_request(
             "post",
             session,
             uri,
-            data,
-            json,
-            params,
-            files,
-            headers,
-            redir,
-            timeout)
+            data=data,
+            json=json,
+            params=params,
+            files=files,
+            headers=headers,
+            allow_redirects=redir,
+            timeout=timeout)
         dataStr = self._format_data_to_log_string_according_to_header(data, headers)
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, dataStr, headers, files, redir))
-
-        return response
-
-    def post(
-            self,
-            alias,
-            uri,
-            data={},
-            headers=None,
-            files=None,
-            allow_redirects=None,
-            timeout=None):
-        """ **Deprecated- See Post Request now**
-
-        Send a POST request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the GET request to
-
-        ``data`` a dictionary of key-value pairs that will be urlencoded
-               and sent as POST data
-               or binary data that is sent as the raw body content
-
-        ``headers`` a dictionary of headers to use with the request
-
-        ``files`` a dictionary of file names containing file data to POST to the server
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``timeout`` connection timeout
-        """
-        logger.warn("Deprecation Warning: Use Post Request in the future")
-        session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
-        redir = True if allow_redirects is None else allow_redirects
-
-        response = self._body_request(
-            "post",
-            session,
-            uri,
-            data,
-            None,
-            None,
-            files,
-            headers,
-            redir,
-            timeout)
 
         return response
 
@@ -668,72 +605,23 @@ class RequestsKeywords(object):
         data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._body_request(
+        response = self._common_request(
             "patch",
             session,
             uri,
-            data,
-            json,
-            params,
-            files,
-            headers,
-            redir,
-            timeout)
+            data=data,
+            json=json,
+            params=params,
+            files=files,
+            headers=headers,
+            allow_redirects=redir,
+            timeout=timeout)
 
         if isinstance(data, bytes):
             data = data.decode('utf-8')
         logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, files=%s, allow_redirects=%s '
                     % (alias, uri, data, headers, files, redir))
-
-        return response
-
-    def patch(
-            self,
-            alias,
-            uri,
-            data={},
-            headers=None,
-            files={},
-            allow_redirects=None,
-            timeout=None):
-        """ **Deprecated- See Patch Request now**
-
-        Send a PATCH request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the PATCH request to
-
-        ``data`` a dictionary of key-value pairs that will be urlencoded
-               and sent as PATCH data
-               or binary data that is sent as the raw body content
-
-        ``headers`` a dictionary of headers to use with the request
-
-        ``files`` a dictionary of file names containing file data to PATCH to the server
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``timeout`` connection timeout
-        """
-        logger.warn("Deprecation Warning: Use Patch Request in the future")
-        session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
-        redir = True if allow_redirects is None else allow_redirects
-
-        response = self._body_request(
-            "patch",
-            session,
-            uri,
-            data,
-            None,
-            None,
-            files,
-            headers,
-            redir,
-            timeout)
 
         return response
 
@@ -774,64 +662,22 @@ class RequestsKeywords(object):
         data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._body_request(
+        response = self._common_request(
             "put",
             session,
             uri,
-            data,
-            json,
-            params,
-            files,
-            headers,
-            redir,
-            timeout)
+            data=data,
+            json=json,
+            params=params,
+            files=files,
+            headers=headers,
+            allow_redirects=redir,
+            timeout=timeout)
 
         if isinstance(data, bytes):
             data = data.decode('utf-8')
         logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
-
-        return response
-
-    def put(
-            self,
-            alias,
-            uri,
-            data=None,
-            headers=None,
-            allow_redirects=None,
-            timeout=None):
-        """ **Deprecated- See Put Request now**
-
-        Send a PUT request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the PUT request to
-
-        ``headers`` a dictionary of headers to use with the request
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``timeout`` connection timeout
-        """
-        logger.warn("Deprecation Warning: Use Put Request in the future")
-        session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
-        redir = True if allow_redirects is None else allow_redirects
-
-        response = self._body_request(
-            "put",
-            session,
-            uri,
-            data,
-            None,
-            None,
-            None,
-            headers,
-            redir,
-            timeout)
 
         return response
 
@@ -865,8 +711,16 @@ class RequestsKeywords(object):
         data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._delete_request(
-            session, uri, data, json, params, headers, redir, timeout)
+        response = self._common_request(
+            "delete",
+            session, 
+            uri, 
+            data=data, 
+            json=json, 
+            params=params, 
+            headers=headers, 
+            allow_redirects=redir, 
+            timeout=timeout)
 
         if isinstance(data, bytes):
             data = data.decode('utf-8')
@@ -875,38 +729,6 @@ class RequestsKeywords(object):
 
         return response
 
-    def delete(
-            self,
-            alias,
-            uri,
-            data=(),
-            headers=None,
-            allow_redirects=None,
-            timeout=None):
-        """ * * *   Deprecated- See Delete Request now   * * *
-
-        Send a DELETE request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the DELETE request to
-
-        ``headers`` a dictionary of headers to use with the request
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``timeout`` connection timeout
-        """
-        logger.warn("Deprecation Warning: Use Delete Request in the future")
-        session = self._cache.switch(alias)
-        data = self._utf8_urlencode(data)
-        redir = True if allow_redirects is None else allow_redirects
-
-        response = self._delete_request(
-            session, uri, data, json, None, headers, redir, timeout)
-
-        return response
 
     def head_request(
             self,
@@ -928,36 +750,15 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
-        response = self._head_request(session, uri, headers, redir, timeout)
+        response = self._common_request(
+            "head",
+            session, 
+            uri, 
+            headers=headers, 
+            allow_redirects=redir, 
+            timeout=timeout)
         logger.info('Head Request using : alias=%s, uri=%s, headers=%s, \
         allow_redirects=%s ' % (alias, uri, headers, redir))
-
-        return response
-
-    def head(
-            self,
-            alias,
-            uri,
-            headers=None,
-            allow_redirects=None,
-            timeout=None):
-        """ **Deprecated- See Head Request now**
-
-        Send a HEAD request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the HEAD request to
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``headers`` a dictionary of headers to use with the request
-        """
-        logger.warn("Deprecation Warning: Use Head Request in the future")
-        session = self._cache.switch(alias)
-        redir = False if allow_redirects is None else allow_redirects
-        response = self._head_request(session, uri, headers, redir, timeout)
 
         return response
 
@@ -981,168 +782,33 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
-        response = self._options_request(session, uri, headers, redir, timeout)
+        response = self._common_request(
+            "options",
+            session, 
+            uri, 
+            headers=headers, 
+            allow_redirects=redir, 
+            timeout=timeout)
         logger.info(
             'Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s ' %
             (alias, uri, headers, redir))
 
         return response
 
-    def options(
+    def _common_request(
             self,
-            alias,
-            uri,
-            headers=None,
-            allow_redirects=None,
-            timeout=None):
-        """ **Deprecated- See Options Request now**
-        
-        Send an OPTIONS request on the session object found using the
-        given `alias`
-
-        ``alias`` that will be used to identify the Session object in the cache
-
-        ``uri`` to send the OPTIONS request to
-        
-        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
-
-        ``headers`` a dictionary of headers to use with the request
-        """
-        logger.warn("Deprecation Warning: Use Options Request in the future")
-        session = self._cache.switch(alias)
-        redir = True if allow_redirects is None else allow_redirects
-        response = self._options_request(session, uri, headers, redir, timeout)
-
-        return response
-
-    def _get_request(
-            self,
+            method,
             session,
             uri,
-            params,
-            headers,
-            json,
-            allow_redirects,
-            timeout):
+            **args
+        ):
         self._capture_output()
-
-        resp = session.get(self._get_url(session, uri),
-                           headers=headers,
-                           json=json,
-                           params=self._utf8_urlencode(params),
-                           allow_redirects=allow_redirects,
-                           timeout=self._get_timeout(timeout),
-                           cookies=self.cookies,
-                           verify=self.verify)
-
+        method_function = getattr(session, method)
+        resp = method_function(
+            self._get_url(session, uri),
+            **args)
         self._print_debug()
-        # Store the last session object
         session.last_resp = resp
-
-        return resp
-
-    def _body_request(
-            self,
-            method_name,
-            session,
-            uri,
-            data,
-            json,
-            params,
-            files,
-            headers,
-            allow_redirects,
-            timeout):
-        self._capture_output()
-
-        method = getattr(session, method_name)
-        resp = method(self._get_url(session, uri),
-                      data=data,
-                      json=json,
-                      params=self._utf8_urlencode(params),
-                      files=files,
-                      headers=headers,
-                      allow_redirects=allow_redirects,
-                      timeout=self._get_timeout(timeout),
-                      cookies=self.cookies,
-                      verify=self.verify)
-
-        self._print_debug()
-
-        # Store the last session object
-        session.last_resp = resp
-
-        self.builtin.log(method_name + ' response: ' + resp.text, 'DEBUG')
-
-        return resp
-
-    def _delete_request(
-            self,
-            session,
-            uri,
-            data,
-            json,
-            params,
-            headers,
-            allow_redirects,
-            timeout):
-        self._capture_output()
-
-        resp = session.delete(self._get_url(session, uri),
-                              data=data,
-                              json=json,
-                              params=self._utf8_urlencode(params),
-                              headers=headers,
-                              allow_redirects=allow_redirects,
-                              timeout=self._get_timeout(timeout),
-                              cookies=self.cookies,
-                              verify=self.verify)
-
-        self._print_debug()
-
-        # Store the last session object
-        session.last_resp = resp
-
-        return resp
-
-    def _head_request(self, session, uri, headers, allow_redirects, timeout):
-        self._capture_output()
-
-        resp = session.head(self._get_url(session, uri),
-                            headers=headers,
-                            allow_redirects=allow_redirects,
-                            timeout=self._get_timeout(timeout),
-                            cookies=self.cookies,
-                            verify=self.verify)
-
-        self._print_debug()
-
-        # Store the last session object
-        session.last_resp = resp
-
-        return resp
-
-    def _options_request(
-            self,
-            session,
-            uri,
-            headers,
-            allow_redirects,
-            timeout):
-        self._capture_output()
-
-        resp = session.options(self._get_url(session, uri),
-                               headers=headers,
-                               cookies=self.cookies,
-                               allow_redirects=allow_redirects,
-                               timeout=self._get_timeout(timeout),
-                               verify=self.verify)
-
-        self._print_debug()
-
-        # Store the last session object
-        session.last_resp = resp
-
         return resp
 
     def _get_url(self, session, uri):
@@ -1167,19 +833,10 @@ class RequestsKeywords(object):
         if self.debug >= 1:
             sys.stdout = sys.__stdout__  # Restore stdout
             if PY3:
-                debug_info = ''.join(
-                    self.http_log.content).replace(
-                    '\\r',
-                    '').replace(
-                    '\'',
-                    '')
+                debug_info = ''.join(self.http_log.content).replace('\\r','').replace('\'','')
             else:
                 debug_info = ''.join(
-                    self.http_log.content).replace(
-                    '\\r',
-                    '').decode('string_escape').replace(
-                    '\'',
-                    '')
+                    self.http_log.content).replace('\\r','').decode('string_escape').replace('\'','')
 
             # Remove empty lines
             debug_info = "\n".join(
