@@ -2,6 +2,8 @@ import json
 import sys
 
 import requests
+from requests.sessions import merge_setting
+from requests.cookies import merge_cookies
 import logging
 from requests.packages.urllib3.util import Retry
 import robot
@@ -430,6 +432,17 @@ class RequestsKeywords(object):
         logger.info('Delete All Sessions')
 
         self._cache.empty_cache()
+
+    def update_session(self, alias, headers=None, cookies=None):
+        """Update Session Headers: update a HTTP Session Headers
+
+        ``alias`` Robot Framework alias to identify the session
+
+        ``headers`` Dictionary of headers merge into session
+        """
+        session = self._cache.switch(alias)
+        session.headers = merge_setting(headers, session.headers)
+        session.cookies = merge_cookies(session.cookies, cookies)
 
     def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
