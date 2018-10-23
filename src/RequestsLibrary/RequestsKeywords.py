@@ -1,4 +1,5 @@
 import json
+import types
 import sys
 
 import requests
@@ -1234,7 +1235,8 @@ class RequestsKeywords(object):
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
-                data = json.dumps(data)
+                if not isinstance(data, types.GeneratorType):
+                    data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
         else:
@@ -1282,4 +1284,3 @@ class RequestsKeywords(object):
         elif not PY3 and isinstance(data, unicode):
             return True
         return False
-
