@@ -9,7 +9,7 @@ Suite Teardown  Delete All Sessions
 
 *** Test Cases ***
 Get Requests
-    [Tags]  get
+    [Tags]  get    skip
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  google  /
