@@ -89,6 +89,7 @@ class RequestsKeywords(object):
         ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+                   It will disable warnings about self signed certs too.
 
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
@@ -129,6 +130,8 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
+            if not verify:
+                requests.packages.urllib3.disable_warnings()
         elif isinstance(verify, str) or isinstance(verify, unicode):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
