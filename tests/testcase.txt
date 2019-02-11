@@ -181,7 +181,7 @@ Post Request With Binary Data
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
     Log  ${resp.json()['form']}
-    ${value}=  evaluate  list(${resp.json()}['form'].keys())[0]
+    ${value}=  evaluate  list(${resp.json()['form']}.keys())[0]
     Should Contain  ${value}  度假村
 
 Post Request With Arbitrary Binary Data

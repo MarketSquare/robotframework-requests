@@ -14,4 +14,4 @@ install:
   - "pip install -r requirements.txt"
 
 script:
-  - pybot --exclude skip -P src tests
+  - robot --exclude skip -P src tests
