@@ -981,7 +981,7 @@ class RequestsKeywords(object):
             if self._is_string_type(v):
                 v = v.encode('utf-8')
             utf8_data[k] = v
-        return urlencode(utf8_data)
+        return urlencode(utf8_data, doseq=True)
 
     def _format_data_according_to_header(self, session, data, headers):
         # Merged headers are already case insensitive

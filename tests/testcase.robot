@@ -21,7 +21,8 @@ Get Requests
 Get Requests with Url Parameters
     [Tags]  get
     Create Session  httpbin     http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
+    @{foo}=      Create List  bar  baz
+    &{params}=   Create Dictionary   key=value     key2=value2    foo=${foo}
     ${resp}=     Get Request  httpbin  /get    params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
@@ -142,11 +143,13 @@ Put Request With No Dictionary
 Post Requests
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
-    &{data}=  Create Dictionary  name=bulkan  surname=evcimen
+    @{foo}=  Create List  bar  baz
+    &{data}=  Create Dictionary  name=bulkan  surname=evcimen  foo=${foo}
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
     Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
     Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
+    Dictionary Should Contain Value  ${resp.json()['form']}  ${foo}
 
 Post With Unicode Data
     [Tags]  post
