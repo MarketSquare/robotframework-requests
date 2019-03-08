@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/bulkan/robotframework-requests.png?branch=master)](https://travis-ci.org/bulkan/robotframework-requests)
-[![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 
 ``RequestsLibrary`` is a [Robot Framework](http://code.google.com/p/robotframework/) test library that uses the [Requests](https://github.com/kennethreitz/requests) HTTP client.
@@ -54,7 +53,20 @@ Here is another test case where an outbound http proxy is used.
 | Proxy Requests     |                            |                     |                          |                           |
 |                    | ${proxies}=                | Create Dictionary   | http=http://acme.com:912 | https=http://acme.com:913 |
 |                    | Create Session             | github              | http://api.github.com    | proxies=${proxies}        |
-|                    | ${resp}=                   | Get Request         | google                   | /                         |
+|                    | ${resp}=                   | Get Request         | github                   | /                         |
+|                    | Should Be Equal As Strings | ${resp.status_code} | 200                      |                           |
+
+Another test case where cookies are sent in the request headers:
+
+|                    |                            |                     |                          |                           |
+| ----------------   | -------------------------- | ------------------- | ------------------------ | ------------------------- |
+| *** Settings ***   |                            |                     |                          |                           |
+| Library            | RequestsLibrary            |                     |                          |                           |
+| *** Test Cases *** |                            |                     |                          |                           |
+| Cookies in request |                            |                     |                          |                           |
+|                    | ${cookies}=                | Create Dictionary   | userid=1234567           | last_visit=2017-12-22     |
+|                    | Create Session             | github              | http://api.github.com    | cookies=${cookies}        |
+|                    | ${resp}=                   | Get Request         | github                   | /                         |
 |                    | Should Be Equal As Strings | ${resp.status_code} | 200                      |                           |
 
 For more examples see the `tests` folder which contains testcase files that is used to test the keywords in this library against [httpbin.org](http://httpbin.org).

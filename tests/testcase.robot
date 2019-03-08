@@ -9,7 +9,7 @@ Suite Teardown  Delete All Sessions
 
 *** Test Cases ***
 Get Requests
-    [Tags]  get
+    [Tags]  get    skip
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  google  /
@@ -107,7 +107,7 @@ Put Requests with Json Data
 Post Request With No Data
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
-    ${resp}=  Post Request  httpbin  /post  
+    ${resp}=  Post Request  httpbin  /post
     Should Be Equal As Strings  ${resp.status_code}  200
 
 Put Request With No Data
@@ -181,7 +181,7 @@ Post Request With Binary Data
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
     Log  ${resp.json()['form']}
-    ${value}=  evaluate  list(${resp.json()}['form'].keys())[0]
+    ${value}=  evaluate  list(${resp.json()['form']}.keys())[0]
     Should Contain  ${value}  度假村
 
 Post Request With Arbitrary Binary Data
@@ -223,7 +223,7 @@ Post Request With Data and File
     &{files}=    Create Dictionary    file=${file_data}
     ${resp}=    Post Request    httpbin    /post    files=${files}    data=${data}
     Should Be Equal As Strings    ${resp.status_code}    200
-    
+
 Put Requests
     [Tags]  put
     Create Session  httpbin  http://httpbin.org
