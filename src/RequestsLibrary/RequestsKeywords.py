@@ -5,6 +5,7 @@ import sys
 import requests
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
+from requests.exceptions import HTTPError
 import logging
 from requests.packages.urllib3.util import Retry
 import robot
@@ -495,7 +496,9 @@ class RequestsKeywords(object):
             json=None,
             params=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=False
+            ):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -512,6 +515,8 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
+
+        TODO extend documentation
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -523,13 +528,50 @@ class RequestsKeywords(object):
                                         headers=headers,
                                         json=json,
                                         allow_redirects=redir,
-                                        timeout=timeout)
+                                        timeout=timeout,
+                                        fail_on_error=fail_on_error)
 
         logger.info(
             'Get Request using : alias=%s, uri=%s, headers=%s json=%s' %
             (alias, uri, headers, json))
 
         return response
+
+    def get_request_and_fail_on_error(
+            self,
+            alias,
+            uri,
+            headers=None,
+            json=None,
+            params=None,
+            allow_redirects=None,
+            timeout=None
+            ):
+        """ FIXME Send a GET request on the session object found using the
+        given `alias`
+
+        ``alias`` that will be used to identify the Session object in the cache
+
+        ``uri`` to send the GET request to
+
+        ``params`` url parameters to append to the uri
+
+        ``headers`` a dictionary of headers to use with the request
+
+        ``json`` json data to send in the body of the :class:`Request`.
+
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
+        """
+        response = self.get_request(alias,
+                                    uri=uri,
+                                    headers=headers,
+                                    json=json,
+                                    params=params,
+                                    allow_redirects=allow_redirects,
+                                    timeout=timeout,
+                                    fail_on_error=True)
 
     def post_request(
             self,
@@ -824,6 +866,7 @@ class RequestsKeywords(object):
             method,
             session,
             uri,
+            fail_on_error=False,
             **kwargs):
 
         self._capture_output()
@@ -841,6 +884,12 @@ class RequestsKeywords(object):
         session.last_resp = resp
 
         self.builtin.log(method+ ' response: ' + resp.text, 'DEBUG')
+
+        if fail_on_error:
+            try:
+                resp.raise_for_status()
+            except HTTPError as http_exception:
+                raise http_exception
 
         return resp
 
