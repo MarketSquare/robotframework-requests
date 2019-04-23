@@ -451,6 +451,17 @@ class RequestsKeywords(object):
         session.cert = tuple(client_certs)
         return session
 
+    def session_exists(self, alias):
+        """Return True if the session has been already created
+
+        ``alias`` that has been used to identify the Session object in the cache
+        """
+        try:
+            self._cache[alias]
+            return True
+        except RuntimeError:
+            return False
+
     def delete_all_sessions(self):
         """ Removes all the session objects """
         logger.info('Delete All Sessions')
