@@ -5,6 +5,7 @@ import sys
 import requests
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
+from requests.structures import CaseInsensitiveDict
 import logging
 from requests.packages.urllib3.util import Retry
 import robot
@@ -96,7 +97,7 @@ class RequestsKeywords(object):
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
 
-        self.builtin.log('Creating session: %s' % alias, 'DEBUG')
+        logger.debug('Creating session: %s' % alias)
         s = session = requests.Session()
         s.headers.update(headers)
         s.auth = auth if auth else s.auth
@@ -595,9 +596,9 @@ class RequestsKeywords(object):
             headers=headers,
             allow_redirects=redir,
             timeout=timeout)
-        dataStr = self._format_data_to_log_string_according_to_header(data, headers)
+        data_str = self._format_data_to_log_string_according_to_header(session, data, headers)
         logger.info('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s '
-                    % (alias, uri, dataStr, headers, files, redir))
+                    % (alias, uri, data_str, headers, files, redir))
 
         return response
 
@@ -764,7 +765,6 @@ class RequestsKeywords(object):
 
         return response
 
-
     def head_request(
             self,
             alias,
@@ -851,7 +851,8 @@ class RequestsKeywords(object):
         self._print_debug()
         session.last_resp = resp
 
-        self.builtin.log(method+ ' response: ' + resp.text, 'DEBUG')
+        # TODO centralize also requests log
+        logger.debug('%s response: %s' % (method, resp.text))
 
         return resp
 
@@ -894,7 +895,7 @@ class RequestsKeywords(object):
             # Remove empty lines
             debug_info = "\n".join(
                 [ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
-            self.builtin.log(debug_info, 'DEBUG')
+            logger.debug(debug_info)
 
     def _json_pretty_print(self, content):
         """
@@ -912,7 +913,6 @@ class RequestsKeywords(object):
                 ': '))
 
     def _utf8_urlencode(self, data):
-
         if self._is_string_type(data):
             return data.encode('utf-8')
 
@@ -927,6 +927,7 @@ class RequestsKeywords(object):
         return urlencode(utf8_data)
 
     def _format_data_according_to_header(self, session, data, headers):
+        # Merged headers are already case insensitive
         headers = self._merge_headers(session, headers)
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
@@ -940,30 +941,40 @@ class RequestsKeywords(object):
 
         return data
 
-    def _format_data_to_log_string_according_to_header(self, data, headers):
-        dataStr = "<empty>"
+    def _format_data_to_log_string_according_to_header(self, session, data, headers):
+        data_str = "<empty>"
+        # Merged headers are already case insensitive
+        headers = self._merge_headers(session, headers)
+
         if data is not None and headers is not None and 'Content-Type' in headers:
             if (headers['Content-Type'].find("application/json") != -1) or \
                     (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
                 if isinstance(data, bytes):
-                    dataStr = data.decode('utf-8')
+                    data_str = data.decode('utf-8')
                 else:
-                    dataStr = data
+                    data_str = data
             else:
-                dataStr = "<" + headers['Content-Type'] + ">"
+                data_str = "<" + headers['Content-Type'] + ">"
 
-        return dataStr
+        return data_str
 
     @staticmethod
     def _merge_headers(session, headers):
         if headers is None:
             headers = {}
+        if session.headers is None:
+            merged_headers = {}
         else:
-            headers = headers.copy()
+            # Session headers are the default but local headers
+            # have priority and can override values
+            merged_headers = session.headers.copy()
 
-        headers.update(session.headers)
+        # Make sure merged_headers are CaseIsensitiveDict
+        if not isinstance(merged_headers, CaseInsensitiveDict):
+            merged_headers = CaseInsensitiveDict(merged_headers)
 
-        return headers
+        merged_headers.update(headers)
+        return merged_headers
 
     @staticmethod
     def _is_json(data):
