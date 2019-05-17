@@ -817,11 +817,10 @@ class RequestsKeywords(object):
                       verify=self.verify,
                       **kwargs)
 
-        self._print_debug()
         session.last_resp = resp
 
-        # TODO centralize also requests log
-        logger.debug('%s response: %s' % (method, resp.text))
+        self._print_debug()
+        self._log_response(method, resp)
 
         return resp
 
@@ -957,6 +956,10 @@ class RequestsKeywords(object):
         logger.info(method_log + 'data=%s' % formatted_data)
         logger.info(method_log + 'json=%s' % formatted_json)
 
+    @staticmethod
+    def _log_response(method, response):
+        logger.debug('%s Response :\n' % method.upper() +
+                     response.text)
 
     @staticmethod
     def _merge_headers(session, headers):
