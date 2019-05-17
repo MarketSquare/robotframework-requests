@@ -803,12 +803,10 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        self._capture_output()
-        #TODO move in common the data formatting
-
         self._log_request(method, session, uri, **kwargs)
-
         method_function = getattr(session, method)
+
+        self._capture_output()
         resp = method_function(
                       self._get_url(session, uri),
                       params=self._utf8_urlencode(kwargs.pop('params', None)),
@@ -816,10 +814,9 @@ class RequestsKeywords(object):
                       cookies=self.cookies,
                       verify=self.verify,
                       **kwargs)
+        self._print_debug()
 
         session.last_resp = resp
-
-        self._print_debug()
         self._log_response(method, resp)
 
         return resp
@@ -935,6 +932,8 @@ class RequestsKeywords(object):
 
         # TODO would be nice to add also the alias
         # TODO would be nice to pretty format the headers / json / data
+        # TODO move in common the data formatting to have this as @staticmethod
+
         # kwargs might include: method, session, uri, params, files, headers,
         #                       data, json, allow_redirects, timeout
         args = kwargs.copy()
@@ -951,14 +950,16 @@ class RequestsKeywords(object):
         composed_log = method_log + uri_log
         for arg in args:
             composed_log += ', %s=%s' % (arg, kwargs.get(arg, None))
-        logger.info(composed_log)
-        logger.info(method_log + 'headers=%s' % merged_headers)
-        logger.info(method_log + 'data=%s' % formatted_data)
-        logger.info(method_log + 'json=%s' % formatted_json)
+        logger.info(composed_log + '\n' +
+                    'headers=%s \n' % merged_headers +
+                    'data=%s \n' % formatted_data +
+                    'json=%s' % formatted_json)
 
     @staticmethod
     def _log_response(method, response):
-        logger.debug('%s Response :\n' % method.upper() +
+        logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
+                                                               response.status_code,
+                                                               response.reason) +
                      response.text)
 
     @staticmethod
