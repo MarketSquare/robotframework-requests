@@ -943,7 +943,6 @@ class RequestsKeywords(object):
         formatted_data = self._format_data_to_log_string_according_to_headers(session,
                                                                               args.pop('data', None),
                                                                               merged_headers)
-        # FIXME handle formatting
         formatted_json = args.pop('json', None)
         method_log = '%s Request using : ' % method.upper()
         uri_log = 'uri=%s' % uri
