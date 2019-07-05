@@ -481,8 +481,8 @@ class RequestsKeywords(object):
             alias,
             uri,
             headers=None,
-            json=None,
             params=None,
+            json=None,
             allow_redirects=None,
             timeout=None):
         """ Send a GET request on the session object found using the
@@ -492,9 +492,9 @@ class RequestsKeywords(object):
 
         ``uri`` to send the GET request to
 
-        ``params`` url parameters to append to the uri
-
         ``headers`` a dictionary of headers to use with the request
+
+        ``params`` url parameters to append to the uri
 
         ``json`` json data to send in the body of the :class:`Request`.
 
@@ -543,7 +543,7 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout, json)
+            session, uri, params, headers, None, redir, timeout)
 
         return response
 
