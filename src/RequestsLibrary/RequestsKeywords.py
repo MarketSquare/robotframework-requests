@@ -231,7 +231,7 @@ class RequestsKeywords(object):
 
         ``cookies`` Dictionary of cookies
 
-        ``auth`` A Custom Authentication object to be passed on to the reqests library.
+        ``auth`` A Custom Authentication object to be passed on to the requests library.
                 http://docs.python-requests.org/en/master/user/advanced/#custom-authentication
 
         ``timeout`` Connection timeout
@@ -504,6 +504,7 @@ class RequestsKeywords(object):
             alias,
             uri,
             headers=None,
+            data=None,
             json=None,
             params=None,
             allow_redirects=None,
@@ -519,7 +520,12 @@ class RequestsKeywords(object):
 
         ``headers`` a dictionary of headers to use with the request
 
-        ``json`` json data to send in the body of the :class:`Request`.
+        ``data`` a dictionary of key-value pairs that will be urlencoded
+               and sent as GET data
+               or binary data that is sent as the raw body content
+
+        ``json`` a value that will be json encoded
+               and sent as GET data if data is not specified
 
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
@@ -533,14 +539,10 @@ class RequestsKeywords(object):
                                         uri,
                                         params=params,
                                         headers=headers,
+                                        data=data,
                                         json=json,
                                         allow_redirects=redir,
                                         timeout=timeout)
-
-        logger.info(
-            'Get Request using : alias=%s, uri=%s, headers=%s json=%s' %
-            (alias, uri, headers, json))
-
         return response
 
     def post_request(
@@ -596,10 +598,6 @@ class RequestsKeywords(object):
             headers=headers,
             allow_redirects=redir,
             timeout=timeout)
-        data_str = self._format_data_to_log_string_according_to_header(session, data, headers)
-        logger.info('Post Request using : alias=%s, uri=%s, data=%s, headers=%s, files=%s, allow_redirects=%s '
-                    % (alias, uri, data_str, headers, files, redir))
-
         return response
 
     def patch_request(
@@ -653,12 +651,6 @@ class RequestsKeywords(object):
             allow_redirects=redir,
             timeout=timeout)
 
-        if isinstance(data, bytes):
-            data = data.decode('utf-8')
-        logger.info('Patch Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, files=%s, allow_redirects=%s '
-                    % (alias, uri, data, headers, files, redir))
-
         return response
 
     def put_request(
@@ -710,11 +702,6 @@ class RequestsKeywords(object):
             allow_redirects=redir,
             timeout=timeout)
 
-        if isinstance(data, bytes):
-            data = data.decode('utf-8')
-        logger.info('Put Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
-
         return response
 
     def delete_request(
@@ -758,11 +745,6 @@ class RequestsKeywords(object):
             allow_redirects=redir,
             timeout=timeout)
 
-        if isinstance(data, bytes):
-            data = data.decode('utf-8')
-        logger.info('Delete Request using : alias=%s, uri=%s, data=%s, \
-                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
-
         return response
 
     def head_request(
@@ -792,8 +774,6 @@ class RequestsKeywords(object):
             headers=headers,
             allow_redirects=redir,
             timeout=timeout)
-        logger.info('Head Request using : alias=%s, uri=%s, headers=%s, \
-        allow_redirects=%s ' % (alias, uri, headers, redir))
 
         return response
 
@@ -824,9 +804,6 @@ class RequestsKeywords(object):
             headers=headers,
             allow_redirects=redir,
             timeout=timeout)
-        logger.info(
-            'Options Request using : alias=%s, uri=%s, headers=%s, allow_redirects=%s ' %
-            (alias, uri, headers, redir))
 
         return response
 
@@ -837,9 +814,10 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        self._capture_output()
-
+        self._log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
+
+        self._capture_output()
         resp = method_function(
                       self._get_url(session, uri),
                       params=self._utf8_urlencode(kwargs.pop('params', None)),
@@ -847,12 +825,10 @@ class RequestsKeywords(object):
                       cookies=self.cookies,
                       verify=self.verify,
                       **kwargs)
-
         self._print_debug()
-        session.last_resp = resp
 
-        # TODO centralize also requests log
-        logger.debug('%s response: %s' % (method, resp.text))
+        session.last_resp = resp
+        self._log_response(method, resp)
 
         return resp
 
@@ -941,8 +917,8 @@ class RequestsKeywords(object):
 
         return data
 
-    def _format_data_to_log_string_according_to_header(self, session, data, headers):
-        data_str = "<empty>"
+    def _format_data_to_log_string_according_to_headers(self, session, data, headers):
+        data_str = None
         # Merged headers are already case insensitive
         headers = self._merge_headers(session, headers)
 
@@ -957,6 +933,44 @@ class RequestsKeywords(object):
                 data_str = "<" + headers['Content-Type'] + ">"
 
         return data_str
+
+    def _log_request(
+            self,
+            method,
+            session,
+            uri,
+            **kwargs):
+
+        # TODO would be nice to add also the alias
+        # TODO would be nice to pretty format the headers / json / data
+        # TODO move in common the data formatting to have this as @staticmethod
+
+        # kwargs might include: method, session, uri, params, files, headers,
+        #                       data, json, allow_redirects, timeout
+        args = kwargs.copy()
+        args.pop('session', None)
+        # This will log specific headers merged with session defined headers
+        merged_headers = self._merge_headers(session, args.pop('headers', None))
+        formatted_data = self._format_data_to_log_string_according_to_headers(session,
+                                                                              args.pop('data', None),
+                                                                              merged_headers)
+        formatted_json = args.pop('json', None)
+        method_log = '%s Request using : ' % method.upper()
+        uri_log = 'uri=%s' % uri
+        composed_log = method_log + uri_log
+        for arg in args:
+            composed_log += ', %s=%s' % (arg, kwargs.get(arg, None))
+        logger.info(composed_log + '\n' +
+                    'headers=%s \n' % merged_headers +
+                    'data=%s \n' % formatted_data +
+                    'json=%s' % formatted_json)
+
+    @staticmethod
+    def _log_response(method, response):
+        logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
+                                                               response.status_code,
+                                                               response.reason) +
+                     response.text)
 
     @staticmethod
     def _merge_headers(session, headers):
