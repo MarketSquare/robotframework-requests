@@ -65,37 +65,11 @@ class RequestsKeywords(object):
             timeout,
             max_retries,
             backoff_factor,
+            retry_status_list,
             proxies,
             verify,
             debug,
             disable_warnings):
-        """ Create Session: create a HTTP session to a server
-
-        ``url`` Base url of the server
-
-        ``alias`` Robot Framework alias to identify the session
-
-        ``headers`` Dictionary of default headers
-
-        ``cookies`` Dictionary of cookies
-
-        ``auth`` List of username & password for HTTP Basic Auth
-
-        ``timeout`` Connection timeout
-
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
-
-        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
-
-        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-
-        ``debug`` Enable http verbosity option more information
-                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-
-        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
-        """
 
         logger.debug('Creating session: %s' % alias)
         s = session = requests.Session()
@@ -109,8 +83,9 @@ class RequestsKeywords(object):
             raise ValueError("Error converting max_retries parameter: %s"   % err)
 
         if max_retries > 0:
-            http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-            https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
+            retry = Retry(total=max_retries, backoff_factor=backoff_factor, status_forcelist=retry_status_list)
+            http = requests.adapters.HTTPAdapter(max_retries=retry)
+            https = requests.adapters.HTTPAdapter(max_retries=retry)
 
             # Replace the session's original adapters
             s.mount('http://', http)
@@ -157,12 +132,15 @@ class RequestsKeywords(object):
 
     def create_session(self, alias, url, headers={}, cookies={},
                        auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+                       verify=False, debug=0,
+                       max_retries=3, backoff_factor=0.10,
+                       retry_status_list=None,
+                       disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
-        ``url`` Base url of the server
-
         ``alias`` Robot Framework alias to identify the session
+
+        ``url`` Base url of the server
 
         ``headers`` Dictionary of default headers
 
@@ -175,14 +153,29 @@ class RequestsKeywords(object):
         ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-                 Defaults to False.
 
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
+        # TODO how to explain that by default retries it is disabled and how to enable it
 
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` The maximum number of retries each connection should attempt.
+                        If not greater than zero this will disable any kind of retry.
+                        Default FIXME
+
+        ``backoff_factor`` Introduces a sleep between retry attempts.
+                           Note that the time waited is double after each retry
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` Set of uppercased HTTP method verbs that we should retry on.
+
+                            By default, we only retry on methods which are considered to be
+                            idempotent (multiple requests with the same parameters end with the
+                            same state).
+
+        ``retry_status_list`` A set of integer HTTP status codes that we should force a retry on.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
@@ -202,6 +195,7 @@ class RequestsKeywords(object):
             timeout,
             max_retries,
             backoff_factor,
+            retry_status_list,
             proxies,
             verify,
             debug,
