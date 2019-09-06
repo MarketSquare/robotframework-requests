@@ -79,11 +79,14 @@ class RequestsKeywords(object):
 
         try:
             max_retries = int(max_retries)
+            retry_status_list = [int(x) for x in retry_status_list] if retry_status_list else None
         except ValueError as err:
-            raise ValueError("Error converting max_retries parameter: %s"   % err)
+            raise ValueError("Error converting session parameter: %s" % err)
 
         if max_retries > 0:
-            retry = Retry(total=max_retries, backoff_factor=backoff_factor, status_forcelist=retry_status_list)
+            retry = Retry(total=max_retries,
+                          backoff_factor=backoff_factor,
+                          status_forcelist=retry_status_list)
             http = requests.adapters.HTTPAdapter(max_retries=retry)
             https = requests.adapters.HTTPAdapter(max_retries=retry)
 
@@ -130,12 +133,21 @@ class RequestsKeywords(object):
         self._cache.register(session, alias=alias)
         return session
 
-    def create_session(self, alias, url, headers={}, cookies={},
-                       auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0,
-                       max_retries=3, backoff_factor=0.10,
-                       retry_status_list=None,
-                       disable_warnings=0):
+    def create_session(self,
+                       alias,
+                       url,
+                       headers={},
+                       cookies={},
+                       auth=None,
+                       timeout=None,
+                       proxies=None,
+                       verify=False,
+                       debug=0,
+                       max_retries=3,
+                       backoff_factor=0.10,
+                       disable_warnings=0,
+                       retry_status_list=[]
+                       ):
         """ Create Session: create a HTTP session to a server
 
         ``alias`` Robot Framework alias to identify the session
@@ -163,6 +175,8 @@ class RequestsKeywords(object):
                         If not greater than zero this will disable any kind of retry.
                         Default FIXME
 
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
         ``backoff_factor`` Introduces a sleep between retry attempts.
                            Note that the time waited is double after each retry
                            eg. if backoff_factor is set to 0.1
@@ -177,7 +191,6 @@ class RequestsKeywords(object):
 
         ``retry_status_list`` A set of integer HTTP status codes that we should force a retry on.
 
-        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
@@ -185,21 +198,20 @@ class RequestsKeywords(object):
                     cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
                     debug=%s ' % (alias, url, headers, cookies, auth, timeout,
                                   proxies, verify, debug))
-
         return self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            auth,
-            timeout,
-            max_retries,
-            backoff_factor,
-            retry_status_list,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list)
 
     def create_custom_session(
             self,
@@ -214,7 +226,9 @@ class RequestsKeywords(object):
             debug=0,
             max_retries=3,
             backoff_factor=0.10,
-            disable_warnings=0):
+            disable_warnings=0,
+            retry_status_list=[]):
+        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -251,18 +265,19 @@ class RequestsKeywords(object):
                                   proxies, verify, debug))
 
         return self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            auth,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list)
 
     def create_ntlm_session(
             self,
@@ -277,7 +292,9 @@ class RequestsKeywords(object):
             debug=0,
             max_retries=3,
             backoff_factor=0.10,
-            disable_warnings=0):
+            disable_warnings=0,
+            retry_status_list=[]):
+        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -321,22 +338,35 @@ class RequestsKeywords(object):
                            timeout, proxies, verify, debug))
 
             return self._create_session(
-                alias,
-                url,
-                headers,
-                cookies,
-                ntlm_auth,
-                timeout,
-                max_retries,
-                backoff_factor,
-                proxies,
-                verify,
-                debug,
-                disable_warnings)
+                alias=alias,
+                url=url,
+                headers=headers,
+                cookies=cookies,
+                auth=ntlm_auth,
+                timeout=timeout,
+                max_retries=max_retries,
+                backoff_factor=backoff_factor,
+                proxies=proxies,
+                verify=verify,
+                debug=debug,
+                disable_warnings=disable_warnings,
+                retry_status_list=retry_status_list)
 
-    def create_digest_session(self, alias, url, auth, headers={}, cookies={},
-                              timeout=None, proxies=None, verify=False,
-                              debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+    def create_digest_session(
+            self,
+            alias,
+            url,
+            auth,
+            headers={},
+            cookies={},
+            timeout=None,
+            proxies=None, verify=False,
+            debug=0,
+            max_retries=3,
+            backoff_factor=0.10,
+            disable_warnings=0,
+            retry_status_list=[]):
+        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -368,18 +398,19 @@ class RequestsKeywords(object):
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
         return self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            digest_auth,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=digest_auth,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list)
 
     def create_client_cert_session(
             self,
@@ -394,7 +425,9 @@ class RequestsKeywords(object):
             debug=0,
             max_retries=3,
             backoff_factor=0.10,
-            disable_warnings=0):
+            disable_warnings=0,
+            retry_status_list=[]):
+        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -430,18 +463,19 @@ class RequestsKeywords(object):
                                   proxies, verify, debug))
 
         session = self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            None,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=None,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list)
 
         session.cert = tuple(client_certs)
         return session
@@ -528,15 +562,17 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._common_request("get",
-                                        session,
-                                        uri,
-                                        params=params,
-                                        headers=headers,
-                                        data=data,
-                                        json=json,
-                                        allow_redirects=redir,
-                                        timeout=timeout)
+        response = self._common_request(
+            "get",
+            session,
+            uri,
+            params=params,
+            headers=headers,
+            data=data,
+            json=json,
+            allow_redirects=redir,
+            timeout=timeout)
+
         return response
 
     def post_request(
@@ -813,12 +849,12 @@ class RequestsKeywords(object):
 
         self._capture_output()
         resp = method_function(
-                      self._get_url(session, uri),
-                      params=self._utf8_urlencode(kwargs.pop('params', None)),
-                      timeout=self._get_timeout(kwargs.pop('timeout', None)),
-                      cookies=self.cookies,
-                      verify=self.verify,
-                      **kwargs)
+            self._get_url(session, uri),
+            params=self._utf8_urlencode(kwargs.pop('params', None)),
+            timeout=self._get_timeout(kwargs.pop('timeout', None)),
+            cookies=self.cookies,
+            verify=self.verify,
+            **kwargs)
         self._print_debug()
 
         session.last_resp = resp
