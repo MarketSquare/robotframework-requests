@@ -16,6 +16,11 @@ Retry Session With Empty Retry Status List
     ${retry_status_list}=   Set Variable  ${Empty}
     Create Session  httpbin  http://httpbin.org  retry_status_list=${retry_status_list}
 
+Retry Session With Empty Retry Method List
+    [Tags]  session  retry
+    ${retry_method_list}=   Set Variable  ${Empty}
+    Create Session  httpbin  http://httpbin.org  retry_method_list=${retry_method_list}
+
 Retry Get Request Because Of 502 Error With Default Config
     [Tags]  get  retry
     ${retry_status_list}=   Create List  502  503
@@ -33,3 +38,17 @@ Retry Disabled Get Request
     ${retry_status_list}=   Create List  502  503
     Create Session  httpbin  http://httpbin.org  max_retries=0  retry_status_list=${retry_status_list}
     Get Request  httpbin  /status/502
+
+Retry Post Request Because Of 502 Error With Default Config
+    [Tags]  post  retry
+    ${retry_status_list}=   Create List  502
+    ${retry_method_list}=   Create List  GET  POST
+    Create Session  httpbin  http://httpbin.org  retry_status_list=${retry_status_list}  retry_method_list=${retry_method_list}
+    Run Keyword And Expect Error  RetryError: *   Post Request  httpbin  /status/502
+
+Retry Post Request Because Of 502 Error With Wrong Config
+    [Tags]  post  retry
+    ${retry_status_list}=   Create List  502
+    ${retry_method_list}=   Create List  WRONG
+    Create Session  httpbin  http://httpbin.org  retry_status_list=${retry_status_list}  retry_method_list=${retry_method_list}
+    Post Request  httpbin  /status/502

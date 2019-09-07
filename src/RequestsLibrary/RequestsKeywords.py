@@ -49,6 +49,7 @@ class RequestsKeywords(object):
     |                        | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Savun Evcimen  |               |
     """
     ROBOT_LIBRARY_SCOPE = 'Global'
+    DEFAULT_RETRY_METHOD_LIST = Retry.DEFAULT_METHOD_WHITELIST
 
     def __init__(self):
         self._cache = robot.utils.ConnectionCache('No sessions created')
@@ -63,13 +64,14 @@ class RequestsKeywords(object):
             cookies,
             auth,
             timeout,
-            max_retries,
-            backoff_factor,
-            retry_status_list,
             proxies,
             verify,
             debug,
-            disable_warnings):
+            max_retries,
+            backoff_factor,
+            disable_warnings,
+            retry_status_list,
+            retry_method_list):
 
         logger.debug('Creating session: %s' % alias)
         s = session = requests.Session()
@@ -86,7 +88,8 @@ class RequestsKeywords(object):
         if max_retries > 0:
             retry = Retry(total=max_retries,
                           backoff_factor=backoff_factor,
-                          status_forcelist=retry_status_list)
+                          status_forcelist=retry_status_list,
+                          method_whitelist=retry_method_list)
             http = requests.adapters.HTTPAdapter(max_retries=retry)
             https = requests.adapters.HTTPAdapter(max_retries=retry)
 
@@ -146,8 +149,8 @@ class RequestsKeywords(object):
                        max_retries=3,
                        backoff_factor=0.10,
                        disable_warnings=0,
-                       retry_status_list=[]
-                       ):
+                       retry_status_list=[],
+                       retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         """ Create Session: create a HTTP session to a server
 
         ``alias`` Robot Framework alias to identify the session
@@ -211,7 +214,8 @@ class RequestsKeywords(object):
             verify=verify,
             debug=debug,
             disable_warnings=disable_warnings,
-            retry_status_list=retry_status_list)
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
     def create_custom_session(
             self,
@@ -227,7 +231,8 @@ class RequestsKeywords(object):
             max_retries=3,
             backoff_factor=0.10,
             disable_warnings=0,
-            retry_status_list=[]):
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
@@ -277,7 +282,8 @@ class RequestsKeywords(object):
             verify=verify,
             debug=debug,
             disable_warnings=disable_warnings,
-            retry_status_list=retry_status_list)
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
     def create_ntlm_session(
             self,
@@ -293,7 +299,8 @@ class RequestsKeywords(object):
             max_retries=3,
             backoff_factor=0.10,
             disable_warnings=0,
-            retry_status_list=[]):
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
@@ -350,7 +357,8 @@ class RequestsKeywords(object):
                 verify=verify,
                 debug=debug,
                 disable_warnings=disable_warnings,
-                retry_status_list=retry_status_list)
+                retry_status_list=retry_status_list,
+                retry_method_list=retry_method_list)
 
     def create_digest_session(
             self,
@@ -365,7 +373,8 @@ class RequestsKeywords(object):
             max_retries=3,
             backoff_factor=0.10,
             disable_warnings=0,
-            retry_status_list=[]):
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
@@ -410,7 +419,8 @@ class RequestsKeywords(object):
             verify=verify,
             debug=debug,
             disable_warnings=disable_warnings,
-            retry_status_list=retry_status_list)
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
     def create_client_cert_session(
             self,
@@ -426,7 +436,8 @@ class RequestsKeywords(object):
             max_retries=3,
             backoff_factor=0.10,
             disable_warnings=0,
-            retry_status_list=[]):
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
@@ -475,7 +486,8 @@ class RequestsKeywords(object):
             verify=verify,
             debug=debug,
             disable_warnings=disable_warnings,
-            retry_status_list=retry_status_list)
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
         session.cert = tuple(client_certs)
         return session
