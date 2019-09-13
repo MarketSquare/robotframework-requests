@@ -252,13 +252,11 @@ Delete Request With URL Params
     ${resp}=  Delete Request  httpbin  /delete		${params}
     Should Be Equal As Strings  ${resp.status_code}  200
 
-
 Delete Request With No Data
     [Tags]  delete
     Create Session  httpbin  http://httpbin.org
     ${resp}=  Delete Request  httpbin  /delete
     Should Be Equal As Strings  ${resp.status_code}  200
-
 
 Delete Request With Data
     [Tags]  delete

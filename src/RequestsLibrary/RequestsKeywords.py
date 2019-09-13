@@ -1,4 +1,5 @@
 import json
+import copy
 import types
 import sys
 
@@ -31,24 +32,8 @@ class WritableObject:
 
 
 class RequestsKeywords(object):
-    """``RequestsLibrary`` is a [http://code.google.com/p/robotframework/|Robot Framework] test library that uses the [https://github.com/kennethreitz/requests|Requests] HTTP client.
-
-    Here is an example testcase
-
-    | ***** Settings *****   |                                 |                     |                       |               |
-    | Library                | Collections                     |                     |                       |               |
-    | Library                | RequestsLibrary                 |                     |                       |               |
-    | ***** Test Cases ***** |                                 |                     |                       |               |
-    | Get Requests           |                                 |                     |                       |               |
-    |                        | Create Session                  | github              | http://api.github.com |               |
-    |                        | Create Session                  | google              | http://www.google.com |               |
-    |                        | ${resp}=                        | Get Request         | google                | /             |
-    |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
-    |                        | ${resp}=                        | Get Request         | github                | /users/bulkan |
-    |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
-    |                        | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Savun Evcimen  |               |
-    """
     ROBOT_LIBRARY_SCOPE = 'Global'
+    DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
     def __init__(self):
         self._cache = robot.utils.ConnectionCache('No sessions created')
@@ -63,39 +48,14 @@ class RequestsKeywords(object):
             cookies,
             auth,
             timeout,
-            max_retries,
-            backoff_factor,
             proxies,
             verify,
             debug,
-            disable_warnings):
-        """ Create Session: create a HTTP session to a server
-
-        ``url`` Base url of the server
-
-        ``alias`` Robot Framework alias to identify the session
-
-        ``headers`` Dictionary of default headers
-
-        ``cookies`` Dictionary of cookies
-
-        ``auth`` List of username & password for HTTP Basic Auth
-
-        ``timeout`` Connection timeout
-
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
-
-        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
-
-        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-
-        ``debug`` Enable http verbosity option more information
-                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-
-        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
-        """
+            max_retries,
+            backoff_factor,
+            disable_warnings,
+            retry_status_list,
+            retry_method_list):
 
         logger.debug('Creating session: %s' % alias)
         s = session = requests.Session()
@@ -105,12 +65,17 @@ class RequestsKeywords(object):
 
         try:
             max_retries = int(max_retries)
+            retry_status_list = [int(x) for x in retry_status_list] if retry_status_list else None
         except ValueError as err:
-            raise ValueError("Error converting max_retries parameter: %s"   % err)
+            raise ValueError("Error converting session parameter: %s" % err)
 
         if max_retries > 0:
-            http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-            https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
+            retry = Retry(total=max_retries,
+                          backoff_factor=backoff_factor,
+                          status_forcelist=retry_status_list,
+                          method_whitelist=retry_method_list)
+            http = requests.adapters.HTTPAdapter(max_retries=retry)
+            https = requests.adapters.HTTPAdapter(max_retries=retry)
 
             # Replace the session's original adapters
             s.mount('http://', http)
@@ -155,14 +120,26 @@ class RequestsKeywords(object):
         self._cache.register(session, alias=alias)
         return session
 
-    def create_session(self, alias, url, headers={}, cookies={},
-                       auth=None, timeout=None, proxies=None,
-                       verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+    def create_session(self,
+                       alias,
+                       url,
+                       headers={},
+                       cookies={},
+                       auth=None,
+                       timeout=None,
+                       proxies=None,
+                       verify=False,
+                       debug=0,
+                       max_retries=3,
+                       backoff_factor=0.10,
+                       disable_warnings=0,
+                       retry_status_list=[],
+                       retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         """ Create Session: create a HTTP session to a server
 
-        ``url`` Base url of the server
-
         ``alias`` Robot Framework alias to identify the session
+
+        ``url`` Base url of the server
 
         ``headers`` Dictionary of default headers
 
@@ -175,16 +152,31 @@ class RequestsKeywords(object):
         ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-                 Defaults to False.
 
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
+
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
@@ -192,20 +184,21 @@ class RequestsKeywords(object):
                     cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
                     debug=%s ' % (alias, url, headers, cookies, auth, timeout,
                                   proxies, verify, debug))
-
         return self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            auth,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
     def create_custom_session(
             self,
@@ -220,7 +213,9 @@ class RequestsKeywords(object):
             debug=0,
             max_retries=3,
             backoff_factor=0.10,
-            disable_warnings=0):
+            disable_warnings=0,
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -244,11 +239,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
 
         logger.info('Creating Custom Authenticated Session using : alias=%s, url=%s, headers=%s, \
@@ -257,18 +267,20 @@ class RequestsKeywords(object):
                                   proxies, verify, debug))
 
         return self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            auth,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
     def create_ntlm_session(
             self,
@@ -283,7 +295,9 @@ class RequestsKeywords(object):
             debug=0,
             max_retries=3,
             backoff_factor=0.10,
-            disable_warnings=0):
+            disable_warnings=0,
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -306,11 +320,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -327,22 +356,36 @@ class RequestsKeywords(object):
                            timeout, proxies, verify, debug))
 
             return self._create_session(
-                alias,
-                url,
-                headers,
-                cookies,
-                ntlm_auth,
-                timeout,
-                max_retries,
-                backoff_factor,
-                proxies,
-                verify,
-                debug,
-                disable_warnings)
+                alias=alias,
+                url=url,
+                headers=headers,
+                cookies=cookies,
+                auth=ntlm_auth,
+                timeout=timeout,
+                max_retries=max_retries,
+                backoff_factor=backoff_factor,
+                proxies=proxies,
+                verify=verify,
+                debug=debug,
+                disable_warnings=disable_warnings,
+                retry_status_list=retry_status_list,
+                retry_method_list=retry_method_list)
 
-    def create_digest_session(self, alias, url, auth, headers={}, cookies={},
-                              timeout=None, proxies=None, verify=False,
-                              debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+    def create_digest_session(
+            self,
+            alias,
+            url,
+            auth,
+            headers={},
+            cookies={},
+            timeout=None,
+            proxies=None, verify=False,
+            debug=0,
+            max_retries=3,
+            backoff_factor=0.10,
+            disable_warnings=0,
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -365,27 +408,44 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
         return self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            digest_auth,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=digest_auth,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
     def create_client_cert_session(
             self,
@@ -400,7 +460,9 @@ class RequestsKeywords(object):
             debug=0,
             max_retries=3,
             backoff_factor=0.10,
-            disable_warnings=0):
+            disable_warnings=0,
+            retry_status_list=[],
+            retry_method_list=DEFAULT_RETRY_METHOD_LIST):
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -423,11 +485,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
 
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
@@ -436,18 +513,20 @@ class RequestsKeywords(object):
                                   proxies, verify, debug))
 
         session = self._create_session(
-            alias,
-            url,
-            headers,
-            cookies,
-            None,
-            timeout,
-            max_retries,
-            backoff_factor,
-            proxies,
-            verify,
-            debug,
-            disable_warnings)
+            alias=alias,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            auth=None,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            proxies=proxies,
+            verify=verify,
+            debug=debug,
+            disable_warnings=disable_warnings,
+            retry_status_list=retry_status_list,
+            retry_method_list=retry_method_list)
 
         session.cert = tuple(client_certs)
         return session
@@ -534,15 +613,17 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._common_request("get",
-                                        session,
-                                        uri,
-                                        params=params,
-                                        headers=headers,
-                                        data=data,
-                                        json=json,
-                                        allow_redirects=redir,
-                                        timeout=timeout)
+        response = self._common_request(
+            "get",
+            session,
+            uri,
+            params=params,
+            headers=headers,
+            data=data,
+            json=json,
+            allow_redirects=redir,
+            timeout=timeout)
+
         return response
 
     def post_request(
@@ -819,12 +900,12 @@ class RequestsKeywords(object):
 
         self._capture_output()
         resp = method_function(
-                      self._get_url(session, uri),
-                      params=self._utf8_urlencode(kwargs.pop('params', None)),
-                      timeout=self._get_timeout(kwargs.pop('timeout', None)),
-                      cookies=self.cookies,
-                      verify=self.verify,
-                      **kwargs)
+            self._get_url(session, uri),
+            params=self._utf8_urlencode(kwargs.pop('params', None)),
+            timeout=self._get_timeout(kwargs.pop('timeout', None)),
+            cookies=self.cookies,
+            verify=self.verify,
+            **kwargs)
         self._print_debug()
 
         session.last_resp = resp
