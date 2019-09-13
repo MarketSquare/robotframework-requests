@@ -1,4 +1,5 @@
 import json
+import copy
 import types
 import sys
 
@@ -31,25 +32,8 @@ class WritableObject:
 
 
 class RequestsKeywords(object):
-    """``RequestsLibrary`` is a [http://code.google.com/p/robotframework/|Robot Framework] test library that uses the [https://github.com/kennethreitz/requests|Requests] HTTP client.
-
-    Here is an example testcase
-
-    | ***** Settings *****   |                                 |                     |                       |               |
-    | Library                | Collections                     |                     |                       |               |
-    | Library                | RequestsLibrary                 |                     |                       |               |
-    | ***** Test Cases ***** |                                 |                     |                       |               |
-    | Get Requests           |                                 |                     |                       |               |
-    |                        | Create Session                  | github              | http://api.github.com |               |
-    |                        | Create Session                  | google              | http://www.google.com |               |
-    |                        | ${resp}=                        | Get Request         | google                | /             |
-    |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
-    |                        | ${resp}=                        | Get Request         | github                | /users/bulkan |
-    |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
-    |                        | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Savun Evcimen  |               |
-    """
     ROBOT_LIBRARY_SCOPE = 'Global'
-    DEFAULT_RETRY_METHOD_LIST = Retry.DEFAULT_METHOD_WHITELIST
+    DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
     def __init__(self):
         self._cache = robot.utils.ConnectionCache('No sessions created')
@@ -172,27 +156,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        # TODO how to explain that by default retries it is disabled and how to enable it
-
-        ``max_retries`` The maximum number of retries each connection should attempt.
-                        If not greater than zero this will disable any kind of retry.
-                        Default FIXME
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
 
-        ``backoff_factor`` Introduces a sleep between retry attempts.
-                           Note that the time waited is double after each retry
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
                            eg. if backoff_factor is set to 0.1
                            the sleep between attemps will be: 0.0, 0.2, 0.4
                            More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
 
-        ``retry_method_list`` Set of uppercased HTTP method verbs that we should retry on.
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
 
-                            By default, we only retry on methods which are considered to be
-                            idempotent (multiple requests with the same parameters end with the
-                            same state).
-
-        ``retry_status_list`` A set of integer HTTP status codes that we should force a retry on.
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
 
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
@@ -233,7 +216,6 @@ class RequestsKeywords(object):
             disable_warnings=0,
             retry_status_list=[],
             retry_method_list=DEFAULT_RETRY_METHOD_LIST):
-        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -257,11 +239,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
 
         logger.info('Creating Custom Authenticated Session using : alias=%s, url=%s, headers=%s, \
@@ -324,11 +321,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -398,11 +410,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
@@ -438,7 +465,6 @@ class RequestsKeywords(object):
             disable_warnings=0,
             retry_status_list=[],
             retry_method_list=DEFAULT_RETRY_METHOD_LIST):
-        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -461,11 +487,26 @@ class RequestsKeywords(object):
         ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        ``max_retries`` The maximum number of retries each connection should attempt.
-
-        ``backoff_factor`` The pause between for each retry
+        ``max_retries`` Number of maximum retries each connection should attempt.
+                        By default it will retry 3 times in case of connection errors only.
+                        A 0 value will disable any kind of retries regardless of other retry settings.
+                        In case the number of retries is reached a retry exception is raised.
 
         ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+
+        ``backoff_factor`` Introduces a delay time between retries that is longer after each retry.
+                           eg. if backoff_factor is set to 0.1
+                           the sleep between attemps will be: 0.0, 0.2, 0.4
+                           More info here: https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html
+
+        ``retry_method_list`` List of uppercased HTTP method verbs where retries are allowed.
+                              By default retries are allowed only on HTTP requests methods that are considered to be
+                              idempotent (multiple requests with the same parameters end with the same state).
+                              eg. set to ['POST', 'GET'] to retry only those kind of requests.
+
+        ``retry_status_list`` List of integer HTTP status codes that, if returned, a retry is attempted.
+                              eg. set to [502, 503] to retry requests if those status are returned.
+                              Note that max_retries must be greater than 0.
         """
 
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
