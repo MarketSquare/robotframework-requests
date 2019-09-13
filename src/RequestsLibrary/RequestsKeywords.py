@@ -298,7 +298,6 @@ class RequestsKeywords(object):
             disable_warnings=0,
             retry_status_list=[],
             retry_method_list=DEFAULT_RETRY_METHOD_LIST):
-        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
@@ -387,7 +386,6 @@ class RequestsKeywords(object):
             disable_warnings=0,
             retry_status_list=[],
             retry_method_list=DEFAULT_RETRY_METHOD_LIST):
-        # FIXME Update Documentation with new retry options
         """ Create Session: create a HTTP session to a server
 
         ``url`` Base url of the server
