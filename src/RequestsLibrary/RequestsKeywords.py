@@ -935,8 +935,9 @@ class RequestsKeywords(object):
             method,
             session,
             uri,
-            fail_on_error=False, # FIXME not correct
             **kwargs):
+
+        fail_on_error = kwargs.pop('fail_on_error', None)
 
         self._log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
