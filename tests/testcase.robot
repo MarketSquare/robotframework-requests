@@ -107,7 +107,7 @@ Put Requests with Json Data
 Post Request With No Data
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
-    ${resp}=  Post Request  httpbin  /post  
+    ${resp}=  Post Request  httpbin  /post
     Should Be Equal As Strings  ${resp.status_code}  200
 
 Put Request With No Data
@@ -181,7 +181,7 @@ Post Request With Binary Data
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
     Log  ${resp.json()['form']}
-    ${value}=  evaluate  list(${resp.json()}['form'].keys())[0]
+    ${value}=  evaluate  list(${resp.json()['form']}.keys())[0]
     Should Contain  ${value}  度假村
 
 Post Request With Arbitrary Binary Data
@@ -203,7 +203,6 @@ Post With File
     Dictionary Should Contain Key  ${file}  one
     Dictionary Should Contain Key  ${file}  two
 
-
 Post Request With File
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
@@ -223,7 +222,7 @@ Post Request With Data and File
     &{files}=    Create Dictionary    file=${file_data}
     ${resp}=    Post Request    httpbin    /post    files=${files}    data=${data}
     Should Be Equal As Strings    ${resp.status_code}    200
-    
+
 Put Requests
     [Tags]  put
     Create Session  httpbin  http://httpbin.org
@@ -246,7 +245,6 @@ Options Request
     Should Be Equal As Strings  ${resp.status_code}  200
     Dictionary Should Contain Key  ${resp.headers}  allow
 
-
 Delete Request With URL Params
     [Tags]  delete
     Create Session  httpbin  http://httpbin.org
@@ -254,13 +252,11 @@ Delete Request With URL Params
     ${resp}=  Delete Request  httpbin  /delete		${params}
     Should Be Equal As Strings  ${resp.status_code}  200
 
-
 Delete Request With No Data
     [Tags]  delete
     Create Session  httpbin  http://httpbin.org
     ${resp}=  Delete Request  httpbin  /delete
     Should Be Equal As Strings  ${resp.status_code}  200
-
 
 Delete Request With Data
     [Tags]  delete
@@ -398,3 +394,14 @@ Set Pretty Print to non-Boolean value
     Should Contain    ${output}    "key_one": "true"
     Should Contain    ${output}    "key_two": "this is a test string"
     Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
+
+Create a session and make sure it exists
+    [Tags]    session
+    Create Session     jigsaw2  http://jigsaw.w3.org
+    ${exists}=         Session Exists    jigsaw2
+    Should Be True     ${exists}
+
+Verify a non existing session
+    [Tags]    session
+    ${exists}=          Session Exists    non-existing-session
+    Should Not Be True  ${exists}

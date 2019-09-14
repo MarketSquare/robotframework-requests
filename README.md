@@ -12,7 +12,7 @@ pip install -U requests
 pip install -U robotframework-requests
 ```
 
-Here is a sample test case.
+Here is a sample test case:
 
 |                    |                                 |                     |                       |               |
 | ----------------   | ------------------------------- | ------------------- | --------------------- | ------------- |
