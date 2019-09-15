@@ -47,3 +47,10 @@ Retry Post Request Because Of 502 Error With Wrong Config
     ${retry_method_list}=   Create List  WRONG
     Create Session  httpbin  http://httpbin.org  retry_status_list=${retry_status_list}  retry_method_list=${retry_method_list}
     Post Request  httpbin  /status/502
+
+Retry Post Request Because Of 502 Error With Default Config And Fail On Error
+    [Tags]  post  retry
+    ${retry_status_list}=   Create List  502
+    ${retry_method_list}=   Create List  GET  POST
+    Create Session  httpbin  http://httpbin.org  retry_status_list=${retry_status_list}  retry_method_list=${retry_method_list}
+    Run Keyword And Expect Error  RetryError: *   Post Request  httpbin  /status/502  fail_on_error=${True}
