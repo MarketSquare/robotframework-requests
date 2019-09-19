@@ -702,7 +702,8 @@ class RequestsKeywords(object):
             headers=None,
             files=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
@@ -741,7 +742,8 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
@@ -755,7 +757,8 @@ class RequestsKeywords(object):
             files=None,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -792,7 +795,8 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
@@ -805,7 +809,8 @@ class RequestsKeywords(object):
             params=None,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -835,7 +840,8 @@ class RequestsKeywords(object):
             params=params,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
@@ -845,7 +851,8 @@ class RequestsKeywords(object):
             uri,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a HEAD request on the session object found using the
         given `alias`
 
@@ -865,7 +872,8 @@ class RequestsKeywords(object):
             uri,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
@@ -875,7 +883,8 @@ class RequestsKeywords(object):
             uri,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send an OPTIONS request on the session object found using the
         given `alias`
 
@@ -895,7 +904,8 @@ class RequestsKeywords(object):
             uri,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
