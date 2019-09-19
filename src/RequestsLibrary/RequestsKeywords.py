@@ -37,7 +37,9 @@ class RequestsKeywords(object):
     DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
     def __init__(self, fail_on_error=None):
-        # TODO Documentation needed
+        """``fail_on_error`` Set to True to let all Requests keywords fail if the HTTP status code of the returned
+        response is an error code.
+        """
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
@@ -727,6 +729,8 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -780,6 +784,8 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -826,6 +832,8 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -863,6 +871,10 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
+
+        ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
@@ -895,6 +907,10 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
+
+        ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
