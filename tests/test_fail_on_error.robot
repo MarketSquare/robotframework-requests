@@ -35,4 +35,3 @@ Post Request Without Failing On 404 Error Using Parameter
 Post Request And Fail On 500 Error Using Parameter
     [Tags]  post  fail
     Run Keyword And Expect Error  HTTPError: 500*   Post Request  httpstat  /500  ${Empty}  fail_on_error=${True}
-

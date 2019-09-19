@@ -36,10 +36,12 @@ class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
     DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
-    def __init__(self):
+    def __init__(self, fail_on_error=None):
+        # TODO Documentation needed
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
+        self.fail_on_error = fail_on_error
 
     def _create_session(
             self,
@@ -589,7 +591,7 @@ class RequestsKeywords(object):
             params=None,
             allow_redirects=None,
             timeout=None,
-            fail_on_error=False):
+            fail_on_error=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -642,7 +644,7 @@ class RequestsKeywords(object):
             files=None,
             allow_redirects=None,
             timeout=None,
-            fail_on_error=False):
+            fail_on_error=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -904,7 +906,14 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        fail_on_error = kwargs.pop('fail_on_error', None)
+        # TODO move redirect checks in _common_request
+
+        fail_on_error_default = self.fail_on_error
+        fail_on_error_override = kwargs.pop('fail_on_error', None)
+        if fail_on_error_override is not None:
+            raise_for_status = fail_on_error_override
+        else:
+            raise_for_status = fail_on_error_default
 
         self._log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
@@ -922,7 +931,7 @@ class RequestsKeywords(object):
         session.last_resp = resp
         self._log_response(method, resp)
 
-        if fail_on_error:
+        if raise_for_status:
             try:
                 resp.raise_for_status()
             except HTTPError as http_exception:
@@ -1042,6 +1051,7 @@ class RequestsKeywords(object):
         # TODO would be nice to add also the alias
         # TODO would be nice to pretty format the headers / json / data
         # TODO move in common the data formatting to have this as @staticmethod
+        # TODO big requests should be truncated to avoid huge logs
 
         # kwargs might include: method, session, uri, params, files, headers,
         #                       data, json, allow_redirects, timeout
@@ -1065,6 +1075,7 @@ class RequestsKeywords(object):
 
     @staticmethod
     def _log_response(method, response):
+        # TODO big responses should be truncated to avoid huge logs
         logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
                                                                response.status_code,
                                                                response.reason) +
