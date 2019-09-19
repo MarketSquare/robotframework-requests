@@ -85,5 +85,3 @@ python -m robot.libdoc src/RequestsLibrary/RequestsKeywords.py doc/RequestsLibra
 # Help
 
 Send your questions to the [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
-
-[Follow me on twitter - @bulkanevcimen](https://twitter.com/bulkanevcimen)
