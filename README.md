@@ -69,6 +69,22 @@ Another test case where cookies are sent in the request headers:
 |                    | ${resp}=                   | Get Request         | github                   | /                         |
 |                    | Should Be Equal As Strings | ${resp.status_code} | 200                      |                           |
 
+This repository also contains a [library](https://github.com/bulkan/robotframework-requests/blob/master/src/RequestsLibrary/RequestsKeywords.py) which can be used to send ssl requests. Below is an example of a test case where certificates are sent with the request:
+
+|                    |                            |                     |                          |                           |
+| ----------------   | -------------------------- | ------------------- | ------------------------ | ------------------------- |
+| *** Settings ***   |                            |                     |                          |                           |
+| Library            | RequestsLibrary            |                     |                          |                           |
+| Library            | RequestsKeywords.py        |                     |                          |                           |
+| *** Test Cases *** |                            |                     |                          |                           |
+| Create SSL Session |                            |                     |                          |                           |
+|                    | [Tags]  get     get-cert   |                     |                          |                           |
+|                    | @{client_certs}=           | Create List         | ${CURDIR}${/}clientcert.pem| ${CURDIR}${/}clientkey.pem|
+|                    | Create Client Cert Session | crtsession          | https://server.cryptomix.com/secure| client_certs=@{client_certs}|
+|                    | ${resp}=                   | Get Request         | crtsession               | /                         |
+|                    | Should Be Equal As Strings | ${resp.status_code} | 200                      |                           |
+
+
 For more examples see the `tests` folder which contains testcase files that is used to test the keywords in this library against [httpbin.org](http://httpbin.org).
 
 # Documentation
