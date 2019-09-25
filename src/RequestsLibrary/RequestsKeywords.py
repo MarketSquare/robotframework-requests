@@ -1,7 +1,10 @@
 import json
+import types
 import sys
 
 import requests
+from requests.sessions import merge_setting
+from requests.cookies import merge_cookies
 import logging
 from requests.packages.urllib3.util import Retry
 import robot
@@ -27,6 +30,23 @@ class WritableObject:
 
 
 class RequestsKeywords(object):
+    """``RequestsLibrary`` is a [http://code.google.com/p/robotframework/|Robot Framework] test library that uses the [https://github.com/kennethreitz/requests|Requests] HTTP client.
+
+    Here is an example testcase
+
+    | ***** Settings *****   |                                 |                     |                       |               |
+    | Library                | Collections                     |                     |                       |               |
+    | Library                | RequestsLibrary                 |                     |                       |               |
+    | ***** Test Cases ***** |                                 |                     |                       |               |
+    | Get Requests           |                                 |                     |                       |               |
+    |                        | Create Session                  | github              | http://api.github.com |               |
+    |                        | Create Session                  | google              | http://www.google.com |               |
+    |                        | ${resp}=                        | Get Request         | google                | /             |
+    |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
+    |                        | ${resp}=                        | Get Request         | github                | /users/bulkan |
+    |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
+    |                        | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Savun Evcimen  |               |
+    """
     ROBOT_LIBRARY_SCOPE = 'Global'
 
     def __init__(self):
@@ -50,28 +70,28 @@ class RequestsKeywords(object):
             disable_warnings):
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` List of username & password for HTTP Basic Auth
+        ``auth`` List of username & password for HTTP Basic Auth
 
-        `timeout` Connection timeout
-        
-        `max_retries` The maximum number of retries each connection should attempt.
-        
-        `backoff_factor` The pause between for each retry
+        ``timeout`` Connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``max_retries`` The maximum number of retries each connection should attempt.
 
-        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+        ``backoff_factor`` The pause between for each retry
 
-        `debug` Enable http verbosity option more information
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
+
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+
+        ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
-        
-        `disable_warnings` Disable requests warning useful when you have large number of testcases                
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
 
         self.builtin.log('Creating session: %s' % alias, 'DEBUG')
@@ -83,25 +103,26 @@ class RequestsKeywords(object):
         try:
             max_retries = int(max_retries)
         except ValueError as err:
-            raise ValueError("Error converting max_retries parameter: %s"   % err)        
+            raise ValueError("Error converting max_retries parameter: %s"   % err)
 
         if max_retries > 0:
             http = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
             https = requests.adapters.HTTPAdapter(max_retries=Retry(total=max_retries, backoff_factor=backoff_factor))
-            
-            # Disable requests warnings, useful when you have large number of testcase
-            # you will observe drastical changes in Robot log.html and output.xml files size 
-            if disable_warnings:
-                logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
-                logging.getLogger().setLevel(logging.ERROR)
-                requests_log = logging.getLogger("requests")
-                requests_log.setLevel(logging.ERROR)
-                requests_log.propagate = True
-            
-            
+
             # Replace the session's original adapters
             s.mount('http://', http)
             s.mount('https://', https)
+
+        # Disable requests warnings, useful when you have large number of testcase
+        # you will observe drastical changes in Robot log.html and output.xml files size
+        if disable_warnings:
+            logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
+            logging.getLogger().setLevel(logging.ERROR)
+            requests_log = logging.getLogger("requests")
+            requests_log.setLevel(logging.ERROR)
+            requests_log.propagate = True
+            if not verify:
+                requests.packages.urllib3.disable_warnings()
 
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
@@ -109,6 +130,9 @@ class RequestsKeywords(object):
         elif isinstance(verify, str) or isinstance(verify, unicode):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
+            else:
+                # String for CA_BUNDLE, not a Boolean String
+                s.verify = verify
         else:
             # not a Boolean nor a String
             s.verify = verify
@@ -116,7 +140,7 @@ class RequestsKeywords(object):
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
-        self.verify = verify
+        self.verify = verify if self.builtin.convert_to_boolean(verify) != True else None
 
         s.url = url
 
@@ -133,33 +157,94 @@ class RequestsKeywords(object):
                        verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` List of username & password for HTTP Basic Auth
+        ``auth`` List of username & password for HTTP Basic Auth
 
-        `timeout` Connection timeout
+        ``timeout`` Connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        `debug` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        `max_retries` The maximum number of retries each connection should attempt.
-        
-        `backoff_factor` The pause between for each retry
-        
-        `disable_warnings` Disable requests warning useful when you have large number of testcases
+        ``max_retries`` The maximum number of retries each connection should attempt.
+
+        ``backoff_factor`` The pause between for each retry
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
+                    cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
+                    debug=%s ' % (alias, url, headers, cookies, auth, timeout,
+                                  proxies, verify, debug))
+
+        return self._create_session(
+            alias,
+            url,
+            headers,
+            cookies,
+            auth,
+            timeout,
+            max_retries,
+            backoff_factor,
+            proxies,
+            verify,
+            debug,
+            disable_warnings)
+
+    def create_custom_session(
+            self,
+            alias,
+            url,
+            auth,
+            headers={},
+            cookies=None,
+            timeout=None,
+            proxies=None,
+            verify=False,
+            debug=0,
+            max_retries=3,
+            backoff_factor=0.10,
+            disable_warnings=0):
+        """ Create Session: create a HTTP session to a server
+
+        ``url`` Base url of the server
+
+        ``alias`` Robot Framework alias to identify the session
+
+        ``headers`` Dictionary of default headers
+
+        ``auth`` A Custom Authentication object to be passed on to the reqests library.
+                http://docs.python-requests.org/en/master/user/advanced/#custom-authentication
+
+        ``timeout`` Connection timeout
+
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
+
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+                 Defaults to False.
+
+        ``debug`` Enable http verbosity option more information
+                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+
+        ``max_retries`` The maximum number of retries each connection should attempt.
+
+        ``backoff_factor`` The pause between for each retry
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+        """
+
+        logger.info('Creating Custom Authenticated Session using : alias=%s, url=%s, headers=%s, \
                     cookies=%s, auth=%s, timeout=%s, proxies=%s, verify=%s, \
                     debug=%s ' % (alias, url, headers, cookies, auth, timeout,
                                   proxies, verify, debug))
@@ -194,29 +279,29 @@ class RequestsKeywords(object):
             disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
+        ``auth`` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
-        `timeout` Connection timeout
+        ``timeout`` Connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        `debug` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        `max_retries` The maximum number of retries each connection should attempt.
-        
-        `backoff_factor` The pause between for each retry
-        
-        `disable_warnings` Disable requests warning useful when you have large number of testcases
+        ``max_retries`` The maximum number of retries each connection should attempt.
+
+        ``backoff_factor`` The pause between for each retry
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         if not HttpNtlmAuth:
             raise AssertionError('Requests NTLM module not loaded')
@@ -251,29 +336,29 @@ class RequestsKeywords(object):
                               debug=0, max_retries=3,backoff_factor=0.10, disable_warnings=0):
         """ Create Session: create a HTTP session to a server
 
-        `url` Base url of the server
+        ``url`` Base url of the server
 
-        `alias` Robot Framework alias to identify the session
+        ``alias`` Robot Framework alias to identify the session
 
-        `headers` Dictionary of default headers
+        ``headers`` Dictionary of default headers
 
-        `auth` ['DOMAIN', 'username', 'password'] for NTLM Authentication
+        ``auth`` ['DOMAIN', 'username', 'password'] for NTLM Authentication
 
-        `timeout` Connection timeout
+        ``timeout`` Connection timeout
 
-        `proxies` Dictionary that contains proxy urls for HTTP and HTTPS communication
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
 
-        `verify` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        `debug` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
-        `max_retries` The maximum number of retries each connection should attempt.
-        
-        `backoff_factor` The pause between for each retry
-        
-        `disable_warnings` Disable requests warning useful when you have large number of testcases
+        ``max_retries`` The maximum number of retries each connection should attempt.
+
+        ``backoff_factor`` The pause between for each retry
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
         """
         digest_auth = requests.auth.HTTPDigestAuth(*auth) if auth else None
 
@@ -291,18 +376,81 @@ class RequestsKeywords(object):
             debug,
             disable_warnings)
 
+    def create_client_cert_session(self, alias, url, headers={}, cookies=None,
+                       client_certs=None, timeout=None, proxies=None,
+                       verify=False, debug=0, max_retries=3, backoff_factor=0.10, disable_warnings=0):
+        """ Create Session: create a HTTP session to a server
+
+        ``url`` Base url of the server
+
+        ``alias`` Robot Framework alias to identify the session
+
+        ``headers`` Dictionary of default headers
+
+        ``client_certs`` ['client certificate', 'client key'] PEM files containing the client key and certificate
+
+        ``timeout`` Connection timeout
+
+        ``proxies`` Dictionary that contains proxy urls for HTTP and HTTPS communication
+
+        ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
+                 Defaults to False.
+
+        ``debug`` Enable http verbosity option more information
+                https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
+
+        ``max_retries`` The maximum number of retries each connection should attempt.
+
+        ``backoff_factor`` The pause between for each retry
+
+        ``disable_warnings`` Disable requests warning useful when you have large number of testcases
+        """
+
+        logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
+                    cookies=%s, client_certs=%s, timeout=%s, proxies=%s, verify=%s, \
+                    debug=%s ' % (alias, url, headers, cookies, client_certs, timeout,
+                                  proxies, verify, debug))
+
+        session = self._create_session(
+            alias,
+            url,
+            headers,
+            cookies,
+            None,
+            timeout,
+            max_retries,
+            backoff_factor,
+            proxies,
+            verify,
+            debug,
+            disable_warnings)
+
+        session.cert = tuple(client_certs)
+        return session
+
     def delete_all_sessions(self):
         """ Removes all the session objects """
         logger.info('Delete All Sessions')
 
         self._cache.empty_cache()
 
+    def update_session(self, alias, headers=None, cookies=None):
+        """Update Session Headers: update a HTTP Session Headers
+
+        ``alias`` Robot Framework alias to identify the session
+
+        ``headers`` Dictionary of headers merge into session
+        """
+        session = self._cache.switch(alias)
+        session.headers = merge_setting(headers, session.headers)
+        session.cookies = merge_cookies(session.cookies, cookies)
+
     def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
 
-        `content` String content to convert into JSON
+        ``content`` String content to convert into JSON
 
-        'pretty_print' If defined, will output JSON is pretty print format
+        ``pretty_print`` If defined, will output JSON is pretty print format
         """
         if PY3:
             if isinstance(content, bytes):
@@ -321,31 +469,36 @@ class RequestsKeywords(object):
             alias,
             uri,
             headers=None,
+            json=None,
             params=None,
             allow_redirects=None,
             timeout=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        ``uri`` to send the GET request to
 
-        `params` url parameters to append to the uri
+        ``params`` url parameters to append to the uri
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `timeout` connection timeout
+        ``json`` json data to send in the body of the :class:`Request`.
+
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout)
+            session, uri, params, headers, json, redir, timeout)
 
         logger.info(
-            'Get Request using : alias=%s, uri=%s, headers=%s ' %
-            (alias, uri, headers))
+            'Get Request using : alias=%s, uri=%s, headers=%s json=%s' %
+            (alias, uri, headers, json))
 
         return response
 
@@ -362,13 +515,15 @@ class RequestsKeywords(object):
         Send a GET request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        ``uri`` to send the GET request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         logger.warn("Deprecation Warning: Use Get Request in the future")
         session = self._cache.switch(alias)
@@ -376,7 +531,7 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._get_request(
-            session, uri, params, headers, redir, timeout)
+            session, uri, params, headers, redir, timeout, json)
 
         return response
 
@@ -385,6 +540,7 @@ class RequestsKeywords(object):
             alias,
             uri,
             data=None,
+            json=None,
             params=None,
             headers=None,
             files=None,
@@ -393,26 +549,32 @@ class RequestsKeywords(object):
         """ Send a POST request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the POST request to
+        ``uri`` to send the POST request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
+               or passed as such for multipart form data if ``files`` is also
+                  defined
 
-        `params` url parameters to append to the uri
+        ``json`` a value that will be json encoded
+               and sent as POST data if files or data is not specified
 
-        `headers` a dictionary of headers to use with the request
+        ``params`` url parameters to append to the uri
 
-        `files` a dictionary of file names containing file data to POST to the server
+        ``headers`` a dictionary of headers to use with the request
 
-        `allow_redirects` requests redirection
+        ``files`` a dictionary of file names containing file data to POST to the server
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        if not files:
+            data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._body_request(
@@ -420,6 +582,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            json,
             params,
             files,
             headers,
@@ -445,19 +608,21 @@ class RequestsKeywords(object):
         Send a POST request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the GET request to
+        ``uri`` to send the GET request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `files` a dictionary of file names containing file data to POST to the server
+        ``files`` a dictionary of file names containing file data to POST to the server
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         logger.warn("Deprecation Warning: Use Post Request in the future")
         session = self._cache.switch(alias)
@@ -469,6 +634,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            None,
             None,
             files,
             headers,
@@ -482,6 +648,7 @@ class RequestsKeywords(object):
             alias,
             uri,
             data=None,
+            json=None,
             params=None,
             headers=None,
             files=None,
@@ -490,23 +657,26 @@ class RequestsKeywords(object):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PATCH request to
+        ``uri`` to send the PATCH request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``json`` a value that will be json encoded
+               and sent as PATCH data if data is not specified
 
-        `files` a dictionary of file names containing file data to PATCH to the server
+        ``headers`` a dictionary of headers to use with the request
 
-        `allow_redirects` requests redirection
+        ``files`` a dictionary of file names containing file data to PATCH to the server
 
-        `params` url parameters to append to the uri
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
-        `timeout` connection timeout
+        ``params`` url parameters to append to the uri
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -517,6 +687,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            json,
             params,
             files,
             headers,
@@ -545,19 +716,21 @@ class RequestsKeywords(object):
         Send a PATCH request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PATCH request to
+        ``uri`` to send the PATCH request to
 
-        `data` a dictionary of key-value pairs that will be urlencoded
+        ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `files` a dictionary of file names containing file data to PATCH to the server
+        ``files`` a dictionary of file names containing file data to PATCH to the server
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         logger.warn("Deprecation Warning: Use Patch Request in the future")
         session = self._cache.switch(alias)
@@ -569,6 +742,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            None,
             None,
             files,
             headers,
@@ -582,6 +756,7 @@ class RequestsKeywords(object):
             alias,
             uri,
             data=None,
+            json=None,
             params=None,
             files=None,
             headers=None,
@@ -590,17 +765,24 @@ class RequestsKeywords(object):
         """ Send a PUT request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PUT request to
+        ``uri`` to send the PUT request to
 
-        `headers` a dictionary of headers to use with the request
+        ``data`` a dictionary of key-value pairs that will be urlencoded
+               and sent as PUT data
+               or binary data that is sent as the raw body content
 
-        `allow_redirects` requests redirection
+        ``json`` a value that will be json encoded
+               and sent as PUT data if data is not specified
 
-        `params` url parameters to append to the uri
+        ``headers`` a dictionary of headers to use with the request
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``params`` url parameters to append to the uri
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -611,6 +793,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            json,
             params,
             files,
             headers,
@@ -637,13 +820,15 @@ class RequestsKeywords(object):
         Send a PUT request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the PUT request to
+        ``uri`` to send the PUT request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         logger.warn("Deprecation Warning: Use Put Request in the future")
         session = self._cache.switch(alias)
@@ -657,6 +842,7 @@ class RequestsKeywords(object):
             data,
             None,
             None,
+            None,
             headers,
             redir,
             timeout)
@@ -667,7 +853,8 @@ class RequestsKeywords(object):
             self,
             alias,
             uri,
-            data=(),
+            data=None,
+            json=None,
             params=None,
             headers=None,
             allow_redirects=None,
@@ -675,20 +862,25 @@ class RequestsKeywords(object):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the DELETE request to
+        ``uri`` to send the DELETE request to
 
-        `headers` a dictionary of headers to use with the request
+        ``json`` a value that will be json encoded
+               and sent as request data if data is not specified
 
-        `timeout` connection timeout
+        ``headers`` a dictionary of headers to use with the request
+
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
-            session, uri, data, params, headers, redir, timeout)
+            session, uri, data, json, params, headers, redir, timeout)
 
         if isinstance(data, bytes):
             data = data.decode('utf-8')
@@ -710,13 +902,15 @@ class RequestsKeywords(object):
         Send a DELETE request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the DELETE request to
+        ``uri`` to send the DELETE request to
 
-        `headers` a dictionary of headers to use with the request
+        ``headers`` a dictionary of headers to use with the request
 
-        `timeout` connection timeout
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``timeout`` connection timeout
         """
         logger.warn("Deprecation Warning: Use Delete Request in the future")
         session = self._cache.switch(alias)
@@ -724,7 +918,7 @@ class RequestsKeywords(object):
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._delete_request(
-            session, uri, data, None, headers, redir, timeout)
+            session, uri, data, json, None, headers, redir, timeout)
 
         return response
 
@@ -738,11 +932,13 @@ class RequestsKeywords(object):
         """ Send a HEAD request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the HEAD request to
+        ``uri`` to send the HEAD request to
 
-        `headers` a dictionary of headers to use with the request
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``headers`` a dictionary of headers to use with the request
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
@@ -764,11 +960,13 @@ class RequestsKeywords(object):
         Send a HEAD request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the HEAD request to
+        ``uri`` to send the HEAD request to
 
-        `headers` a dictionary of headers to use with the request
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``headers`` a dictionary of headers to use with the request
         """
         logger.warn("Deprecation Warning: Use Head Request in the future")
         session = self._cache.switch(alias)
@@ -787,11 +985,13 @@ class RequestsKeywords(object):
         """ Send an OPTIONS request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the OPTIONS request to
+        ``uri`` to send the OPTIONS request to
 
-        `headers` a dictionary of headers to use with the request
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``headers`` a dictionary of headers to use with the request
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -810,14 +1010,17 @@ class RequestsKeywords(object):
             allow_redirects=None,
             timeout=None):
         """ **Deprecated- See Options Request now**
+
         Send an OPTIONS request on the session object found using the
         given `alias`
 
-        `alias` that will be used to identify the Session object in the cache
+        ``alias`` that will be used to identify the Session object in the cache
 
-        `uri` to send the OPTIONS request to
+        ``uri`` to send the OPTIONS request to
 
-        `headers` a dictionary of headers to use with the request
+        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+
+        ``headers`` a dictionary of headers to use with the request
         """
         logger.warn("Deprecation Warning: Use Options Request in the future")
         session = self._cache.switch(alias)
@@ -832,19 +1035,22 @@ class RequestsKeywords(object):
             uri,
             params,
             headers,
+            json,
             allow_redirects,
             timeout):
         self._capture_output()
 
         resp = session.get(self._get_url(session, uri),
                            headers=headers,
+                           json=json,
                            params=self._utf8_urlencode(params),
                            allow_redirects=allow_redirects,
                            timeout=self._get_timeout(timeout),
-                           cookies=self.cookies)
+                           cookies=self.cookies,
+                           verify=self.verify)
 
         self._print_debug()
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -855,6 +1061,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            json,
             params,
             files,
             headers,
@@ -865,16 +1072,18 @@ class RequestsKeywords(object):
         method = getattr(session, method_name)
         resp = method(self._get_url(session, uri),
                       data=data,
+                      json=json,
                       params=self._utf8_urlencode(params),
                       files=files,
                       headers=headers,
                       allow_redirects=allow_redirects,
                       timeout=self._get_timeout(timeout),
-                      cookies=self.cookies)
+                      cookies=self.cookies,
+                      verify=self.verify)
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         self.builtin.log(method_name + ' response: ' + resp.text, 'DEBUG')
@@ -886,6 +1095,7 @@ class RequestsKeywords(object):
             session,
             uri,
             data,
+            json,
             params,
             headers,
             allow_redirects,
@@ -894,15 +1104,17 @@ class RequestsKeywords(object):
 
         resp = session.delete(self._get_url(session, uri),
                               data=data,
+                              json=json,
                               params=self._utf8_urlencode(params),
                               headers=headers,
                               allow_redirects=allow_redirects,
                               timeout=self._get_timeout(timeout),
-                              cookies=self.cookies)
+                              cookies=self.cookies,
+                              verify=self.verify)
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -914,11 +1126,12 @@ class RequestsKeywords(object):
                             headers=headers,
                             allow_redirects=allow_redirects,
                             timeout=self._get_timeout(timeout),
-                            cookies=self.cookies)
+                            cookies=self.cookies,
+                            verify=self.verify)
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
@@ -936,18 +1149,20 @@ class RequestsKeywords(object):
                                headers=headers,
                                cookies=self.cookies,
                                allow_redirects=allow_redirects,
-                               timeout=self._get_timeout(timeout))
+                               timeout=self._get_timeout(timeout),
+                               verify=self.verify)
 
         self._print_debug()
 
-        # Store the last session object (@Kosuri Why?)
+        # Store the last session object
         session.last_resp = resp
 
         return resp
 
     def _get_url(self, session, uri):
-        ''' Helper method to get the full url
-        '''
+        """
+        Helper method to get the full url
+        """
         url = session.url
         if uri:
             slash = '' if uri.startswith('/') else '/'
@@ -986,9 +1201,10 @@ class RequestsKeywords(object):
             self.builtin.log(debug_info, 'DEBUG')
 
     def _json_pretty_print(self, content):
-        """ Pretty print a JSON object
+        """
+        Pretty print a JSON object
 
-        'content'  JSON object to pretty print
+        ``content``  JSON object to pretty print
         """
         temp = json.loads(content)
         return json.dumps(
@@ -1019,7 +1235,8 @@ class RequestsKeywords(object):
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
-                data = json.dumps(data)
+                if not isinstance(data, types.GeneratorType):
+                    data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
                 data = self._utf8_urlencode(data)
         else:

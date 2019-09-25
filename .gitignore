@@ -3,10 +3,14 @@
 *.pyc
 *.swp
 *.swo
+
+# ignore robotframework files
 log.html
 output.xml
 debug.txt
 report.html
+foobar.txt
+
 ~*
 htmlcov
 .coverage
@@ -18,3 +22,8 @@ lib/
 test.py
 bin/
 src/robotframework_requests.egg-info/
+
+# ignore virtuvalenv
+venv/*
+env/*
+
