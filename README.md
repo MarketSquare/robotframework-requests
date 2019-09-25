@@ -1,7 +1,8 @@
 [![Build Status](https://travis-ci.org/bulkan/robotframework-requests.png?branch=master)](https://travis-ci.org/bulkan/robotframework-requests)
+[![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 
-``RequestsLibrary`` is a [Robot Framework](http://code.google.com/p/robotframework/) test library that uses the [Requests](https://github.com/kennethreitz/requests) HTTP client.
+``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) test library that uses the [Requests](https://github.com/kennethreitz/requests) HTTP client.
 
 # Usage
 
@@ -75,11 +76,11 @@ For more examples see the `tests` folder which contains testcase files that is u
 
 For individual keyword documentation see the following:
 
-[http://bulkan.github.io/robotframework-requests/](http://bulkan.github.io/robotframework-requests/)
+[Keywords documentation](/doc/RequestsLibrary.html)
 
 You can update the documentation once checked out by going to the top directory of this repo and issuing the following command:
 ``bash
-python -m robot.libdoc src/RequestsLibrary/RequestsKeywords.py doc/RequestsLibrary.html
+python -m robot.libdoc src/RequestsLibrary doc/RequestsLibrary.html
 ``
 
 # Help
