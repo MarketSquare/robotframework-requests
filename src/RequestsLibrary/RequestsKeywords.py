@@ -822,6 +822,7 @@ class RequestsKeywords(object):
             headers=None,
             allow_redirects=None,
             timeout=None,
+            protobuf_request_type=None,
             protobuf_response_type=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
@@ -1024,8 +1025,8 @@ class RequestsKeywords(object):
         # Merged headers are already case insensitive
         headers = self._merge_headers(session, headers)
 
-        if headers['Content-Type'].find("application/x-protobuf") != -1:
-                return self._convert_data_to_protobuf(data, protobuf_request_type)
+        if data is not None and headers is not None and 'Content-Type' in headers and headers['Content-Type'].find("application/x-protobuf") != -1:
+            return self._convert_data_to_protobuf(data, protobuf_request_type)
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
