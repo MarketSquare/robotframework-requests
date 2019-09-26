@@ -705,7 +705,7 @@ class RequestsKeywords(object):
             files=None,
             allow_redirects=None,
             timeout=None,
-            protobuf_request_type = None,
+            protobuf_request_type=None,
             protobuf_response_type=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
@@ -765,7 +765,7 @@ class RequestsKeywords(object):
             headers=None,
             allow_redirects=None,
             timeout=None,
-            protobuf_request_type = None,
+            protobuf_request_type=None,
             protobuf_response_type=None):
         """ Send a PUT request on the session object found using the
         given `alias`
@@ -926,7 +926,7 @@ class RequestsKeywords(object):
             method,
             session,
             uri,
-            protobuf_response_type = None,
+            protobuf_response_type=None,
             **kwargs):
 
         self._log_request(method, session, uri, **kwargs)
@@ -943,7 +943,7 @@ class RequestsKeywords(object):
         self._print_debug()
 
         resp = self._format_response_data_according_to_header(
-            session, responseData, headers, protobuf_response_type)
+            session, responseData, kwargs.get('header'), protobuf_response_type)
 
         session.last_resp = resp
         self._log_response(method, resp)
