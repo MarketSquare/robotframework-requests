@@ -590,7 +590,8 @@ class RequestsKeywords(object):
             params=None,
             allow_redirects=None,
             timeout=None,
-            protobuf_response_type=None):
+            protobuf_response_type=None,
+            protobuf_response_class_type=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -613,7 +614,9 @@ class RequestsKeywords(object):
 
         ``timeout`` connection timeout
         
-        ``protobuf_response_type`` protobuf response type
+        ``protobuf_response_type`` protobuf response module name
+
+        ``protobuf_response_class_type`` protobuf response class name
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -623,6 +626,7 @@ class RequestsKeywords(object):
             session,
             uri,
             protobuf_response_type,
+            protobuf_response_class_type,
             params=params,
             headers=headers,
             data=data,
@@ -644,7 +648,9 @@ class RequestsKeywords(object):
             allow_redirects=None,
             timeout=None,
             protobuf_request_type=None,
-            protobuf_response_type=None):
+            protobuf_request_class_type=None,
+            protobuf_response_type=None,
+            protobuf_response_class_type=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -671,13 +677,17 @@ class RequestsKeywords(object):
 
         ``timeout`` connection timeout
 
-        ``protobuf_request_type`` protobuf request type
+        ``protobuf_request_type`` protobuf request module name
 
-        ``protobuf_response_type`` protobuf response type
+        ``protobuf_request_class_type`` protobuf request class name
+
+        ``protobuf_response_type`` protobuf response module name
+
+        ``protobuf_response_class_type`` protobuf response class name
         """
         session = self._cache.switch(alias)
         if not files:
-            data = self._format_data_according_to_header(session, data, headers, protobuf_request_type)
+            data = self._format_data_according_to_header(session, data, headers, protobuf_request_type, protobuf_request_class_type)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -685,6 +695,7 @@ class RequestsKeywords(object):
             session,
             uri,
             protobuf_response_type,
+            protobuf_response_class_type,
             data=data,
             json=json,
             params=params,
@@ -706,7 +717,9 @@ class RequestsKeywords(object):
             allow_redirects=None,
             timeout=None,
             protobuf_request_type=None,
-            protobuf_response_type=None):
+            protobuf_request_class_type=None,
+            protobuf_response_type=None,
+            protobuf_response_class_type=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
@@ -731,12 +744,16 @@ class RequestsKeywords(object):
 
         ``timeout`` connection timeout
 
-        ``protobuf_request_type`` protobuf request type
+        ``protobuf_request_type`` protobuf request module name
 
-        ``protobuf_response_type`` protobuf response type
+        ``protobuf_request_class_type`` protobuf request class name
+
+        ``protobuf_response_type`` protobuf response module name
+
+        ``protobuf_response_class_type`` protobuf response class name
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers, protobuf_request_type)
+        data = self._format_data_according_to_header(session, data, headers, protobuf_request_type, protobuf_request_class_type)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -744,6 +761,7 @@ class RequestsKeywords(object):
             session,
             uri,
             protobuf_response_type,
+            protobuf_response_class_type,
             data=data,
             json=json,
             params=params,
@@ -766,7 +784,9 @@ class RequestsKeywords(object):
             allow_redirects=None,
             timeout=None,
             protobuf_request_type=None,
-            protobuf_response_type=None):
+            protobuf_request_class_type=None,
+            protobuf_response_type=None,
+            protobuf_response_class_type=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -789,12 +809,16 @@ class RequestsKeywords(object):
 
         ``timeout`` connection timeout
 
-        ``protobuf_request_type`` protobuf request type
+        ``protobuf_request_type`` protobuf request module name
 
-        ``protobuf_response_type`` protobuf response type
+        ``protobuf_request_class_type`` protobuf request class name
+
+        ``protobuf_response_type`` protobuf response module name
+
+        ``protobuf_response_class_type`` protobuf response class name
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers, protobuf_request_type)
+        data = self._format_data_according_to_header(session, data, headers, protobuf_request_type, protobuf_request_class_type)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -802,6 +826,7 @@ class RequestsKeywords(object):
             session,
             uri,
             protobuf_response_type,
+            protobuf_response_class_type,
             data=data,
             json=json,
             params=params,
@@ -823,7 +848,9 @@ class RequestsKeywords(object):
             allow_redirects=None,
             timeout=None,
             protobuf_request_type=None,
-            protobuf_response_type=None):
+            protobuf_request_class_type=None,
+            protobuf_response_type=None,
+            protobuf_response_class_type=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -840,12 +867,16 @@ class RequestsKeywords(object):
 
         ``timeout`` connection timeout
 
-        ``protobuf_request_type`` protobuf request type
+        ``protobuf_request_type`` protobuf request module name
 
-        ``protobuf_response_type`` protobuf response type
+        ``protobuf_request_class_type`` protobuf request class name
+
+        ``protobuf_response_type`` protobuf response module name
+
+        ``protobuf_response_class_type`` protobuf response class name
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers, protobuf_request_type)
+        data = self._format_data_according_to_header(session, data, headers, protobuf_request_type, protobuf_request_class_type)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -853,6 +884,7 @@ class RequestsKeywords(object):
             session,
             uri,
             protobuf_response_type,
+            protobuf_response_class_type,
             data=data,
             json=json,
             params=params,
@@ -928,6 +960,7 @@ class RequestsKeywords(object):
             session,
             uri,
             protobuf_response_type=None,
+            protobuf_response_class_type=None,
             **kwargs):
 
         self._log_request(method, session, uri, **kwargs)
@@ -944,7 +977,7 @@ class RequestsKeywords(object):
         self._print_debug()
 
         resp = self._format_response_data_according_to_header(
-            session, responseData, kwargs.get('header'), protobuf_response_type)
+            session, responseData, kwargs.get('header'), protobuf_response_type, protobuf_response_class_type)
 
         session.last_resp = resp
         self._log_response(method, resp)
@@ -1021,12 +1054,12 @@ class RequestsKeywords(object):
             utf8_data[k] = v
         return urlencode(utf8_data)
 
-    def _format_data_according_to_header(self, session, data, headers, protobuf_request_type):
+    def _format_data_according_to_header(self, session, data, headers, protobuf_request_type, protobuf_response_class_type):
         # Merged headers are already case insensitive
         headers = self._merge_headers(session, headers)
 
         if data is not None and headers is not None and 'Content-Type' in headers and headers['Content-Type'].find("application/x-protobuf") != -1:
-            return self._convert_data_to_protobuf(data, protobuf_request_type)
+            return self._convert_data_to_protobuf(data, protobuf_request_type, protobuf_response_class_type)
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
@@ -1039,43 +1072,46 @@ class RequestsKeywords(object):
 
         return data
     
-    def _format_response_data_according_to_header(self, session, data, headers, protobuf_response_type):
+    def _format_response_data_according_to_header(self, session, data, headers, protobuf_response_type, protobuf_response_class_type):
         headers = self._merge_headers(session, headers)
 
         if headers['Accept'].find("application/x-protobuf") != -1:
-            return self._convert_protobuf_data_to_json(data, protobuf_response_type)
+            return self._convert_protobuf_data_to_json(data, protobuf_response_type, protobuf_response_class_type)
 
         return data
     
-    def _convert_protobuf_data_to_json(self, data, protobuf_type_name):
-        module = importModule.import_module(protobuf_type_name + "_pb2")
-        namespaceSplit = protobuf_type_name.split('.')
+    def _convert_protobuf_data_to_json(self, data, protobuf_type, protobuf_response_class_type):
+        logger.debug('Protobuf object:' + data.content)
 
-        protobufObject = getattr(module, namespaceSplit[-1])()
+        protobufObject = self._get_protobuf_object(protobuf_type, protobuf_response_class_type)
         protobufObject.ParseFromString(data.content)
 
         for k, v in vars(data).items():
-            self.builtin.log('response items: ' + k);
             if k == '_content':
                 v = MessageToJson(protobufObject)
             setattr(data, k, v)
 
-        self.builtin.log(data);
-        #self.builtin.log(result['request'])
-
         return data
 
-    def _convert_data_to_protobuf(self, data, protobuf_type_name):
-        module = importModule.import_module(protobuf_type_name + "_pb2")
-        namespaceSplit = protobuf_type_name.split('.')
+    def _convert_data_to_protobuf(self, data, protobuf_type, protobuf_response_class_type):
+        protobufObject = self._get_protobuf_object(protobuf_type, protobuf_response_class_type)
 
-        protobufObject = getattr(module, namespaceSplit[-1])()
+        Parse(data, protobufObject);
+        stringSerilized = protobufObject.SerializeToString()
 
-        Parse(data, protobufObject)
-        self.builtin.log(MessageToJson(protobufObject));
-        self.builtin.log(protobufObject.SerializeToString());
+        logger.debug('Protobuf converted data:' + stringSerilized)
 
-        return protobufObject.SerializeToString()
+        return stringSerilized
+
+    def _get_protobuf_object(self, protobuf_type, protobuf_response_class_type):
+        module = importModule.import_module(protobuf_type + "_pb2")
+        namespaceSplit = protobuf_type.split('.')
+
+        if protobuf_response_class_type is not None:
+            getattr(module, protobuf_response_class_type)()
+
+        return getattr(module, namespaceSplit[-1])()
+
 
     def _format_data_to_log_string_according_to_headers(self, session, data, headers):
         data_str = None
