@@ -1088,7 +1088,7 @@ class RequestsKeywords(object):
 
         for k, v in vars(data).items():
             if k == '_content':
-                v = MessageToJson(protobufObject)
+                v = MessageToJson(protobufObject).encode('utf-8')
             setattr(data, k, v)
 
         return data
@@ -1105,11 +1105,11 @@ class RequestsKeywords(object):
 
     def _get_protobuf_object(self, protobuf_type, protobuf_response_class_type):
         module = importModule.import_module(protobuf_type + "_pb2")
-        namespaceSplit = protobuf_type.split('.')
 
         if protobuf_response_class_type is not None:
-            getattr(module, protobuf_response_class_type)()
+            return getattr(module, protobuf_response_class_type)()
 
+        namespaceSplit = protobuf_type.split('.')
         return getattr(module, namespaceSplit[-1])()
 
 
