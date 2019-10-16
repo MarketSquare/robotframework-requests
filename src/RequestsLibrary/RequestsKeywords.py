@@ -1088,7 +1088,7 @@ class RequestsKeywords(object):
 
         for k, v in vars(data).items():
             if k == '_content':
-                v = MessageToJson(protobufObject).encode('utf-8')
+                v = self._utf8_urlencode(MessageToJson(protobufObject))
             setattr(data, k, v)
 
         return data
@@ -1099,7 +1099,7 @@ class RequestsKeywords(object):
         Parse(data, protobufObject);
         stringSerilized = protobufObject.SerializeToString()
 
-        logger.debug('Protobuf converted data:' + stringSerilized)
+        logger.debug('Protobuf converted data:' + str(stringSerilized, 'utf-8'))
 
         return stringSerilized
 
