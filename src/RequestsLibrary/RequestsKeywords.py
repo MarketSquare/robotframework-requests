@@ -1099,7 +1099,7 @@ class RequestsKeywords(object):
         Parse(data, protobufObject);
         stringSerilized = protobufObject.SerializeToString()
 
-        logger.debug('Protobuf converted data:' + str(stringSerilized, 'utf-8'))
+        logger.debug('Protobuf converted data:' + str(stringSerilized))
 
         return stringSerilized
 

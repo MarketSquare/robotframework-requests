@@ -371,7 +371,8 @@ Get Request With Protobuf header
     Create Session  protobufSession  https://flask-protobuf-example.herokuapp.com   headers=${header}
     ${resp}=  Get Request  protobufSession  /get-person     protobuf_response_type=RequestsLibrary.ProtobufContract.addressbook  protobuf_response_class_type=Person
     Should Be Equal As Strings  ${resp.status_code}  200
-    Should Be Equal As Strings  ${resp.json()}  {'name': 'Name', 'id': 1}
+    Should Be Equal As Strings  ${resp.json()["name"]}  Name
+    Should Be Equal As Strings  ${resp.json()["id"]}  1
 
 Post Request With Protobuf header
     [Tags]  protobuf
