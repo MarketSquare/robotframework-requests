@@ -1081,7 +1081,7 @@ class RequestsKeywords(object):
         return data
     
     def _convert_protobuf_data_to_json(self, data, protobuf_type, protobuf_response_class_type):
-        logger.debug('Protobuf object:' + str(data.content))
+        logger.info('Protobuf object:' + str(data.content))
 
         protobufObject = self._get_protobuf_object(protobuf_type, protobuf_response_class_type)
         protobufObject.ParseFromString(data.content)
@@ -1099,7 +1099,7 @@ class RequestsKeywords(object):
         Parse(data, protobufObject);
         stringSerilized = protobufObject.SerializeToString()
 
-        logger.debug('Protobuf converted data:' + str(stringSerilized))
+        logger.info('Protobuf converted data:' + str(stringSerilized))
 
         return stringSerilized
 
