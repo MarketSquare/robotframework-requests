@@ -193,16 +193,6 @@ Post Request With Arbitrary Binary Data
     # TODO Compare binaries. Content is json with base64 encoded data
     Log    "Success"
 
-Post With File
-    [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-    ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
-    &{files}=  Create Dictionary  file=${file_data}
-    ${resp}=  Post Request  httpbin  /post  files=${files}
-    ${file}=  To Json  ${resp.json()['files']['file']}
-    Dictionary Should Contain Key  ${file}  one
-    Dictionary Should Contain Key  ${file}  two
-
 Post Request With File
     [Tags]  post
     Create Session  httpbin  http://httpbin.org
