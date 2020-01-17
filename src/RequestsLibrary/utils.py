@@ -11,7 +11,7 @@ class InvalidResponse(Exception):
 
 def parse_named_status(status_code):
     """
-    Converts named status status from human readable to integer
+    Converts named status from human readable to integer
     """
     code = status_code.lower().replace(' ', '_')
     code = codes.get(code)
