@@ -11,8 +11,10 @@ from requests.structures import CaseInsensitiveDict
 import logging
 from requests.packages.urllib3.util import Retry
 import robot
+
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+from robot.utils.asserts import assert_equal
 
 from RequestsLibrary.compat import httplib, urlencode, PY3
 
@@ -925,6 +927,12 @@ class RequestsKeywords(object):
 
         return response
 
+    def status_should_be(self, response, expected_status, msg=None):
+        """
+        Fails if response status code is different than the expected.
+        """
+        self._check_status(response, expected_status, msg)
+
     def _common_request(
             self,
             method,
@@ -965,7 +973,8 @@ class RequestsKeywords(object):
 
         return resp
 
-    def _check_status(self, resp, expected_status=None, msg=None):
+    @staticmethod
+    def _check_status(resp, expected_status=None, msg=None):
         """
         Helper method to check HTTP status
         """
@@ -976,7 +985,7 @@ class RequestsKeywords(object):
                 expected_status = int(expected_status)
             except ValueError as err:
                 raise ValueError("Error converting expected status: %s" % err)
-            assert resp.status_code == expected_status, msg
+            assert_equal(resp.status_code, expected_status, msg)
 
     def _get_url(self, session, uri):
         """
