@@ -3,13 +3,7 @@ import json
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 
-
-class UnknownStatusError(Exception):
-    pass
-
-
-class InvalidResponse(Exception):
-    pass
+from RequestsLibrary.exceptions import UnknownStatusError
 
 
 def parse_named_status(status_code):

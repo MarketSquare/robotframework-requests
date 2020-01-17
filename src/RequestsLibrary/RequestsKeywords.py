@@ -17,6 +17,8 @@ from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils
 from RequestsLibrary.compat import httplib, urlencode, PY3
+from RequestsLibrary.exceptions import InvalidResponse
+
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -951,7 +953,7 @@ class RequestsKeywords(object):
         Helper method to check HTTP status
         """
         if not isinstance(resp, Response):
-            raise utils.InvalidResponse(resp)
+            raise InvalidResponse(resp)
         if expected_status is None:
             resp.raise_for_status()
         else:
