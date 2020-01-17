@@ -7,7 +7,6 @@ import requests
 from requests.models import Response
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
-from requests.exceptions import HTTPError
 from requests.structures import CaseInsensitiveDict
 from requests.packages.urllib3.util import Retry
 import logging
@@ -40,14 +39,10 @@ class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
     DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
-    def __init__(self, fail_on_error=None):
-        """``fail_on_error`` Set to True to let all Requests keywords fail if the HTTP status code of the returned
-        response is an error code.
-        """
+    def __init__(self):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
-        self.fail_on_error = fail_on_error
 
     def _create_session(
             self,
@@ -596,8 +591,7 @@ class RequestsKeywords(object):
             json=None,
             params=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -619,8 +613,6 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -634,8 +626,7 @@ class RequestsKeywords(object):
             data=data,
             json=json,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
 
         return response
 
@@ -649,8 +640,7 @@ class RequestsKeywords(object):
             headers=None,
             files=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -676,8 +666,6 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         if not files:
@@ -694,8 +682,7 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
         return response
 
     def patch_request(
@@ -708,8 +695,7 @@ class RequestsKeywords(object):
             headers=None,
             files=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
@@ -733,8 +719,6 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -750,8 +734,7 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
 
         return response
 
@@ -765,8 +748,7 @@ class RequestsKeywords(object):
             files=None,
             headers=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -788,8 +770,6 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -805,8 +785,7 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
 
         return response
 
@@ -819,8 +798,7 @@ class RequestsKeywords(object):
             params=None,
             headers=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -836,8 +814,6 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = self._format_data_according_to_header(session, data, headers)
@@ -852,8 +828,7 @@ class RequestsKeywords(object):
             params=params,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
 
         return response
 
@@ -863,8 +838,7 @@ class RequestsKeywords(object):
             uri,
             headers=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send a HEAD request on the session object found using the
         given `alias`
 
@@ -877,8 +851,6 @@ class RequestsKeywords(object):
         ``headers`` a dictionary of headers to use with the request
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
@@ -888,8 +860,7 @@ class RequestsKeywords(object):
             uri,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
 
         return response
 
@@ -899,8 +870,7 @@ class RequestsKeywords(object):
             uri,
             headers=None,
             allow_redirects=None,
-            timeout=None,
-            fail_on_error=None):
+            timeout=None):
         """ Send an OPTIONS request on the session object found using the
         given `alias`
 
@@ -913,8 +883,6 @@ class RequestsKeywords(object):
         ``headers`` a dictionary of headers to use with the request
 
         ``timeout`` connection timeout
-
-        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -924,8 +892,7 @@ class RequestsKeywords(object):
             uri,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout,
-            fail_on_error=fail_on_error)
+            timeout=timeout)
 
         return response
 
@@ -961,15 +928,6 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        # TODO move redirect checks in _common_request
-
-        fail_on_error_default = self.fail_on_error
-        fail_on_error_override = kwargs.pop('fail_on_error', None)
-        if fail_on_error_override is not None:
-            raise_for_status = fail_on_error_override
-        else:
-            raise_for_status = fail_on_error_default
-
         self._log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
 
@@ -985,12 +943,6 @@ class RequestsKeywords(object):
 
         session.last_resp = resp
         self._log_response(method, resp)
-
-        if raise_for_status:
-            try:
-                resp.raise_for_status()
-            except HTTPError as http_exception:
-                raise http_exception
 
         return resp
 
