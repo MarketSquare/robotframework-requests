@@ -7,7 +7,6 @@ import requests
 from requests.models import Response
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
-from requests.structures import CaseInsensitiveDict
 from requests.packages.urllib3.util import Retry
 import logging
 
@@ -574,7 +573,7 @@ class RequestsKeywords(object):
             if isinstance(content, bytes):
                 content = content.decode(encoding='utf-8')
         if pretty_print:
-            json_ = self._json_pretty_print(content)
+            json_ = utils.json_pretty_print(content)
         else:
             json_ = json.loads(content)
         logger.info('To JSON using : content=%s ' % (content))
@@ -1006,20 +1005,6 @@ class RequestsKeywords(object):
                 [ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
             logger.debug(debug_info)
 
-    def _json_pretty_print(self, content):
-        """
-        Pretty print a JSON object
-
-        ``content``  JSON object to pretty print
-        """
-        temp = json.loads(content)
-        return json.dumps(
-            temp,
-            sort_keys=True,
-            indent=4,
-            separators=(
-                ',',
-                ': '))
 
     def _utf8_urlencode(self, data):
         if self._is_string_type(data):
@@ -1037,7 +1022,7 @@ class RequestsKeywords(object):
 
     def _format_data_according_to_header(self, session, data, headers):
         # Merged headers are already case insensitive
-        headers = self._merge_headers(session, headers)
+        headers = utils.merge_headers(session, headers)
 
         if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
@@ -1054,7 +1039,7 @@ class RequestsKeywords(object):
     def _format_data_to_log_string_according_to_headers(self, session, data, headers):
         data_str = None
         # Merged headers are already case insensitive
-        headers = self._merge_headers(session, headers)
+        headers = utils.merge_headers(session, headers)
 
         if data is not None and headers is not None and 'Content-Type' in headers:
             if (headers['Content-Type'].find("application/json") != -1) or \
@@ -1085,7 +1070,7 @@ class RequestsKeywords(object):
         args = kwargs.copy()
         args.pop('session', None)
         # This will log specific headers merged with session defined headers
-        merged_headers = self._merge_headers(session, args.pop('headers', None))
+        merged_headers = utils.merge_headers(session, args.pop('headers', None))
         formatted_data = self._format_data_to_log_string_according_to_headers(session,
                                                                               args.pop('data', None),
                                                                               merged_headers)
@@ -1108,23 +1093,6 @@ class RequestsKeywords(object):
                                                                response.reason) +
                      response.text)
 
-    @staticmethod
-    def _merge_headers(session, headers):
-        if headers is None:
-            headers = {}
-        if session.headers is None:
-            merged_headers = {}
-        else:
-            # Session headers are the default but local headers
-            # have priority and can override values
-            merged_headers = session.headers.copy()
-
-        # Make sure merged_headers are CaseIsensitiveDict
-        if not isinstance(merged_headers, CaseInsensitiveDict):
-            merged_headers = CaseInsensitiveDict(merged_headers)
-
-        merged_headers.update(headers)
-        return merged_headers
 
     @staticmethod
     def _is_json(data):
