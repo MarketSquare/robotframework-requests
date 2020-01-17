@@ -9,7 +9,7 @@ Suite Setup  Run Keywords  Create Session  google  http://www.google.com  AND
 Request And Status Should Be Different
     [Tags]  get  status
     ${resp}=  Get Request  google  /404
-    Run Keyword And Expect Error  404 != 201  Status Should Be  201  ${resp}
+    Run Keyword And Expect Error  Url: http://www.google.com/404 Expected status: 404 != 201  Status Should Be  201  ${resp}
 
 Request And Status Should Be Equal
     [Tags]  get  status
@@ -34,7 +34,7 @@ Invalid Response
 Request And Status Should Be With A Message
     [Tags]  get  status
     ${resp}=  Get Request  httpstat  418
-    Run Keyword And Expect Error  He should be a teapot!: 418 != 200
+    Run Keyword And Expect Error  He should be a teapot! Url: http://httpstat.us//418 Expected status: 418 != 200
     ...   Status Should Be  OK  ${resp}  He should be a teapot!
 
 Request Should Be Successfull

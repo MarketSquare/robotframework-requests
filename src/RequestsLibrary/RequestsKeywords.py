@@ -989,13 +989,18 @@ class RequestsKeywords(object):
         """
         if not isinstance(resp, Response):
             raise utils.InvalidResponse(resp)
+        if msg is None:
+            msg = ''
+        else:
+            msg = msg + ' '
         if expected_status is None:
             resp.raise_for_status()
         else:
             try:
                 expected_status = int(expected_status)
-            except ValueError as err:
+            except ValueError:
                 expected_status = utils.parse_named_status(expected_status)
+            msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
 
     def _get_url(self, session, uri):
