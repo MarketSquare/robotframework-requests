@@ -965,6 +965,19 @@ class RequestsKeywords(object):
 
         return resp
 
+    def _check_status(self, resp, expected_status=None, msg=None):
+        """
+        Helper method to check HTTP status
+        """
+        if not expected_status:
+            resp.raise_for_status()
+        else:
+            try:
+                expected_status = int(expected_status)
+            except ValueError as err:
+                raise ValueError("Error converting expected status: %s" % err)
+            assert resp.status_code == expected_status, msg
+
     def _get_url(self, session, uri):
         """
         Helper method to get the full url
