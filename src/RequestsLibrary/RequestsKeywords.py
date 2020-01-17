@@ -8,14 +8,15 @@ from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
 from requests.exceptions import HTTPError
 from requests.structures import CaseInsensitiveDict
-import logging
 from requests.packages.urllib3.util import Retry
-import robot
+import logging
 
+import robot
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
+from RequestsLibrary import utils
 from RequestsLibrary.compat import httplib, urlencode, PY3
 
 try:
@@ -981,18 +982,15 @@ class RequestsKeywords(object):
         return resp
 
     @staticmethod
-    def _check_status(resp, expected_status=None, msg=None):
+    def _check_status(expected_status, resp, msg=None):
         """
         Helper method to check HTTP status
         """
-        if not expected_status:
-            resp.raise_for_status()
-        else:
-            try:
-                expected_status = int(expected_status)
-            except ValueError as err:
-                raise ValueError("Error converting expected status: %s" % err)
-            assert_equal(resp.status_code, expected_status, msg)
+        try:
+            expected_status = int(expected_status)
+        except ValueError as err:
+            expected_status = utils.parse_named_status(expected_status)
+        assert_equal(resp.status_code, expected_status, msg)
 
     def _get_url(self, session, uri):
         """
