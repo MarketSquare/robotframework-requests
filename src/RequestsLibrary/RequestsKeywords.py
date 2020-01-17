@@ -928,11 +928,11 @@ class RequestsKeywords(object):
 
         return response
 
-    def status_should_be(self, response, expected_status, msg=None):
+    def status_should_be(self, expected_status, response, msg=None):
         """
         Fails if response status code is different than the expected.
         """
-        self._check_status(response, expected_status, msg)
+        self._check_status(expected_status, response, msg)
 
     def status_should_be_ok(self, response, msg=None):
         """
