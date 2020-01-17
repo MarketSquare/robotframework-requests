@@ -15,17 +15,15 @@ Get Request And Not Fail On Status Without Message
     ${resp}=  Get Request  google  /404
     Status Should Be  404  ${resp}
 
-#Get Request With Status Should Be OK
-    #[Tags]  get  fail
-    #${resp}=  Get Request  google  /
-    # TODO name is misleading now
-    #Status Should Be OK  ${resp}
+Get Request Should Be Successfull
+    [Tags]  get  fail
+    ${resp}=  Get Request  google  /
+    Request Should Be Successful  ${resp}
 
-#Get Request With Status Should Be KO
-#    [Tags]  get  fail
-#    ${resp}=  Get Request  httpstat  500
-     # TODO name is misleading now
-#    Run Keyword And Expect Error  HTTPError: 500*  Status Should Be OK  ${resp}
+Get Request Should Not Be Successfull
+    [Tags]  get  fail
+    ${resp}=  Get Request  httpstat  500
+    Run Keyword And Expect Error  HTTPError: 500*  Request Should Be Successful  ${resp}
 
 Get Request And Expect A Named Status Code
     [Tags]  get  fail

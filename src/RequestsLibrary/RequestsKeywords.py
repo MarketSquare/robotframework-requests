@@ -934,11 +934,11 @@ class RequestsKeywords(object):
         """
         self._check_status(expected_status, response, msg)
 
-    def status_should_be_ok(self, response, msg=None):
+    def request_should_be_successful(self, response, msg=None):
         """
         Fails if response status code is not 200 - 2xx.
         """
-        self._check_status(response, None, msg)
+        self._check_status(None, response, msg)
 
 
     def _common_request(
@@ -986,11 +986,14 @@ class RequestsKeywords(object):
         """
         Helper method to check HTTP status
         """
-        try:
-            expected_status = int(expected_status)
-        except ValueError as err:
-            expected_status = utils.parse_named_status(expected_status)
-        assert_equal(resp.status_code, expected_status, msg)
+        if expected_status is None:
+            resp.raise_for_status()
+        else:
+            try:
+                expected_status = int(expected_status)
+            except ValueError as err:
+                expected_status = utils.parse_named_status(expected_status)
+            assert_equal(resp.status_code, expected_status, msg)
 
     def _get_url(self, session, uri):
         """
