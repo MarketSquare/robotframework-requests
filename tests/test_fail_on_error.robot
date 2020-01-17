@@ -28,7 +28,11 @@ Get Request And Not Fail On Status Without Message
 #    Run Keyword And Expect Error  HTTPError: 500*  Status Should Be OK  ${resp}
 
 Get Request And Expect A Named Status Code
-     [Tags]  get  fail
+    [Tags]  get  fail
     ${resp}=  Get Request  httpstat  418
     Status Should Be  i am a teapot  ${resp}
 
+Get Request And Expect An Invalid Named Status
+    [Tags]  get  fail
+    ${resp}=  Get Request  httpstat  418
+    Run Keyword And Expect Error    UnknownStatusError: i am an alien    Status Should Be  i am an alien  ${resp}
