@@ -28,7 +28,7 @@ Here is a sample test case:
 |                    | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
 |                    | ${resp}=                        | Get Request         | github                | /users/bulkan |
 |                    | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
-|                    | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Savun Evcimen  |               |
+|                    | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Evcimen        |               |
 
 RequestsLibrary tries to follow the same API as requests. In the above example, we load in the ``RequestsLibrary`` using the ``Library`` keyword. To be able to distinguish HTTP requests to different hosts and for ease of creation of test cases, you need to create a `Session`. Internally this will create a `request.Session` object.  The `Create Session` keyword accepts two arguments:
 
