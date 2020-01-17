@@ -2,7 +2,7 @@
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 
 Suite Setup  Run Keywords  Create Session  google  http://www.google.com  AND
-...          Create Session  httpbin  https://httpbin.org/
+...          Create Session  httpstat  http://httpstat.us/
 
 *** Test Cases ***
 Get Request And Fail On Status Without Message
@@ -22,5 +22,5 @@ Get Request With Status Should Be OK
 
 Get Request With Status Should Be KO
     [Tags]  get  fail
-    ${resp}=  Get Request  httpbin  get/201
-    Status Should Be OK  ${resp}
+    ${resp}=  Get Request  httpstat  500
+    Run Keyword And Expect Error  HTTPError: 500*  Status Should Be OK  ${resp}
