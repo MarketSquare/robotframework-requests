@@ -933,6 +933,13 @@ class RequestsKeywords(object):
         """
         self._check_status(response, expected_status, msg)
 
+    def status_should_be_ok(self, response, msg=None):
+        """
+        Fails if response status code is not 200 - 2xx.
+        """
+        self._check_status(response, None, msg)
+
+
     def _common_request(
             self,
             method,
