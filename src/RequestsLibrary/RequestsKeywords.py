@@ -4,6 +4,7 @@ import types
 import sys
 
 import requests
+from requests.models import Response
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
 from requests.exceptions import HTTPError
@@ -986,6 +987,8 @@ class RequestsKeywords(object):
         """
         Helper method to check HTTP status
         """
+        if not isinstance(resp, Response):
+            raise utils.InvalidResponse(resp)
         if expected_status is None:
             resp.raise_for_status()
         else:

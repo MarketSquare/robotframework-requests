@@ -5,6 +5,10 @@ class UnknownStatusError(Exception):
     pass
 
 
+class InvalidResponse(Exception):
+    pass
+
+
 def parse_named_status(status_code):
     """
     Converts named status status from human readable to integer
