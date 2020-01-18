@@ -39,11 +39,11 @@ setup(name         = 'robotframework-requests',
       classifiers  = CLASSIFIERS.splitlines(),
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
-      package_data = {'RequestsLibrary': ['tests/*.txt']},
       install_requires=[
           'robotframework',
           'requests'
       ],
+      test_requires=['flask']
 )
 
 """ From now on use this approach
