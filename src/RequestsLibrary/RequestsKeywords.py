@@ -921,7 +921,6 @@ class RequestsKeywords(object):
         """
         self._check_status(None, response, msg=None)
 
-
     def _common_request(
             self,
             method,
@@ -1026,7 +1025,7 @@ class RequestsKeywords(object):
         # Merged headers are already case insensitive
         headers = utils.merge_headers(session, headers)
 
-        if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
+        if data is not None and headers is not None and 'Content-Type' in headers and not utils.is_json(data):
             if headers['Content-Type'].find("application/json") != -1:
                 if not isinstance(data, types.GeneratorType):
                     if str(data).strip():
@@ -1095,14 +1094,6 @@ class RequestsKeywords(object):
                                                                response.reason) +
                      response.text)
 
-
-    @staticmethod
-    def _is_json(data):
-        try:
-            json.loads(data)
-        except (TypeError, ValueError):
-            return False
-        return True
 
     @staticmethod
     def _is_string_type(data):

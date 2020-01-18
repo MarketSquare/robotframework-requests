@@ -35,6 +35,14 @@ def merge_headers(session, headers):
     return merged_headers
 
 
+def is_json(data):
+    try:
+        json.loads(data)
+    except (TypeError, ValueError):
+        return False
+    return True
+
+
 def json_pretty_print(content):
     """
     Pretty print a JSON object
