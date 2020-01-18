@@ -910,15 +910,15 @@ class RequestsKeywords(object):
         """
         self._check_status(expected_status, response, msg)
 
-    def request_should_be_successful(self, response, msg=None):
+    def request_should_be_successful(self, response):
         """
         Fails if response status code is a client or server error (4xx, 5xx).
 
         The ``response`` is the output of other requests keywords like ``Get Request``.
 
-        A custom message ``msg`` can be added to work like built in keywords.
+        In case of failure an HTTPError will be automatically raised.
         """
-        self._check_status(None, response, msg)
+        self._check_status(None, response, msg=None)
 
 
     def _common_request(
@@ -953,17 +953,15 @@ class RequestsKeywords(object):
         """
         if not isinstance(resp, Response):
             raise utils.InvalidResponse(resp)
-        if msg is None:
-            msg = ''
-        else:
-            msg = msg + ' '
         if expected_status is None:
             resp.raise_for_status()
         else:
             try:
                 expected_status = int(expected_status)
             except ValueError:
+
                 expected_status = utils.parse_named_status(expected_status)
+            msg = '' if msg is None else '{} '.format(msg)
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
 
