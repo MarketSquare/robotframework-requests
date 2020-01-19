@@ -7,6 +7,7 @@ Resource  res_setup.robot
 Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
+
 *** Variables ***
 ${HTTP_LOCAL_SERVER}    http://localhost:5000
 

@@ -1,8 +1,9 @@
 # This code is part of httpbin project source code https://github.com/postmanlabs/httpbin
 # See AUTHORS and LICENSE for more information
 
-from flask import Flask, jsonify as flask_jsonify
-from .helpers import get_dict
+from flask import Flask, Response, jsonify as flask_jsonify
+from .helpers import get_dict, status_code
+from .utils import weighted_choice
 
 
 app = Flask(__name__)
@@ -62,3 +63,54 @@ def view_anything(anything=None):
             "json",
         )
     )
+
+
+@app.route(
+    "/status/<codes>", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE"]
+)
+def view_status_code(codes):
+    """Return status code or random status code if more than one are given
+    ---
+    tags:
+      - Status codes
+    parameters:
+      - in: path
+        name: codes
+    produces:
+      - text/plain
+    responses:
+      100:
+        description: Informational responses
+      200:
+        description: Success
+      300:
+        description: Redirection
+      400:
+        description: Client Errors
+      500:
+        description: Server Errors
+    """
+
+    if "," not in codes:
+        try:
+            code = int(codes)
+        except ValueError:
+            return Response("Invalid status code", status=400)
+        return status_code(code)
+
+    choices = []
+    for choice in codes.split(","):
+        if ":" not in choice:
+            code = choice
+            weight = 1
+        else:
+            code, weight = choice.split(":")
+
+        try:
+            choices.append((int(code), float(weight)))
+        except ValueError:
+            return Response("Invalid status code", status=400)
+
+    code = weighted_choice(choices)
+
+    return status_code(code)
