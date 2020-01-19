@@ -32,6 +32,8 @@ setup(name         = 'robotframework-requests',
       long_description = DESCRIPTION,
       author       = 'Bulkan Savun Evcimen',
       author_email = 'bulkan@gmail.com',
+      maintainer   = 'Luca Giovenzana',
+      maintainer_email = 'luca@giovenzana.org',
       url          = 'http://github.com/bulkan/robotframework-requests',
       license      = 'MIT',
       keywords     = 'robotframework testing test automation http client requests',
@@ -40,10 +42,12 @@ setup(name         = 'robotframework-requests',
       package_dir  = {'' : 'src'},
       packages     = ['RequestsLibrary'],
       install_requires=[
-          'robotframework',
-          'requests'
+            'robotframework',
+            'requests'
       ],
-      test_requires=['flask']
+      extras_require={
+            'test': ['flask']
+      },
 )
 
 """ From now on use this approach

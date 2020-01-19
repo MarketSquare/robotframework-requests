@@ -7,10 +7,9 @@ python:
   - "3.6"
   - "3.6-dev"
   - "3.7-dev"
-  - "nightly"
 
 install:
-  - "pip install -r requirements.txt"
+  - "pip install .[test]"
 
 script:
   - robot --exclude skip --pythonpath src tests
