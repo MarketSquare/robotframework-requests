@@ -37,12 +37,12 @@ Request And Status Should Be With A Message
     Run Keyword And Expect Error  He should be a teapot! Url: http://httpstat.us//418 Expected status: 418 != 200
     ...   Status Should Be  OK  ${resp}  He should be a teapot!
 
-Request Should Be Successfull
+Request Should Be Successful
     [Tags]  get  status
     ${resp}=  Get Request  google  /
     Request Should Be Successful  ${resp}
 
-Request Should Not Be Successfull
+Request Should Not Be Successful
     [Tags]  get  status
     ${resp}=  Get Request  httpstat  500
     Run Keyword And Expect Error  HTTPError: 500*  Request Should Be Successful  ${resp}
