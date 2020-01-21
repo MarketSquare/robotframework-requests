@@ -4,15 +4,19 @@ import types
 import sys
 
 import requests
+from requests.models import Response
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
 from requests.structures import CaseInsensitiveDict
-import logging
 from requests.packages.urllib3.util import Retry
+import logging
+
 import robot
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+from robot.utils.asserts import assert_equal
 
+from RequestsLibrary import utils
 from RequestsLibrary.compat import httplib, urlencode, PY3
 
 try:
@@ -845,6 +849,8 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         redir = False if allow_redirects is None else allow_redirects
@@ -875,6 +881,8 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``headers`` a dictionary of headers to use with the request
+
+        ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
         redir = True if allow_redirects is None else allow_redirects
@@ -887,6 +895,31 @@ class RequestsKeywords(object):
             timeout=timeout)
 
         return response
+
+    def status_should_be(self, expected_status, response, msg=None):
+        """
+        Fails if response status code is different than the expected.
+
+        ``expected_status`` could be the code number as an integer or as string.
+        But it could also be a named status code like 'ok', 'created', 'accepted' or
+        'bad request', 'not found' etc.
+
+        The ``response`` is the output of other requests keywords like ``Get Request``.
+
+        A custom message ``msg`` can be added to work like built in keywords.
+        """
+        self._check_status(expected_status, response, msg)
+
+    def request_should_be_successful(self, response):
+        """
+        Fails if response status code is a client or server error (4xx, 5xx).
+
+        The ``response`` is the output of other requests keywords like ``Get Request``.
+
+        In case of failure an HTTPError will be automatically raised.
+        """
+        self._check_status(None, response, msg=None)
+
 
     def _common_request(
             self,
@@ -912,6 +945,25 @@ class RequestsKeywords(object):
         self._log_response(method, resp)
 
         return resp
+
+    @staticmethod
+    def _check_status(expected_status, resp, msg=None):
+        """
+        Helper method to check HTTP status
+        """
+        if not isinstance(resp, Response):
+            raise utils.InvalidResponse(resp)
+        if expected_status is None:
+            resp.raise_for_status()
+        else:
+            try:
+                expected_status = int(expected_status)
+            except ValueError:
+
+                expected_status = utils.parse_named_status(expected_status)
+            msg = '' if msg is None else '{} '.format(msg)
+            msg = "{}Url: {} Expected status".format(msg, resp.url)
+            assert_equal(resp.status_code, expected_status, msg)
 
     def _get_url(self, session, uri):
         """
@@ -1025,6 +1077,7 @@ class RequestsKeywords(object):
         # TODO would be nice to add also the alias
         # TODO would be nice to pretty format the headers / json / data
         # TODO move in common the data formatting to have this as @staticmethod
+        # TODO big requests should be truncated to avoid huge logs
 
         # kwargs might include: method, session, uri, params, files, headers,
         #                       data, json, allow_redirects, timeout
@@ -1048,6 +1101,7 @@ class RequestsKeywords(object):
 
     @staticmethod
     def _log_response(method, response):
+        # TODO big responses should be truncated to avoid huge logs
         logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
                                                                response.status_code,
                                                                response.reason) +
