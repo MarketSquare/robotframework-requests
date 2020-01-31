@@ -1,7 +1,15 @@
 import os
 import sys
-from unittest import TestCase, mock
-from unittest.mock import patch
+
+# Needed to support python 2.7
+if sys.version_info >= (3, 3):
+    from unittest import TestCase, mock
+    from unittest.mock import patch
+else:
+    import mock
+    from unittest import TestCase
+    from mock import patch
+
 # I hate it but I can't get the coverage report to work without it, must be before RequestsLibrary import
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/')))
 import RequestsLibrary
