@@ -13,3 +13,4 @@ install:
 
 script:
   - robot --exclude skip --pythonpath src tests
+  - pytest --cov src -v
