@@ -30,5 +30,5 @@ class TestCalls(TestCase):
         lib.create_session('http_server', HTTP_LOCAL_SERVER, sess_headers)
         lib.post_request('http_server', '/anything',  data="",  headers=post_headers)
         common_request.assert_called_with('post', mock.ANY, '/anything', allow_redirects=True, data='',
-                                          files=None, headers={'Content-Type': 'application/json'}, json=None,
+                                          files=None, headers=post_headers, json=None,
                                           params=None, timeout=None)
