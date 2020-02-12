@@ -1,4 +1,6 @@
 import json
+import types
+
 
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
@@ -81,3 +83,38 @@ def utf8_urlencode(data):
             v = v.encode('utf-8')
         utf8_data[k] = v
     return urlencode(utf8_data)
+
+
+def format_data_to_log_string_according_to_headers(session, data, headers):
+    data_str = None
+    # Merged headers are already case insensitive
+    headers = merge_headers(session, headers)
+
+    if data is not None and headers is not None and 'Content-Type' in headers:
+        if (headers['Content-Type'].find("application/json") != -1) or \
+                (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
+            if isinstance(data, bytes):
+                data_str = data.decode('utf-8')
+            else:
+                data_str = data
+        else:
+            data_str = "<" + headers['Content-Type'] + ">"
+
+    return data_str
+
+
+def format_data_according_to_header(session, data, headers):
+    # Merged headers are already case insensitive
+    headers = merge_headers(session, headers)
+
+    if data is not None and headers is not None and 'Content-Type' in headers and not is_json(data):
+        if headers['Content-Type'].find("application/json") != -1:
+            if not isinstance(data, types.GeneratorType):
+                if str(data).strip():
+                    data = json.dumps(data)
+        elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
+            data = utf8_urlencode(data)
+    else:
+        data = utf8_urlencode(data)
+
+    return data

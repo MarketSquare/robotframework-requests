@@ -1,6 +1,5 @@
 import json
 import copy
-import types
 import sys
 
 import requests
@@ -15,7 +14,7 @@ from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
-from RequestsLibrary import utils
+from RequestsLibrary import utils, log
 from RequestsLibrary.compat import httplib, PY3
 from RequestsLibrary.exceptions import InvalidResponse
 
@@ -670,7 +669,7 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         if not files:
-            data = self._format_data_according_to_header(session, data, headers)
+            data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -722,7 +721,7 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -773,7 +772,7 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -817,7 +816,7 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -928,7 +927,7 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        self._log_request(method, session, uri, **kwargs)
+        log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
 
         self._capture_output()
@@ -942,7 +941,7 @@ class RequestsKeywords(object):
         self._print_debug()
 
         session.last_resp = resp
-        self._log_response(method, resp)
+        log.log_response(method, resp)
 
         return resp
 
@@ -965,7 +964,8 @@ class RequestsKeywords(object):
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
 
-    def _get_url(self, session, uri):
+    @staticmethod
+    def _get_url(session, uri):
         """
         Helper method to get the full url
         """
@@ -1005,80 +1005,3 @@ class RequestsKeywords(object):
             debug_info = "\n".join(
                 [ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
             logger.debug(debug_info)
-
-
-    def _format_data_according_to_header(self, session, data, headers):
-        # Merged headers are already case insensitive
-        headers = utils.merge_headers(session, headers)
-
-        if data is not None and headers is not None and 'Content-Type' in headers and not utils.is_json(data):
-            if headers['Content-Type'].find("application/json") != -1:
-                if not isinstance(data, types.GeneratorType):
-                    if str(data).strip():
-                        data = json.dumps(data)
-            elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
-                data = utils.utf8_urlencode(data)
-        else:
-            data = utils.utf8_urlencode(data)
-
-        return data
-
-    def _format_data_to_log_string_according_to_headers(self, session, data, headers):
-        data_str = None
-        # Merged headers are already case insensitive
-        headers = utils.merge_headers(session, headers)
-
-        if data is not None and headers is not None and 'Content-Type' in headers:
-            if (headers['Content-Type'].find("application/json") != -1) or \
-                    (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
-                if isinstance(data, bytes):
-                    data_str = data.decode('utf-8')
-                else:
-                    data_str = data
-            else:
-                data_str = "<" + headers['Content-Type'] + ">"
-
-        return data_str
-
-    def _log_request(
-            self,
-            method,
-            session,
-            uri,
-            **kwargs):
-
-        # TODO would be nice to add also the alias
-        # TODO would be nice to pretty format the headers / json / data
-        # TODO move in common the data formatting to have this as @staticmethod
-        # TODO big requests should be truncated to avoid huge logs
-
-        # kwargs might include: method, session, uri, params, files, headers,
-        #                       data, json, allow_redirects, timeout
-        args = kwargs.copy()
-        args.pop('session', None)
-        # This will log specific headers merged with session defined headers
-        merged_headers = utils.merge_headers(session, args.pop('headers', None))
-        formatted_data = self._format_data_to_log_string_according_to_headers(session,
-                                                                              args.pop('data', None),
-                                                                              merged_headers)
-        formatted_json = args.pop('json', None)
-        method_log = '%s Request using : ' % method.upper()
-        uri_log = 'uri=%s' % uri
-        composed_log = method_log + uri_log
-        for arg in args:
-            composed_log += ', %s=%s' % (arg, kwargs.get(arg, None))
-        logger.info(composed_log + '\n' +
-                    'headers=%s \n' % merged_headers +
-                    'data=%s \n' % formatted_data +
-                    'json=%s' % formatted_json)
-
-    @staticmethod
-    def _log_response(method, response):
-        # TODO big responses should be truncated to avoid huge logs
-        logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
-                                                               response.status_code,
-                                                               response.reason) +
-                     response.text)
-
-
-
