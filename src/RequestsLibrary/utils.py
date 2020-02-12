@@ -4,6 +4,7 @@ from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 
 from RequestsLibrary.exceptions import UnknownStatusError
+from RequestsLibrary.compat import urlencode, PY3
 
 
 def parse_named_status(status_code):
@@ -57,3 +58,26 @@ def json_pretty_print(content):
         separators=(
             ',',
             ': '))
+
+
+def is_string_type(data):
+    if PY3 and isinstance(data, str):
+        return True
+    elif not PY3 and isinstance(data, unicode):
+        return True
+    return False
+
+
+def utf8_urlencode(data):
+    if is_string_type(data):
+        return data.encode('utf-8')
+
+    if not isinstance(data, dict):
+        return data
+
+    utf8_data = {}
+    for k, v in data.items():
+        if is_string_type(v):
+            v = v.encode('utf-8')
+        utf8_data[k] = v
+    return urlencode(utf8_data)

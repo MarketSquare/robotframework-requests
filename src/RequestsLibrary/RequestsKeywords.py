@@ -16,7 +16,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils
-from RequestsLibrary.compat import httplib, urlencode, PY3
+from RequestsLibrary.compat import httplib, PY3
 from RequestsLibrary.exceptions import InvalidResponse
 
 
@@ -934,7 +934,7 @@ class RequestsKeywords(object):
         self._capture_output()
         resp = method_function(
             self._get_url(session, uri),
-            params=self._utf8_urlencode(kwargs.pop('params', None)),
+            params=utils.utf8_urlencode(kwargs.pop('params', None)),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
             cookies=self.cookies,
             verify=self.verify,
@@ -1007,20 +1007,6 @@ class RequestsKeywords(object):
             logger.debug(debug_info)
 
 
-    def _utf8_urlencode(self, data):
-        if self._is_string_type(data):
-            return data.encode('utf-8')
-
-        if not isinstance(data, dict):
-            return data
-
-        utf8_data = {}
-        for k, v in data.items():
-            if self._is_string_type(v):
-                v = v.encode('utf-8')
-            utf8_data[k] = v
-        return urlencode(utf8_data)
-
     def _format_data_according_to_header(self, session, data, headers):
         # Merged headers are already case insensitive
         headers = utils.merge_headers(session, headers)
@@ -1031,9 +1017,9 @@ class RequestsKeywords(object):
                     if str(data).strip():
                         data = json.dumps(data)
             elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
-                data = self._utf8_urlencode(data)
+                data = utils.utf8_urlencode(data)
         else:
-            data = self._utf8_urlencode(data)
+            data = utils.utf8_urlencode(data)
 
         return data
 
@@ -1095,10 +1081,4 @@ class RequestsKeywords(object):
                      response.text)
 
 
-    @staticmethod
-    def _is_string_type(data):
-        if PY3 and isinstance(data, str):
-            return True
-        elif not PY3 and isinstance(data, unicode):
-            return True
-        return False
+
