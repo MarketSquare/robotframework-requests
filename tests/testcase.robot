@@ -4,8 +4,10 @@ Library  String
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
 Library  customAuthenticator.py
+Resource  res_setup.robot
 
-Suite Teardown  Delete All Sessions
+Suite Setup     Setup Flask Http Server
+Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Test Cases ***
 Get Requests
@@ -327,33 +329,41 @@ Head Request Without Redirection
 
 Post Request With Redirection
     [Tags]  post
-    Create Session  jigsaw  http://jigsaw.w3.org
-    ${resp}=  Post Request  jigsaw  /HTTP/300/302.html
-    Should Be Equal As Strings  ${resp.status_code}  200
-    ${resp}=  Post Request  jigsaw  /HTTP/300/302.html  allow_redirects=${true}
-    Should Be Equal As Strings  ${resp.status_code}  200
+    # FIXME should be 2 different tests
+    # FIXME should be verifed also the payload is returned
+    # FIXME returned http method should be verified
+    ${resp}=  Post Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything
+    Status Should be  OK  ${resp}
+    ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
+    Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
+    ${resp}=  Post Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    Status Should be  OK  ${resp}
+    ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
+    Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
 
 Post Request Without Redirection
     [Tags]  post
-    Create Session  jigsaw  http://jigsaw.w3.org    debug=3
-    ${resp}=  Post Request  jigsaw  /HTTP/300/302.html  allow_redirects=${false}
-    ${status}=  Convert To String  ${resp.status_code}
-    Should Start With  ${status}  30
+    ${resp}=  Post Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
+    Status Should be  302  ${resp}
 
 Put Request With Redirection
     [Tags]  put
-    Create Session  jigsaw  http://jigsaw.w3.org    debug=3
-    ${resp}=  Put Request  jigsaw  /HTTP/300/302.html
-    Should Be Equal As Strings  ${resp.status_code}  200
-    ${resp}=  Put Request  jigsaw  /HTTP/300/302.html  allow_redirects=${true}
-    Should Be Equal As Strings  ${resp.status_code}  200
+    # FIXME should be 2 different tests
+    # FIXME should be verifed also the payload is returned
+    # FIXME returned http method should be verified
+    ${resp}=  Put Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything
+    Status Should be  OK  ${resp}
+    ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
+    Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
+    ${resp}=  Put Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    Status Should be  OK  ${resp}
+    ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
+    Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
 
 Put Request Without Redirection
     [Tags]  put
-    Create Session  jigsaw  http://jigsaw.w3.org
-    ${resp}=  Put Request  jigsaw  /HTTP/300/302.html  allow_redirects=${false}
-    ${status}=  Convert To String  ${resp.status_code}
-    Should Start With  ${status}  30
+    ${resp}=  Put Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
+    Status Should be  302  ${resp}
 
 Do Not Pretty Print a JSON object
     [Tags]    json
@@ -387,8 +397,8 @@ Set Pretty Print to non-Boolean value
 
 Create a session and make sure it exists
     [Tags]    session
-    Create Session     jigsaw2  http://jigsaw.w3.org
-    ${exists}=         Session Exists    jigsaw2
+    Create Session     existing_session  ${HTTP_LOCAL_SERVER}
+    ${exists}=         Session Exists    existing_session
     Should Be True     ${exists}
 
 Verify a non existing session
