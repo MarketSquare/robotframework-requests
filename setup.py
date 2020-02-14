@@ -50,8 +50,13 @@ setup(name         = 'robotframework-requests',
       },
 )
 
-""" From now on use this approach
-
+""" Official release from master
+# make sure the setup version has been increased
+python -m robot.libdoc src/RequestsLibrary doc/RequestsLibrary.html
+git add doc/RequestsLibrary.html
+git commit -m "Updated documentation"
+git tag -a v1.2.3
+git push --tags
 python setup.py sdist upload
-git tag -a 1.2.3 -m 'version 1.2.3'
-git push --tags"""
+python3 -m twine upload dist/*
+"""
