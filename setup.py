@@ -55,8 +55,8 @@ setup(name         = 'robotframework-requests',
 python -m robot.libdoc src/RequestsLibrary doc/RequestsLibrary.html
 git add doc/RequestsLibrary.html
 git commit -m "Updated documentation"
-git tag -a v1.2.3
+git tag v1.2.3
 git push --tags
-python setup.py sdist upload
-python3 -m twine upload dist/*
+python setup.py sdist bdist_wheel
+twine upload dist/*
 """
