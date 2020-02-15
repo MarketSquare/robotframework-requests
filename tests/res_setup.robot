@@ -3,7 +3,7 @@ Library  Process
 
 
 *** Variables ***
-${GLOBAL_LOCAL_SESSION}     global_local_session
+${SESSION}     session
 ${HTTP_LOCAL_SERVER}        http://localhost:5000
 
 
@@ -11,7 +11,7 @@ ${HTTP_LOCAL_SERVER}        http://localhost:5000
 Setup Flask Http Server
     Start Process  ${CURDIR}/http_server/run.sh  cwd=${CURDIR}/http_server/  alias=flask
     Sleep  1  # I know... needed to let the http server start before starting the connection
-    Create Session  ${GLOBAL_LOCAL_SESSION}  ${HTTP_LOCAL_SERVER}
+    Create Session  ${SESSION}  ${HTTP_LOCAL_SERVER}
 
 Teardown Flask Http Server And Sessions
     Delete All Sessions
