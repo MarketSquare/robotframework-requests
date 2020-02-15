@@ -42,3 +42,8 @@ Get Request And Fail By Expecting A 200 Status With A Message
     [Tags]  get
     Run Keyword And Expect Error  Custom msg Url: http://localhost:5000/status/404?param Expected status: 404 != 200
     ...                           Get On Session  ${SESSION}  /status/404  param  200  Custom msg
+
+Get Request Expect An Error And Evaluate Response
+    [Tags]  get
+    ${resp}=    Get On Session  ${SESSION}  /status/401  expected_status=401
+    Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
