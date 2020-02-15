@@ -630,6 +630,11 @@ class RequestsKeywords(object):
 
         return response
 
+    def get_on_session(self, alias, url, params=None):
+        session = self._cache.switch(alias)
+
+        return self._common_request("get", session, url, params=params)
+
     def post_request(
             self,
             alias,
