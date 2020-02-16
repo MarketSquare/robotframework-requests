@@ -11,6 +11,7 @@ import logging
 
 import robot
 from robot.api import logger
+from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
@@ -630,6 +631,7 @@ class RequestsKeywords(object):
 
         return response
 
+    @keyword("GET On Session")
     def get_on_session(self, alias, url, params=None,
                        expected_status=None, msg=None, **kwargs):
         """
