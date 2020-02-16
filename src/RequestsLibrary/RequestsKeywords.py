@@ -979,10 +979,11 @@ class RequestsKeywords(object):
         if expected_status is None:
             resp.raise_for_status()
         else:
+            if expected_status.lower() in ['any', 'anything']:
+                return
             try:
                 expected_status = int(expected_status)
             except ValueError:
-
                 expected_status = utils.parse_named_status(expected_status)
             msg = '' if msg is None else '{} '.format(msg)
             msg = "{}Url: {} Expected status".format(msg, resp.url)

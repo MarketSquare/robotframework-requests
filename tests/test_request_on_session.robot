@@ -47,3 +47,13 @@ Get Request Expect An Error And Evaluate Response
     [Tags]  get
     ${resp}=    GET On Session  ${SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
+
+Get Request Expect Any Status And Continue On Error
+    [Tags]  get
+    ${resp}=    GET On Session  ${SESSION}  /status/404  expected_status=ANY
+    Should Be Equal As Strings  NOT FOUND  ${resp.reason}
+
+Get Request Expect Anything Status And Continue On Error
+    [Tags]  get
+    ${resp}=    GET On Session  ${SESSION}  /status/404  expected_status=Anything
+    Should Be Equal As Strings  NOT FOUND  ${resp.reason}
