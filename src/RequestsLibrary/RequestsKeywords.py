@@ -12,6 +12,7 @@ import logging
 
 import robot
 from robot.api import logger
+from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
@@ -639,6 +640,7 @@ class RequestsKeywords(object):
 
         return response
 
+    @keyword("GET On Session")
     def get_on_session(self, alias, url, params=None,
                        expected_status=None, msg=None, **kwargs):
         """
@@ -718,6 +720,15 @@ class RequestsKeywords(object):
             allow_redirects=redir,
             timeout=timeout,
             fail_on_error=fail_on_error)
+        return response
+
+    @keyword('POST On Session')
+    def post_on_session(self, alias, url, data=None, json=None,
+                        expected_status=None, msg=None, **kwargs):
+        session = self._cache.switch(alias)
+        response = self._common_request("post", session, url,
+                                        data=data, json=json, **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     def patch_request(
@@ -1025,10 +1036,11 @@ class RequestsKeywords(object):
         if expected_status is None:
             resp.raise_for_status()
         else:
+            if expected_status.lower() in ['any', 'anything']:
+                return
             try:
                 expected_status = int(expected_status)
             except ValueError:
-
                 expected_status = utils.parse_named_status(expected_status)
             msg = '' if msg is None else '{} '.format(msg)
             msg = "{}Url: {} Expected status".format(msg, resp.url)
