@@ -709,6 +709,15 @@ class RequestsKeywords(object):
             timeout=timeout)
         return response
 
+    @keyword('POST On Session')
+    def post_on_session(self, alias, url, data=None, json=None,
+                        expected_status=None, msg=None, **kwargs):
+        session = self._cache.switch(alias)
+        response = self._common_request("post", session, url,
+                                        data=data, json=json, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
     def patch_request(
             self,
             alias,
