@@ -58,7 +58,31 @@ Get Request Expect Anything Status And Continue On Error
     ${resp}=    GET On Session  ${SESSION}  /status/404  expected_status=Anything
     Should Be Equal As Strings  NOT FOUND  ${resp.reason}
 
+Post Request On Existing Session
+    [Tags]  post
+    ${resp}=            POST On Session  ${SESSION}  /anything
+    Status Should Be    OK  ${resp}
+
+Post Request With Data
+    [Tags]  post
+    ${resp}=            POST On Session  ${SESSION}  /anything  string
+    Status Should Be    OK  ${resp}
+    Should Be Equal As Strings  ${resp.json()}[data]  string
+
+Post Request With Json
+    [Tags]  post
+    ${body}=            Create Dictionary  a=1  b=2
+    ${resp}=            POST On Session  ${SESSION}  /anything  json=${body}
+    Status Should Be    OK  ${resp}
+    ${data}=            To Json  ${resp.json()}[data]
+    Dictionaries Should Be Equal  ${data}  ${body}
+
 Post Request Expect An Error And Evaluate Response
     [Tags]  post
     ${resp}=    POST On Session  ${SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
+
+Post Request Expect Anything Status And Continue On Error
+    [Tags]  get
+    ${resp}=    POST On Session  ${SESSION}  /status/400  expected_status=anything
+    Should Be Equal As Strings  BAD REQUEST  ${resp.reason}
