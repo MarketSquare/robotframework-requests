@@ -659,7 +659,8 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         response = self._common_request("get", session, url,
-                                        params=params, **kwargs)
+                                        params=params,  fail_on_error=False,
+                                        **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
@@ -727,7 +728,8 @@ class RequestsKeywords(object):
                         expected_status=None, msg=None, **kwargs):
         session = self._cache.switch(alias)
         response = self._common_request("post", session, url,
-                                        data=data, json=json, **kwargs)
+                                        data=data, json=json, fail_on_error=False,
+                                        **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
