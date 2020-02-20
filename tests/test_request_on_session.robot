@@ -81,3 +81,8 @@ Post Request Expect An Error And Evaluate Response
     [Tags]  post
     ${resp}=    POST On Session  ${SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
+
+Post Request Expect Anything Status And Continue On Error
+    [Tags]  get
+    ${resp}=    POST On Session  ${SESSION}  /status/400  expected_status=anything
+    Should Be Equal As Strings  BAD REQUEST  ${resp.reason}
