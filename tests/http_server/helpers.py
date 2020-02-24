@@ -23,7 +23,7 @@ from six.moves.urllib.parse import urlparse, urlunparse
 from .structures import CaseInsensitiveDict
 
 
-ASCII_ART = """
+ASCII_ART = r"""
     -=[ teapot ]=-
 
        _...._
@@ -68,7 +68,7 @@ ACCEPTED_MEDIA_TYPES = [
     'image/*'
 ]
 
-ANGRY_ASCII ="""
+ANGRY_ASCII = r"""
           .-''''''-.
         .' _      _ '.
        /   O      O   \\
@@ -435,7 +435,7 @@ def parse_multi_value_header(header_str):
     if header_str:
         parts = header_str.split(',')
         for part in parts:
-            match = re.search('\s*(W/)?\"?([^"]*)\"?\s*', part)
+            match = re.search(r'\s*(W/)?\"?([^"]*)\"?\s*', part)
             if match is not None:
                 parsed_parts.append(match.group(2))
     return parsed_parts
