@@ -16,7 +16,7 @@ ${test_session}     local test session created in setup
 
 *** Test Cases ***
 Get Requests
-    [Tags]  get
+    [Tags]  get  skip
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  google  /
@@ -27,21 +27,21 @@ Get Requests
 
 Get Requests with Url Parameters
     [Tags]  get
-    Create Session  httpbin     http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
-    ${resp}=     Get Request  httpbin  /get    params=${params}
+    ${params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=     Get Request  ${test_session}  /anything    params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
+    Should Be Equal As Strings     ${jsondata['method']}   GET
     Should Be Equal     ${jsondata['args']}     ${params}
 
 Get Requests with Json Data
     [Tags]  get
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Get Request  httpbin  /get    json=${data}
+    ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Get Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
-    # httpbin does not support this... Should Be Equal     ${jsondata['json]}     ${data}
+    Should Be Equal As Strings     ${jsondata['method']}   GET
+    Should Be Equal     ${jsondata['json']}     ${data}
 
 Get HTTPS & Verify Cert
     [Tags]  get     get-cert
@@ -88,47 +88,47 @@ Get With Digest Auth
 
 Post Request With URL Params
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
-    ${resp}=  Post Request  httpbin  /post		params=${params}
+    ${params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=  Post Request  ${test_session}  /anything		params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
 
 Post Requests with Json Data
     [Tags]  post
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Post Request  httpbin  /post    json=${data}
+    ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Post Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
+    Should Be Equal As Strings     ${jsondata['method']}   POST
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Put Requests with Json Data
     [Tags]  put
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Put Request  httpbin  /put    json=${data}
+    ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Put Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
+    Should Be Equal As Strings     ${jsondata['method']}   PUT
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Post Request With No Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Post Request  httpbin  /post
+    ${resp}=  Post Request  ${test_session}  /anything
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
 
 Put Request With No Data
     [Tags]  put
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Put Request  httpbin  /put
+    ${resp}=  Put Request  ${test_session}  /anything
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   PUT
 
 Post Request With No Dictionary
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
-    Set Test Variable  ${data}  some content
-    ${resp}=  Post Request  httpbin  /post  data=${data}
+    ${data}=  Set Variable  some content
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     Should Contain  ${resp.text}  ${data}
 
 Put Request With URL Params

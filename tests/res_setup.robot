@@ -4,8 +4,8 @@ Library  Process
 
 
 *** Variables ***
-${GLOBAL_SESSION}     global_session
-${HTTP_LOCAL_SERVER}        http://localhost:5000
+${GLOBAL_SESSION}       global_session
+${HTTP_LOCAL_SERVER}    http://localhost:5000
 
 
 *** Keywords ***
