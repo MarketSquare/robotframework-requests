@@ -726,6 +726,20 @@ class RequestsKeywords(object):
     @keyword('POST On Session')
     def post_on_session(self, alias, url, data=None, json=None,
                         expected_status=None, msg=None, **kwargs):
+        """
+        Sends a POST request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
         session = self._cache.switch(alias)
         response = self._common_request("post", session, url,
                                         data=data, json=json, fail_on_error=False,
@@ -843,6 +857,30 @@ class RequestsKeywords(object):
             timeout=timeout,
             fail_on_error=fail_on_error)
 
+        return response
+
+    @keyword('PUT On Session')
+    def put_on_session(self, alias, url, data=None, json=None,
+                        expected_status=None, msg=None, **kwargs):
+        """
+        Sends a PUT request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("put", session, url,
+                                        data=data, json=json, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     def delete_request(
