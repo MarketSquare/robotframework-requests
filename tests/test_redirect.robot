@@ -51,18 +51,18 @@ Post Request With Redirection
     # FIXME should be 2 different tests
     # FIXME should be verifed also the payload is returned
     # FIXME returned http method should be verified
-    ${resp}=  Post Request  ${SESSION}  /redirect-to?url=anything
+    ${resp}=  Post Request  ${GLOBAL_SESSION}  /redirect-to?url=anything
     Status Should be  OK  ${resp}
     ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
     Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
-    ${resp}=  Post Request  ${SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    ${resp}=  Post Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
     Status Should be  OK  ${resp}
     ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
     Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
 
 Post Request Without Redirection
     [Tags]  post
-    ${resp}=  Post Request  ${SESSION}  /redirect-to?url=anything  allow_redirects=${false}
+    ${resp}=  Post Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
     Status Should be  302  ${resp}
 
 Put Request With Redirection
@@ -70,16 +70,16 @@ Put Request With Redirection
     # FIXME should be 2 different tests
     # FIXME should be verifed also the payload is returned
     # FIXME returned http method should be verified
-    ${resp}=  Put Request  ${SESSION}  /redirect-to?url=anything
+    ${resp}=  Put Request  ${GLOBAL_SESSION}  /redirect-to?url=anything
     Status Should be  OK  ${resp}
     ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
     Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
-    ${resp}=  Put Request  ${SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    ${resp}=  Put Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
     Status Should be  OK  ${resp}
     ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
     Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
 
 Put Request Without Redirection
     [Tags]  put
-    ${resp}=  Put Request  ${SESSION}  /redirect-to?url=anything  allow_redirects=${false}
+    ${resp}=  Put Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
     Status Should be  302  ${resp}

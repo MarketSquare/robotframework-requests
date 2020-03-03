@@ -6,12 +6,17 @@ Library  OperatingSystem
 Library  customAuthenticator.py
 Resource  res_setup.robot
 
+Test Setup      Setup Test Session
+Test Teardown   Teardown Test Session
 Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
+*** Variables ***
+${test_session}     local test session created in setup
+
 *** Test Cases ***
 Get Requests
-    [Tags]  get    skip
+    [Tags]  get
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  google  /
@@ -286,36 +291,6 @@ Patch Requests with Json Data
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
     Should Be Equal     ${jsondata['json']}     ${data}
-
-Do Not Pretty Print a JSON object
-    [Tags]    json
-    Comment    Define json variable.
-    &{var}=    Create Dictionary    key_one=true    key_two=this is a test string
-    ${resp}=    Get Request    httpbin    /get    params=${var}
-    Set Suite Variable    ${resp}
-    Should Be Equal As Strings    ${resp.status_code}    200
-    ${jsondata}=    To Json    ${resp.content}
-    Dictionaries Should Be Equal   ${jsondata['args']}    ${var}
-
-Pretty Print a JSON object
-    [Tags]    json
-    Comment    Define json variable.
-    Log    ${resp}
-    ${output}=    To Json    ${resp.content}    pretty_print=True
-    Log    ${output}
-    Should Contain    ${output}    "key_one": "true"
-    Should Contain    ${output}    "key_two": "this is a test string"
-    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
-
-Set Pretty Print to non-Boolean value
-    [Tags]    json
-    Comment    Define json variable.
-    Log    ${resp}
-    ${output}=    To Json    ${resp.content}    pretty_print="Hello"
-    Log    ${output}
-    Should Contain    ${output}    "key_one": "true"
-    Should Contain    ${output}    "key_two": "this is a test string"
-    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
 
 Create a session and make sure it exists
     [Tags]    session

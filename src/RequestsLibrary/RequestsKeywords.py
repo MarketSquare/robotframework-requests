@@ -649,6 +649,9 @@ class RequestsKeywords(object):
         Other optional ``requests`` arguments can be passed using ``**kwargs``.
         """
         session = self._cache.switch(alias)
+
+        # TODO make sure allow redirects behavior is still the same
+
         response = self._common_request("get", session, url,
                                         params=params, **kwargs)
         self._check_status(expected_status, response, msg)
@@ -713,6 +716,11 @@ class RequestsKeywords(object):
     def post_on_session(self, alias, url, data=None, json=None,
                         expected_status=None, msg=None, **kwargs):
         session = self._cache.switch(alias)
+
+        # TODO currently data is not formatted in this library
+        #  (it is by requests itself?)
+        # TODO make sure allow redirects behavior is still the same
+
         response = self._common_request("post", session, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
