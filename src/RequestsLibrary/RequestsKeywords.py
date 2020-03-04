@@ -1,13 +1,11 @@
 import json
 import copy
-import types
 import sys
 
 import requests
 from requests.models import Response
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
-from requests.structures import CaseInsensitiveDict
 from requests.packages.urllib3.util import Retry
 import logging
 
@@ -16,8 +14,10 @@ from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
-from RequestsLibrary import utils
-from RequestsLibrary.compat import httplib, urlencode, PY3
+from RequestsLibrary import utils, log
+from RequestsLibrary.compat import httplib, PY3
+from RequestsLibrary.exceptions import InvalidResponse
+
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -574,7 +574,7 @@ class RequestsKeywords(object):
             if isinstance(content, bytes):
                 content = content.decode(encoding='utf-8')
         if pretty_print:
-            json_ = self._json_pretty_print(content)
+            json_ = utils.json_pretty_print(content)
         else:
             json_ = json.loads(content)
         logger.info('To JSON using : content=%s ' % (content))
@@ -669,7 +669,7 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         if not files:
-            data = self._format_data_according_to_header(session, data, headers)
+            data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -721,7 +721,7 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -772,7 +772,7 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -816,7 +816,7 @@ class RequestsKeywords(object):
         ``timeout`` connection timeout
         """
         session = self._cache.switch(alias)
-        data = self._format_data_according_to_header(session, data, headers)
+        data = utils.format_data_according_to_header(session, data, headers)
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -920,7 +920,6 @@ class RequestsKeywords(object):
         """
         self._check_status(None, response, msg=None)
 
-
     def _common_request(
             self,
             method,
@@ -928,13 +927,13 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        self._log_request(method, session, uri, **kwargs)
+        log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
 
         self._capture_output()
         resp = method_function(
             self._get_url(session, uri),
-            params=self._utf8_urlencode(kwargs.pop('params', None)),
+            params=utils.utf8_urlencode(kwargs.pop('params', None)),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
             cookies=self.cookies,
             verify=self.verify,
@@ -942,7 +941,7 @@ class RequestsKeywords(object):
         self._print_debug()
 
         session.last_resp = resp
-        self._log_response(method, resp)
+        log.log_response(method, resp)
 
         return resp
 
@@ -952,7 +951,7 @@ class RequestsKeywords(object):
         Helper method to check HTTP status
         """
         if not isinstance(resp, Response):
-            raise utils.InvalidResponse(resp)
+            raise InvalidResponse(resp)
         if expected_status is None:
             resp.raise_for_status()
         else:
@@ -965,7 +964,8 @@ class RequestsKeywords(object):
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
 
-    def _get_url(self, session, uri):
+    @staticmethod
+    def _get_url(session, uri):
         """
         Helper method to get the full url
         """
@@ -1005,139 +1005,3 @@ class RequestsKeywords(object):
             debug_info = "\n".join(
                 [ll.rstrip() for ll in debug_info.splitlines() if ll.strip()])
             logger.debug(debug_info)
-
-    def _json_pretty_print(self, content):
-        """
-        Pretty print a JSON object
-
-        ``content``  JSON object to pretty print
-        """
-        temp = json.loads(content)
-        return json.dumps(
-            temp,
-            sort_keys=True,
-            indent=4,
-            separators=(
-                ',',
-                ': '))
-
-    def _utf8_urlencode(self, data):
-        if self._is_string_type(data):
-            return data.encode('utf-8')
-
-        if not isinstance(data, dict):
-            return data
-
-        utf8_data = {}
-        for k, v in data.items():
-            if self._is_string_type(v):
-                v = v.encode('utf-8')
-            utf8_data[k] = v
-        return urlencode(utf8_data)
-
-    def _format_data_according_to_header(self, session, data, headers):
-        # Merged headers are already case insensitive
-        headers = self._merge_headers(session, headers)
-
-        if data is not None and headers is not None and 'Content-Type' in headers and not self._is_json(data):
-            if headers['Content-Type'].find("application/json") != -1:
-                if not isinstance(data, types.GeneratorType):
-                    if str(data).strip():
-                        data = json.dumps(data)
-            elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
-                data = self._utf8_urlencode(data)
-        else:
-            data = self._utf8_urlencode(data)
-
-        return data
-
-    def _format_data_to_log_string_according_to_headers(self, session, data, headers):
-        data_str = None
-        # Merged headers are already case insensitive
-        headers = self._merge_headers(session, headers)
-
-        if data is not None and headers is not None and 'Content-Type' in headers:
-            if (headers['Content-Type'].find("application/json") != -1) or \
-                    (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
-                if isinstance(data, bytes):
-                    data_str = data.decode('utf-8')
-                else:
-                    data_str = data
-            else:
-                data_str = "<" + headers['Content-Type'] + ">"
-
-        return data_str
-
-    def _log_request(
-            self,
-            method,
-            session,
-            uri,
-            **kwargs):
-
-        # TODO would be nice to add also the alias
-        # TODO would be nice to pretty format the headers / json / data
-        # TODO move in common the data formatting to have this as @staticmethod
-        # TODO big requests should be truncated to avoid huge logs
-
-        # kwargs might include: method, session, uri, params, files, headers,
-        #                       data, json, allow_redirects, timeout
-        args = kwargs.copy()
-        args.pop('session', None)
-        # This will log specific headers merged with session defined headers
-        merged_headers = self._merge_headers(session, args.pop('headers', None))
-        formatted_data = self._format_data_to_log_string_according_to_headers(session,
-                                                                              args.pop('data', None),
-                                                                              merged_headers)
-        formatted_json = args.pop('json', None)
-        method_log = '%s Request using : ' % method.upper()
-        uri_log = 'uri=%s' % uri
-        composed_log = method_log + uri_log
-        for arg in args:
-            composed_log += ', %s=%s' % (arg, kwargs.get(arg, None))
-        logger.info(composed_log + '\n' +
-                    'headers=%s \n' % merged_headers +
-                    'data=%s \n' % formatted_data +
-                    'json=%s' % formatted_json)
-
-    @staticmethod
-    def _log_response(method, response):
-        # TODO big responses should be truncated to avoid huge logs
-        logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
-                                                               response.status_code,
-                                                               response.reason) +
-                     response.text)
-
-    @staticmethod
-    def _merge_headers(session, headers):
-        if headers is None:
-            headers = {}
-        if session.headers is None:
-            merged_headers = {}
-        else:
-            # Session headers are the default but local headers
-            # have priority and can override values
-            merged_headers = session.headers.copy()
-
-        # Make sure merged_headers are CaseIsensitiveDict
-        if not isinstance(merged_headers, CaseInsensitiveDict):
-            merged_headers = CaseInsensitiveDict(merged_headers)
-
-        merged_headers.update(headers)
-        return merged_headers
-
-    @staticmethod
-    def _is_json(data):
-        try:
-            json.loads(data)
-        except (TypeError, ValueError):
-            return False
-        return True
-
-    @staticmethod
-    def _is_string_type(data):
-        if PY3 and isinstance(data, str):
-            return True
-        elif not PY3 and isinstance(data, unicode):
-            return True
-        return False

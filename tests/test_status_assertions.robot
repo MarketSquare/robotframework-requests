@@ -21,7 +21,7 @@ Request And Status Should Be Equal
 Request And Status Should Be A Named Status Code
     [Tags]  get  status
     ${resp}=  Get Request  ${GLOBAL_LOCAL_SESSION}  /status/418
-    Status Should Be  i am a teapot  ${resp}
+    Status Should Be  I am a teapot  ${resp}
 
 Request And Status Should Be An Invalid Named Status
     [Tags]  get  status
