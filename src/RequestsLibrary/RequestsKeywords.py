@@ -1,6 +1,7 @@
 import json
 import copy
 import sys
+import io
 
 import requests
 from requests.models import Response
@@ -651,8 +652,8 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
-               or passed as such for multipart form data if ``files`` is also
-                  defined
+               or passed as such for multipart form data if ``files`` is also defined
+               or file descriptor retreived by Get File Descriptor
 
         ``json`` a value that will be json encoded
                and sent as POST data if files or data is not specified
@@ -683,6 +684,10 @@ class RequestsKeywords(object):
             headers=headers,
             allow_redirects=redir,
             timeout=timeout)
+
+        if isinstance(data, io.IOBase):
+            data.close()
+
         return response
 
     def patch_request(
@@ -706,6 +711,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
+               or file descriptor retreived by Get File Descriptor
 
         ``json`` a value that will be json encoded
                and sent as PATCH data if data is not specified
@@ -759,6 +765,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PUT data
                or binary data that is sent as the raw body content
+               or file descriptor retreived by Get File Descriptor
 
         ``json`` a value that will be json encoded
                and sent as PUT data if data is not specified
@@ -944,6 +951,14 @@ class RequestsKeywords(object):
         log.log_response(method, resp)
 
         return resp
+
+    @staticmethod
+    def get_file_descriptor(path):
+        """
+        This method return an open file descriptor for the path specified.
+        It's up to the caller to close it
+        """
+        return open(path, 'rb')
 
     @staticmethod
     def _check_status(expected_status, resp, msg=None):

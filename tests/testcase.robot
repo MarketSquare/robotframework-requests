@@ -4,6 +4,7 @@ Library  String
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
 Library  customAuthenticator.py
+Library  base64Decode.py
 Resource  res_setup.robot
 
 Suite Setup     Setup Flask Http Server
@@ -202,8 +203,18 @@ Post Request With Arbitrary Binary Data
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=&{headers}
-    # TODO Compare binaries. Content is json with base64 encoded data
-    Log    "Success"
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    Should Be Equal  ${receivedData}  ${data}
+
+Post Request With File Descriptor
+    [Tags]  post
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${handle}=  Get File Descriptor  ${CURDIR}${/}randombytes.bin
+    &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
+    ${resp}=  Post Request  httpbin  /post  data=${handle}  headers=&{headers}
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
+    Should Be Equal  ${receivedData}  ${data}
 
 Post Request With File
     [Tags]  post
@@ -233,6 +244,16 @@ Put Requests
     ${resp}=  Put Request  httpbin  /put  data=${data}  headers=${headers}
     Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
     Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
+
+Put Request With File Descriptor
+    [Tags]  put
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${handle}=  Get File Descriptor  ${CURDIR}${/}randombytes.bin
+    &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
+    ${resp}=  Put Request  httpbin  /put  data=${handle}  headers=&{headers}
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
+    Should Be Equal  ${receivedData}  ${data}
 
 Head Request
     [Tags]  head
@@ -296,6 +317,16 @@ Patch Requests with Json Data
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  To Json  ${resp.content}
     Should Be Equal     ${jsondata['json']}     ${data}
+
+Patch Request With File Descriptor
+    [Tags]  patch
+    Create Session  httpbin  http://httpbin.org    debug=3
+    ${handle}=  Get File Descriptor  ${CURDIR}${/}randombytes.bin
+    &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
+    ${resp}=  Patch Request  httpbin  /patch  data=${handle}  headers=&{headers}
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
+    Should Be Equal  ${receivedData}  ${data}
 
 Do Not Pretty Print a JSON object
     [Tags]    json
