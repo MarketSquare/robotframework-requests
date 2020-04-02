@@ -653,7 +653,7 @@ class RequestsKeywords(object):
                and sent as POST data
                or binary data that is sent as the raw body content
                or passed as such for multipart form data if ``files`` is also defined
-               or file descriptor retreived by Get File Descriptor
+               or file descriptor retrieved by Get File Descriptor
 
         ``json`` a value that will be json encoded
                and sent as POST data if files or data is not specified
@@ -711,7 +711,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
-               or file descriptor retreived by Get File Descriptor
+               or file descriptor retrieved by Get File Descriptor
 
         ``json`` a value that will be json encoded
                and sent as PATCH data if data is not specified
@@ -765,7 +765,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PUT data
                or binary data that is sent as the raw body content
-               or file descriptor retreived by Get File Descriptor
+               or file descriptor retrieved by Get File Descriptor
 
         ``json`` a value that will be json encoded
                and sent as PUT data if data is not specified
@@ -955,8 +955,11 @@ class RequestsKeywords(object):
     @staticmethod
     def get_file_descriptor(path):
         """
-        This method return an open file descriptor for the path specified.
-        It's up to the caller to close it
+        Opens and returns a read-only binary file descriptor of a specified file to be passed as ``data`` parameter
+        to other requests keywords.
+
+        The requests keywords will automatically close the file, if used outside of this library it's up to the caller
+        to close it.
         """
         return open(path, 'rb')
 
