@@ -10,6 +10,16 @@ Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Test Cases ***
+Readme Test
+    [Tags]  get
+    Create Session    github         http://api.github.com
+    Create Session    google         http://www.google.com
+    ${resp}=          Get Request    google               /
+    Status Should Be  200            ${resp}
+    ${resp}=          Get Request    github               /users/bulkan
+    Request Should Be Successful     ${resp}
+    Dictionary Should Contain Value  ${resp.json()}       Bulkan Evcimen
+
 Get Requests
     [Tags]  get    skip
     Create Session  google  http://www.google.com

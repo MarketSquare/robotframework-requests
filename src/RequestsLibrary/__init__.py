@@ -1,7 +1,6 @@
 from .RequestsKeywords import RequestsKeywords
 from .version import VERSION
 
-_version_ = VERSION
 
 
 class RequestsLibrary(RequestsKeywords):
@@ -23,4 +22,5 @@ class RequestsLibrary(RequestsKeywords):
     |                        | Should Be Equal As Strings      | ${resp.status_code} | 200                   |               |
     |                        | Dictionary Should Contain Value | ${resp.json()}      | Bulkan Savun Evcimen  |               |
     """
+    __version__ = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
