@@ -88,7 +88,7 @@ class RequestsKeywords(object):
         # Disable requests warnings, useful when you have large number of testcase
         # you will observe drastical changes in Robot log.html and output.xml files size
         if disable_warnings:
-            logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
+            logging.basicConfig()  # you need to initialize logging, otherwise you will not see anything from requests
             logging.getLogger().setLevel(logging.ERROR)
             requests_log = logging.getLogger("requests")
             requests_log.setLevel(logging.ERROR)
@@ -112,7 +112,7 @@ class RequestsKeywords(object):
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
-        self.verify = verify if self.builtin.convert_to_boolean(verify) != True else None
+        self.verify = verify if self.builtin.convert_to_boolean(verify) is not True else None
 
         s.url = url
 

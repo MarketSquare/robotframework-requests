@@ -61,6 +61,7 @@ def json_pretty_print(content):
             ',',
             ': '))
 
+
 def is_string_type(data):
     if PY3 and isinstance(data, str):
         return True
