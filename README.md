@@ -78,7 +78,7 @@ For more examples see the `tests` folder which contains testcase files that is u
 
 For individual keyword documentation see the following:
 
-[Keywords documentation](https://bulkan.github.io/robotframework-requests/doc/RequestsLibrary.html)
+[Keywords documentation](http://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html)
 
 # Help
 
