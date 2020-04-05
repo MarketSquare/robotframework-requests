@@ -7,8 +7,8 @@ try:
 except ImportError as error:
     from distutils.core import setup
 
+VERSION = None
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
-
 with open(version_file) as file:
       code = compile(file.read(), version_file, 'exec')
       exec(code)

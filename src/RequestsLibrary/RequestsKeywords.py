@@ -99,7 +99,7 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, str) or isinstance(verify, unicode):
+        elif utils.is_string_type(verify):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
             else:
