@@ -65,7 +65,7 @@ def json_pretty_print(content):
 def is_string_type(data):
     if PY3 and isinstance(data, str):
         return True
-    elif not PY3 and isinstance(data, unicode):
+    elif not PY3 and isinstance(data, unicode): # noqa
         return True
     return False
 

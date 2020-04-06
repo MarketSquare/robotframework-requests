@@ -11,7 +11,7 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Test Cases ***
 Readme Test
-    [Tags]  get
+    [Tags]  get    skip
     Create Session    github         http://api.github.com
     Create Session    google         http://www.google.com
     ${resp}=          Get Request    google               /
