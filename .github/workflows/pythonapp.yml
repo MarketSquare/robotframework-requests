@@ -42,7 +42,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with Robot Framework
-      run: robot --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi tests
+      run: robot --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
     - name: Archive Robot Framework Tests Report
       uses: actions/upload-artifact@v1
       with:
