@@ -955,13 +955,13 @@ class RequestsKeywords(object):
     @staticmethod
     def get_file_for_streaming_upload(path):
         """
-        Opens and returns a read-only binary file descriptor of a specified file to be passed as ``data`` parameter
-        to other requests keywords in order to provide a streaming upload.
+        Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter
+        to other requests keywords.
 
-        Large stream of files can be uploaded without reading them into memory.
+        This allows streaming upload of large files without reading them into memory.
 
-        The requests keywords will automatically close the file, if used outside of this library it's up to the caller
-        to close it.
+        File descriptor is binary mode and read only. Requests keywords will automatically close the file,
+        if used outside this library it's up to the caller to close it.
         """
         return open(path, 'rb')
 
