@@ -927,6 +927,10 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
+        # TODO this won't log the real headers that have been added by requests itself
+        # it should be moved after the real request to log those.
+        # But at the same time in case of failure debug information are not logged.
+        # (maybe it should be analysed)
         log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
 
