@@ -1,28 +1,29 @@
-from RequestsLibrary.log import format_data_to_log_string_according_to_headers
+from requests import Session
 from requests.utils import default_headers
+from RequestsLibrary.log import format_data_to_log_string_according_to_headers
 
-# FIXME those tests are broken because I started a refactor without
-# all tests and left the refactor uncompleted so I didn't trust the
-# refactor and reverted the code but not the tests :)
 
 def test_format_data_with_data_and_headers_none():
-    data = format_data_to_log_string_according_to_headers(None, None)
+    session = Session()
+    data = format_data_to_log_string_according_to_headers(session, None, None)
     assert data is None
 
 
 def test_format_data_with_headers_none():
-    data = format_data_to_log_string_according_to_headers('data', None)
+    session = Session()
+    data = format_data_to_log_string_according_to_headers(session, 'data', None)
     assert data is None
 
 
 def test_format_data_with_data_none():
-    data = format_data_to_log_string_according_to_headers(None, default_headers())
+    session = Session()
+    data = format_data_to_log_string_according_to_headers(session, None, default_headers())
     assert data is None
 
 
-#def test_format_data_with_json():
-#    headers = default_headers()
-#    headers['Content-Type'] = "application/json"
-#    data =
-#    data = format_data_to_log_string_according_to_headers(None, headers)
-#    assert data is None
+def test_format_data_with_header_json_and_data_none():
+    session = Session()
+    headers = default_headers()
+    headers['Content-Type'] = "application/json"
+    data = format_data_to_log_string_according_to_headers(session, None, headers)
+    assert data is None
