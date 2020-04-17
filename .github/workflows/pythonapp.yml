@@ -40,11 +40,15 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test with pytest and coverage
       run: |
-        pytest
-    - name: Test with Robot Framework
-      run: robot --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
+        coverage run --branch --source src/ -m pytest --verbose utests/
+        coverage report
+    - name: Test with Robot Framework and coverage
+      run: |
+        coverage erase
+        coverage run --branch --source src/ -m robot --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
+        coverage report
     - name: Archive Robot Framework Tests Report
       uses: actions/upload-artifact@v1
       with:
