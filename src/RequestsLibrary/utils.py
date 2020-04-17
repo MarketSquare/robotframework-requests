@@ -1,5 +1,6 @@
 import json
 import types
+import io
 
 
 from requests.status_codes import codes
@@ -87,6 +88,11 @@ def utf8_urlencode(data):
 
 def format_data_to_log_string_according_to_headers(session, data, headers):
     data_str = None
+
+    # when data is an open file descriptor we ignore it
+    if data and isinstance(data, io.IOBase):
+        return data_str
+
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
 
@@ -104,6 +110,10 @@ def format_data_to_log_string_according_to_headers(session, data, headers):
 
 
 def format_data_according_to_header(session, data, headers):
+    # when data is an open file descriptor we ignore it
+    if isinstance(data, io.IOBase):
+        return data
+
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
 
