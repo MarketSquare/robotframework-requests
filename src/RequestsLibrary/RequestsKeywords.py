@@ -963,7 +963,10 @@ class RequestsKeywords(object):
         File descriptor is binary mode and read only. Requests keywords will automatically close the file,
         if used outside this library it's up to the caller to close it.
         """
-        return open(path, 'rb')
+        try:
+            return open(path, 'rb')
+        except OSError as e:
+            return e
 
     @staticmethod
     def _check_status(expected_status, resp, msg=None):
