@@ -110,3 +110,20 @@ Put Request Expect An Error And Evaluate Response
     [Tags]  put
     ${resp}=    PUT On Session  ${SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
+
+Head Request On Existing Session
+    [Tags]  head
+    ${resp}=            HEAD On Session  ${SESSION}  /anything
+    Status Should Be    OK  ${resp}
+
+Head Request With Url Params
+    [Tags]  head
+    ${params}=          Create Dictionary   param1=1  param2=2
+    ${resp}=            HEAD On Session  ${SESSION}  /anything  ${params}
+    Status Should Be    OK  ${resp}
+    Dictionaries Should Be Equal  ${params}  ${resp.json()}[args]
+
+Head Request And Fail By Default On Http Error
+    [Tags]  head
+    Run Keyword And Expect Error  HTTPError: 400*
+    ...                           HEAD On Session  ${SESSION}  /status/400
