@@ -966,6 +966,30 @@ class RequestsKeywords(object):
 
         return response
 
+    @keyword("HEAD On Session")
+    def head_on_session(self, alias, url, params=None,
+                       expected_status=None, msg=None, **kwargs):
+        """
+        Sends a HEAD request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the HTTP header from server about resource of the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("head", session, url,
+                                        params=params, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
     def options_request(
             self,
             alias,
