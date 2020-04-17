@@ -4,6 +4,7 @@ Library  String
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
 Library  customAuthenticator.py
+Library  base64Decode.py
 Resource  res_setup.robot
 
 Suite Setup     Setup Flask Http Server
@@ -202,8 +203,8 @@ Post Request With Arbitrary Binary Data
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=&{headers}
-    # TODO Compare binaries. Content is json with base64 encoded data
-    Log    "Success"
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    Should Be Equal  ${receivedData}  ${data}
 
 Post Request With File
     [Tags]  post

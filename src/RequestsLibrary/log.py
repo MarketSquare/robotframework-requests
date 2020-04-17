@@ -1,3 +1,5 @@
+import io
+
 from robot.api import logger
 
 from RequestsLibrary.utils import merge_headers
@@ -45,6 +47,11 @@ def log_request(
 
 def format_data_to_log_string_according_to_headers(session, data, headers):
     data_str = None
+
+    # when data is an open file descriptor we ignore it
+    if data and isinstance(data, io.IOBase):
+        return data_str
+
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
 

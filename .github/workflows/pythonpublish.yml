@@ -21,7 +21,7 @@ jobs:
       run: |
         python -m robot.libdoc src/RequestsLibrary doc/RequestsLibrary.html
     - name: Commit updated documentation
-      uses: stefanzweifel/git-auto-commit-action@v4.1.2
+      uses: stefanzweifel/git-auto-commit-action@dd055f6225757c369f948744463f63ac1bd4c277
       with:
         commit_message: Update keywords documentation
         file_pattern: doc/RequestsLibrary.html

@@ -1,12 +1,12 @@
+import io
 import json
 import types
-
 
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 
-from RequestsLibrary.exceptions import UnknownStatusError
 from RequestsLibrary.compat import urlencode, PY3
+from RequestsLibrary.exceptions import UnknownStatusError
 
 
 def parse_named_status(status_code):
@@ -86,6 +86,10 @@ def utf8_urlencode(data):
 
 
 def format_data_according_to_header(session, data, headers):
+    # when data is an open file descriptor we ignore it
+    if isinstance(data, io.IOBase):
+        return data
+
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
 
