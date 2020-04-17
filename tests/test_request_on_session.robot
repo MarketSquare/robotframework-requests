@@ -121,9 +121,17 @@ Head Request With Url Params
     ${params}=          Create Dictionary   param1=1  param2=2
     ${resp}=            HEAD On Session  ${SESSION}  /anything  ${params}
     Status Should Be    OK  ${resp}
-    Dictionaries Should Be Equal  ${params}  ${resp.json()}[args]
 
 Head Request And Fail By Default On Http Error
     [Tags]  head
     Run Keyword And Expect Error  HTTPError: 400*
     ...                           HEAD On Session  ${SESSION}  /status/400
+
+Head Request With Header
+    [Tags]  head
+    ${accept_type}=     Set Variable                 application/json
+    ${headers}=         Create Dictionary   Accept   ${accept_type}
+    ${resp}=            HEAD On Session  ${SESSION}  /anything  headers=${headers}
+    Status Should Be    OK  ${resp}
+    ${content_type_response}=  Get From Dictionary      ${resp.headers}   Content-Type
+    Should Be Equal   ${accept_type}  ${content_type_response}
