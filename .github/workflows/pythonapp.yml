@@ -42,12 +42,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        coverage erase
-        coverage run --branch --source src/ -m pytest --verbose utests/
+        pytest --cov=./src/ --cov-report=xml --cov-branch --verbose utests/
     - name: Unit tests coverage
       run: |
         coverage report
-        coverage xml
     - name: Update codecov for unit tests
       uses: codecov/codecov-action@v1.0.6
       with:
