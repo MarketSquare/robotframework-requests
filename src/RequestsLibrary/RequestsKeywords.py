@@ -89,7 +89,8 @@ class RequestsKeywords(object):
         # Disable requests warnings, useful when you have large number of testcase
         # you will observe drastical changes in Robot log.html and output.xml files size
         if disable_warnings:
-            logging.basicConfig()  # you need to initialize logging, otherwise you will not see anything from requests
+            # you need to initialize logging, otherwise you will not see anything from requests
+            logging.basicConfig()
             logging.getLogger().setLevel(logging.ERROR)
             requests_log = logging.getLogger("requests")
             requests_log.setLevel(logging.ERROR)

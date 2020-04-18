@@ -17,7 +17,6 @@ DESCRIPTION = """
 Robot Framework keyword library wrapper around the HTTP client library requests.
 """[1:-1]
 
-
 CLASSIFIERS = """
 Development Status :: 5 - Production/Stable
 License :: OSI Approved :: MIT License
@@ -42,20 +41,9 @@ setup(name='robotframework-requests',
       package_dir={'': 'src'},
       packages=['RequestsLibrary'],
       install_requires=[
-            'robotframework',
-            'requests'
+          'robotframework',
+          'requests'
       ],
       extras_require={
-            'test': ['pytest', 'flask', 'coverage']
+          'test': ['pytest', 'flask', 'coverage', 'flake8']
       })
-
-""" Official release from master
-# make sure the setup version has been increased
-python -m robot.libdoc src/RequestsLibrary doc/RequestsLibrary.html
-git add doc/RequestsLibrary.html
-git commit -m "Updated documentation"
-git tag v1.2.3
-git push --tags
-python setup.py sdist bdist_wheel
-twine upload dist/*
-"""

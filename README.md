@@ -10,8 +10,7 @@
 Install robotframework-requests and it's dependencies via ``pip``
 
 ```bash
-pip install -U requests
-pip install -U robotframework-requests
+pip install robotframework-requests
 ```
 
 Here is a sample test case:
@@ -86,3 +85,7 @@ For individual keyword documentation see the following:
 Send your questions to the
 - [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
 - [Robot Framework Slack #requests channel](https://robotframework-slack-invite.herokuapp.com/)
+
+# Contribute
+
+See the [How To Contribute](CONTRIBUTE.md) to the project page.
