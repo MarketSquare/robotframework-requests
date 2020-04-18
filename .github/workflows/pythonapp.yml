@@ -31,7 +31,7 @@ jobs:
       run: python -c "import sys; print(sys.version)"
     - name: Install dependencies
       run: |
-        python -m pip install .[test]
+        python -m pip install -e .[test]
         pip install -r requirements.txt
     - name: Lint with flake8
       run: |
@@ -42,10 +42,11 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --cov=./src/ --cov-report=xml --cov-branch --verbose utests/
+        coverage run --branch --source src/ -m pytest --verbose utests/
     - name: Unit tests coverage
       run: |
         coverage report
+        coverage xml
     - name: Update codecov for unit tests
       uses: codecov/codecov-action@v1.0.6
       with:

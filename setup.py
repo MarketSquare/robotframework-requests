@@ -46,7 +46,7 @@ setup(name='robotframework-requests',
             'requests'
       ],
       extras_require={
-            'test': ['pytest', 'flask', 'pytest-cov', 'coverage']
+            'test': ['pytest', 'flask', 'coverage']
       })
 
 """ Official release from master
