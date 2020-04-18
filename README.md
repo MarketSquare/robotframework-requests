@@ -88,4 +88,4 @@ Send your questions to the
 
 # Contribute
 
-See the [How To Contribute](CONTRIBUTE.md) to the project page.
+See the [How To Contribute](CONTRIBUTING.md) to the project page.
