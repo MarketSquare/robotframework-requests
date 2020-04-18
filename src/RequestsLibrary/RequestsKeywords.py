@@ -89,7 +89,8 @@ class RequestsKeywords(object):
         # Disable requests warnings, useful when you have large number of testcase
         # you will observe drastical changes in Robot log.html and output.xml files size
         if disable_warnings:
-            logging.basicConfig()  # you need to initialize logging, otherwise you will not see anything from requests
+            # you need to initialize logging, otherwise you will not see anything from requests
+            logging.basicConfig()
             logging.getLogger().setLevel(logging.ERROR)
             requests_log = logging.getLogger("requests")
             requests_log.setLevel(logging.ERROR)
@@ -934,6 +935,10 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
+        # TODO this won't log the real headers that have been added by requests itself
+        # it should be moved after the real request to log those.
+        # But at the same time in case of failure debug information are not logged.
+        # (maybe it should be analysed)
         log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
 

@@ -1,4 +1,5 @@
 ![Python application](https://github.com/MarketSquare/robotframework-requests/workflows/Python%20application/badge.svg?branch=master)
+[![codecov](https://codecov.io/gh/MarketSquare/robotframework-requests/branch/master/graph/badge.svg)](https://codecov.io/gh/MarketSquare/robotframework-requests)
 [![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 
@@ -9,8 +10,7 @@
 Install robotframework-requests and it's dependencies via ``pip``
 
 ```bash
-pip install -U requests
-pip install -U robotframework-requests
+pip install robotframework-requests
 ```
 
 Here is a sample test case:
@@ -85,3 +85,7 @@ For individual keyword documentation see the following:
 Send your questions to the
 - [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
 - [Robot Framework Slack #requests channel](https://robotframework-slack-invite.herokuapp.com/)
+
+# Contribute
+
+See the [How To Contribute](CONTRIBUTE.md) to the project page.

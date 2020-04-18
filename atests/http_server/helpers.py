@@ -152,6 +152,7 @@ def semiflatten(multi):
     else:
         return multi
 
+
 def get_url(request):
     """
     Since we might be hosted behind a proxy, we need to check the
@@ -262,9 +263,9 @@ def check_basic_auth(user, passwd):
     return auth and auth.username == user and auth.password == passwd
 
 
-
 # Digest auth helpers
 # qop is a quality of protection
+
 
 def H(data, algorithm):
     if algorithm == 'SHA-256':
@@ -283,8 +284,8 @@ def HA1(realm, username, password, algorithm):
     if not realm:
         realm = u''
     return H(b":".join([username.encode('utf-8'),
-                           realm.encode('utf-8'),
-                           password.encode('utf-8')]), algorithm)
+                       realm.encode('utf-8'),
+                       password.encode('utf-8')]), algorithm)
 
 
 def HA2(credentials, request, algorithm):
@@ -361,7 +362,7 @@ def check_digest_auth(user, passwd):
             return
         request_uri = request.script_root + request.path
         if request.query_string:
-            request_uri +=  '?' + request.query_string
+            request_uri += '?' + request.query_string
         response_hash = response(credentials, passwd, dict(uri=request_uri,
                                                            body=request.data,
                                                            method=request.method))
@@ -369,9 +370,11 @@ def check_digest_auth(user, passwd):
             return True
     return False
 
+
 def secure_cookie():
     """Return true if cookie should have secure attribute"""
     return request.environ['wsgi.url_scheme'] == 'https'
+
 
 def __parse_request_range(range_header_text):
     """ Return a tuple describing the byte range requested in a GET request
@@ -412,6 +415,7 @@ def __parse_request_range(range_header_text):
 
     return left, right
 
+
 def get_request_range(request_headers, upper_bound):
     first_byte_pos, last_byte_pos = __parse_request_range(request_headers['range'])
 
@@ -429,8 +433,10 @@ def get_request_range(request_headers, upper_bound):
 
     return first_byte_pos, last_byte_pos
 
+
 def parse_multi_value_header(header_str):
-    """Break apart an HTTP header string that is potentially a quoted, comma separated list as used in entity headers in RFC2616."""
+    """Break apart an HTTP header string that is potentially a quoted,
+    comma separated list as used in entity headers in RFC2616."""
     parsed_parts = []
     if header_str:
         parts = header_str.split(',')
@@ -449,7 +455,7 @@ def next_stale_after_value(stale_after):
         return 'never'
 
 
-def digest_challenge_response(app, qop, algorithm, stale = False):
+def digest_challenge_response(app, qop, algorithm, stale=False):
     response = app.make_response('')
     response.status_code = 401
 
