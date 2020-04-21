@@ -2,7 +2,7 @@ import io
 
 from robot.api import logger
 
-from RequestsLibrary.utils import merge_headers
+from RequestsLibrary.utils import merge_headers, is_file_descriptor
 
 
 def log_response(method, response):
@@ -49,7 +49,7 @@ def format_data_to_log_string_according_to_headers(session, data, headers):
     data_str = None
 
     # when data is an open file descriptor we ignore it
-    if data and isinstance(data, io.IOBase):
+    if is_file_descriptor(data):
         return data_str
 
     # Merged headers are already case insensitive
