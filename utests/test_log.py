@@ -82,4 +82,4 @@ def test_format_with_file_descriptor():
     headers['Content-Type'] = "application/octet-stream"
     with open(os.path.join(SCRIPT_DIR, '../atests/randombytes.bin'), 'rb') as f:
         data_str = format_data_to_log_string_according_to_headers(session, f, headers)
-    assert data_str is None
+    assert data_str == repr(f)

@@ -48,12 +48,11 @@ def log_request(
 def format_data_to_log_string_according_to_headers(session, data, headers):
     data_str = None
 
-    # when data is an open file descriptor we ignore it
-    if is_file_descriptor(data):
-        return data_str
-
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
+
+    if is_file_descriptor(data):
+        return repr(data)
 
     if data is not None and headers is not None and 'Content-Type' in headers:
         if (headers['Content-Type'].find("application/json") != -1) or \
