@@ -30,7 +30,7 @@ def merge_headers(session, headers):
         # have priority and can override values
         merged_headers = session.headers.copy()
 
-    # Make sure merged_headers are CaseIsensitiveDict
+    # Make sure merged_headers are CaseInsensitiveDict
     if not isinstance(merged_headers, CaseInsensitiveDict):
         merged_headers = CaseInsensitiveDict(merged_headers)
 
