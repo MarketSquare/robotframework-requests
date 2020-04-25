@@ -1,13 +1,11 @@
 import json
 import os
 
-from requests import Session
-from requests.utils import default_headers
+from requests import Request
 
-from RequestsLibrary.log import format_data_to_log_string
-
-
-SCRIPT_DIR = os.path.dirname(__file__)
+from RequestsLibrary.log import format_data_to_log_string, log_request
+from utests import SCRIPT_DIR
+from utests import mock
 
 
 def test_format_with_data_and_headers_none():
@@ -45,3 +43,16 @@ def test_format_with_file_descriptor():
     with open(os.path.join(SCRIPT_DIR, '../atests/randombytes.bin'), 'rb') as f:
         data_str = format_data_to_log_string(f)
     assert data_str == repr(f)
+
+
+@mock.patch('RequestsLibrary.log.logger')
+def test_log_request(mocked_logger):
+    request = Request(method='get', url='http://mock.rulezz')
+    request = request.prepare()
+    log_request(request)
+    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                  "url=%s \n " % request.url +
+                                                  "path_url=%s \n " % request.path_url +
+                                                  "headers=%s \n " % request.headers +
+                                                  "body=%s \n " % request.body)
+

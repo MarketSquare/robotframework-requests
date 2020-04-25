@@ -1,9 +1,9 @@
 import os
 
 from requests import Session
-from RequestsLibrary.utils import is_file_descriptor, merge_headers
 
-SCRIPT_DIR = os.path.dirname(__file__)
+from RequestsLibrary.utils import is_file_descriptor, merge_headers
+from utests import SCRIPT_DIR
 
 
 def test_none():

@@ -41,7 +41,7 @@ def log_request2(
 
 
 def log_request(request):
-    logger.info("%s Request : " % request.method +
+    logger.info("%s Request : " % request.method.upper() +
                 "url=%s \n " % request.url +
                 "path_url=%s \n " % request.path_url +
                 "headers=%s \n " % request.headers +
