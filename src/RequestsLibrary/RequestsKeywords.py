@@ -1,7 +1,6 @@
 import json
 import copy
 import sys
-import io
 
 import requests
 from requests.models import Response
@@ -18,6 +17,7 @@ from robot.utils.asserts import assert_equal
 from RequestsLibrary import utils, log
 from RequestsLibrary.compat import httplib, PY3
 from RequestsLibrary.exceptions import InvalidResponse
+from RequestsLibrary.utils import is_file_descriptor
 
 
 try:
@@ -686,9 +686,6 @@ class RequestsKeywords(object):
             allow_redirects=redir,
             timeout=timeout)
 
-        if isinstance(data, io.IOBase):
-            data.close()
-
         return response
 
     def patch_request(
@@ -954,6 +951,10 @@ class RequestsKeywords(object):
 
         session.last_resp = resp
         log.log_response(method, resp)
+
+        data = kwargs.get('data', None)
+        if is_file_descriptor(data):
+            data.close()
 
         return resp
 

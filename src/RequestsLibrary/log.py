@@ -1,5 +1,3 @@
-import io
-
 from robot.api import logger
 
 from RequestsLibrary.utils import merge_headers, is_file_descriptor
@@ -13,7 +11,7 @@ def log_response(method, response):
                  response.text)
 
 
-def log_request(
+def log_request2(
         method,
         session,
         uri,
@@ -40,6 +38,14 @@ def log_request(
                 'headers=%s \n' % merged_headers +
                 'data=%s \n' % formatted_data +
                 'json=%s' % formatted_json)
+
+
+def log_request(request):
+    logger.info("%s Request : " % request.method +
+                "url=%s \n " % request.url +
+                "path_url=%s \n " % request.path_url +
+                "headers=%s \n " % request.headers +
+                "body=%s \n " % request.body)
 
 
 def format_data_to_log_string(data):
