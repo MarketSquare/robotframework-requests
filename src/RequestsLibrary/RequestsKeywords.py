@@ -943,10 +943,10 @@ class RequestsKeywords(object):
             verify=self.verify,
             **kwargs)
 
-        log.log_request(resp.request)
+        log.log_request(resp)
         self._print_debug()
         session.last_resp = resp
-        log.log_response(method, resp)
+        log.log_response(resp)
 
         data = kwargs.get('data', None)
         if is_file_descriptor(data):
