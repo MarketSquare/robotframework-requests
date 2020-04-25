@@ -1,15 +1,18 @@
+import logging
+
+from RequestsLibrary.utils import is_file_descriptor
 from robot.api import logger
 
-from RequestsLibrary.utils import merge_headers, is_file_descriptor
+
+LOG_CHAR_LIMIT = 10000
 
 
 def log_response(response):
-    # TODO big responses should be truncated to avoid huge logs
-    logger.debug("%s Response : url=%s \n " % (response.request.method.upper(),
-                                               response.url) +
-                 "status=%s, reason=%s \n " % (response.status_code,
-                                               response.reason) +
-                 "body=%s \n " % response.text)
+    logger.info("%s Response : url=%s \n " % (response.request.method.upper(),
+                                              response.url) +
+                "status=%s, reason=%s \n " % (response.status_code,
+                                              response.reason) +
+                "body=%s \n " % format_data_to_log_string(response.text))
 
 
 def log_request(response):
@@ -20,15 +23,14 @@ def log_request(response):
     else:
         original_request = request
         redirected = ''
-    logger.info("%s Request : " % request.method.upper() +
+    logger.info("%s Request : " % original_request.method.upper() +
                 "url=%s %s\n " % (original_request.url, redirected) +
                 "path_url=%s \n " % original_request.path_url +
-                "headers=%s \n " % request.headers +
-                "body=%s \n " % request.body)
+                "headers=%s \n " % original_request.headers +
+                "body=%s \n " % format_data_to_log_string(original_request.body))
 
 
-# TODO Currently unused
-def format_data_to_log_string(data):
+def format_data_to_log_string(data, limit=LOG_CHAR_LIMIT):
 
     if not data:
         return None
@@ -36,6 +38,9 @@ def format_data_to_log_string(data):
     if is_file_descriptor(data):
         return repr(data)
 
-    return repr(data)
+    if len(data) > limit and logging.getLogger().level > 10:
+        data = "%s... (set the log level to DEBUG or TRACE to see the full content)" % data[:limit]
+
+    return data
 
 

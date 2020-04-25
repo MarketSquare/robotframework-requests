@@ -338,3 +338,9 @@ Verify a non existing session
     [Tags]    session
     ${exists}=          Session Exists    non-existing-session
     Should Not Be True  ${exists}
+
+Post Request With Large Truncated Body
+    [Tags]  post
+    ${html}=  Get File  ${CURDIR}${/}index.html
+    ${resp}=  Post Request  ${GLOBAL_LOCAL_SESSION}  /anything  data=${html}
+    Status Should be  200  ${resp}

@@ -16,27 +16,27 @@ def test_format_with_data_and_headers_none():
 def test_format_with_data_json():
     data = json.dumps({'key': 'value'})
     data_str = format_data_to_log_string(data)
-    assert data_str == repr(data)
+    assert data_str == data
 
 
 def test_format_with_data_string():
     data = "<xml>text</xml>"
     data_str = format_data_to_log_string(data)
-    assert data_str == repr(data)
+    assert data_str == data
 
 
 def test_format_with_binary_data():
     with open(os.path.join(SCRIPT_DIR, '../atests/randombytes.bin'), 'rb') as f:
         data = f.read()
     data_str = format_data_to_log_string(data)
-    assert data_str == repr(data)
+    assert data_str == data
 
 
 def test_format_with_utf_encoded_data():
     with open(os.path.join(SCRIPT_DIR, '../atests/data.json'), 'rb') as f:
         data = f.read()
     data_str = format_data_to_log_string(data)
-    assert data_str == repr(data)
+    assert data_str == data
 
 
 def test_format_with_file_descriptor():
@@ -88,12 +88,62 @@ def test_log_response(mocked_logger):
     response.reason = 'OK'
     response.text = "<html>body</html>"
     log_response(response)
-    assert mocked_logger.debug.call_args[0][0] == ("%s Response : url=%s \n " % (response.request.method.upper(),
+    assert mocked_logger.info.call_args[0][0] == ("%s Response : url=%s \n " % (response.request.method.upper(),
                                                                                  response.url) +
                                                    "status=%s, reason=%s \n " % (response.status_code,
                                                                                  response.reason) +
                                                    "body=%s \n " % response.text)
 
 
-def test_format_data_to_log_stringtruncated():
-    pass
+def test_format_data_to_log_string_truncated_1():
+    data = ''
+    for i in range(0, 10000):
+        data = data + str(i)
+    truncated = format_data_to_log_string(data, 9999)
+    assert truncated == data[:9999] + '... (set the log level to DEBUG or TRACE to see the full content)'
+
+
+def test_format_data_to_log_string_truncated_2():
+    data = ''
+    for i in range(0, 10):
+        data = data + str(i)
+    truncated = format_data_to_log_string(data, 0)
+    assert truncated == '... (set the log level to DEBUG or TRACE to see the full content)'
+
+
+def test_format_data_to_log_string_truncated_3():
+    data = ''
+    for i in range(0, 10):
+        data = data + str(i)
+    truncated = format_data_to_log_string(data, 10)
+    assert truncated == data
+
+
+@mock.patch('RequestsLibrary.log.logging')
+def test_format_data_not_truncate_debug_level(mocked_logger):
+    data = ''
+    for i in range(0, 100001):
+        data = data + str(i)
+    mocked_logger.getLogger().level = 10
+    truncated = format_data_to_log_string(data)
+    assert truncated == data
+
+
+@mock.patch('RequestsLibrary.log.logging')
+def test_format_data_not_truncate_trace_level(mocked_logger):
+    data = ''
+    for i in range(0, 100001):
+        data = data + str(i)
+    mocked_logger.getLogger().level = 0
+    truncated = format_data_to_log_string(data)
+    assert truncated == data
+
+
+@mock.patch('RequestsLibrary.log.logging')
+def test_format_data_truncate_info_level(mocked_logger):
+    data = ''
+    for i in range(0, 100001):
+        data = data + str(i)
+    mocked_logger.getLogger().level = 20
+    truncated = format_data_to_log_string(data)
+    assert truncated == data[:10000] + '... (set the log level to DEBUG or TRACE to see the full content)'
