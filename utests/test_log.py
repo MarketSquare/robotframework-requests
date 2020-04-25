@@ -42,7 +42,7 @@ def test_format_with_utf_encoded_data():
 def test_format_with_file_descriptor():
     with open(os.path.join(SCRIPT_DIR, '../atests/randombytes.bin'), 'rb') as f:
         data_str = format_data_to_log_string(f)
-    assert data_str == repr(f)
+        assert data_str == repr(f)
 
 
 @mock.patch('RequestsLibrary.log.logger')
