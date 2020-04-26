@@ -83,8 +83,8 @@ For individual keyword documentation see the following:
 # Help
 
 Send your questions to the
-- [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
 - [Robot Framework Slack #requests channel](https://robotframework-slack-invite.herokuapp.com/)
+- [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
 
 # Contribute
 
