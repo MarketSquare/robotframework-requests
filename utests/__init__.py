@@ -9,4 +9,3 @@ if PY3:
     from unittest import mock  # noqa
 else:
     import mock  # noqa
-

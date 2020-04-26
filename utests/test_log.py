@@ -89,10 +89,10 @@ def test_log_response(mocked_logger):
     response.text = "<html>body</html>"
     log_response(response)
     assert mocked_logger.info.call_args[0][0] == ("%s Response : url=%s \n " % (response.request.method.upper(),
-                                                                                 response.url) +
-                                                   "status=%s, reason=%s \n " % (response.status_code,
-                                                                                 response.reason) +
-                                                   "body=%s \n " % response.text)
+                                                                                response.url) +
+                                                  "status=%s, reason=%s \n " % (response.status_code,
+                                                                                response.reason) +
+                                                  "body=%s \n " % response.text)
 
 
 def test_format_data_to_log_string_truncated_1():

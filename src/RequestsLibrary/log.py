@@ -42,5 +42,3 @@ def format_data_to_log_string(data, limit=LOG_CHAR_LIMIT):
         data = "%s... (set the log level to DEBUG or TRACE to see the full content)" % data[:limit]
 
     return data
-
-

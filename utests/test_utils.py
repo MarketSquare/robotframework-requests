@@ -35,7 +35,7 @@ def test_merge_headers_with_all_none():
 
 def test_merge_headers_with_all():
     session = Session()
-    headers =  {'Content-Type': 'test'}
+    headers = {'Content-Type': 'test'}
     merged = merge_headers(session, headers)
     session.headers.update(headers)
     assert merged == session.headers
