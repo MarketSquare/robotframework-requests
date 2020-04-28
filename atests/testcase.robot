@@ -4,6 +4,7 @@ Library  String
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
 Library  customAuthenticator.py
+Library  base64Decode.py
 Resource  res_setup.robot
 
 Test Setup      Setup Test Session
@@ -15,8 +16,18 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 ${test_session}     local test session created in setup
 
 *** Test Cases ***
-Get Request
-    [Tags]  get  skip
+Readme Test
+    [Tags]  get    skip
+    Create Session    github         http://api.github.com
+    Create Session    google         http://www.google.com
+    ${resp}=          Get Request    google               /
+    Status Should Be  200            ${resp}
+    ${resp}=          Get Request    github               /users/bulkan
+    Request Should Be Successful     ${resp}
+    Dictionary Should Contain Value  ${resp.json()}       Bulkan Evcimen
+
+Get Requests
+    [Tags]  get    skip
     Create Session  google  http://www.google.com
     Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
     ${resp}=  Get Request  google  /
@@ -198,11 +209,10 @@ Post Request With Binary Data
 Post Request With Arbitrary Binary Data
     [Tags]  post
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
-    ${headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
-    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=${headers}
-    Should Be Equal As Strings  ${resp.status_code}  200
-    Should Be Equal As Strings     ${resp.json()['method']}   POST
-    # TODO Compare binaries. Content is json with base64 encoded data
+    &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=&{headers}
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    Should Be Equal  ${receivedData}  ${data}
 
 Post Request With File
     [Tags]  post

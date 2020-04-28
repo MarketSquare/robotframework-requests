@@ -1,6 +1,7 @@
 import json
 import copy
 import sys
+import io
 
 import requests
 from requests.models import Response
@@ -89,7 +90,8 @@ class RequestsKeywords(object):
         # Disable requests warnings, useful when you have large number of testcase
         # you will observe drastical changes in Robot log.html and output.xml files size
         if disable_warnings:
-            logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
+            # you need to initialize logging, otherwise you will not see anything from requests
+            logging.basicConfig()
             logging.getLogger().setLevel(logging.ERROR)
             requests_log = logging.getLogger("requests")
             requests_log.setLevel(logging.ERROR)
@@ -100,7 +102,7 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, str) or isinstance(verify, unicode):
+        elif utils.is_string_type(verify):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
             else:
@@ -113,7 +115,7 @@ class RequestsKeywords(object):
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
-        self.verify = verify if self.builtin.convert_to_boolean(verify) != True else None
+        self.verify = verify if self.builtin.convert_to_boolean(verify) is not True else None
 
         s.url = url
 
@@ -678,8 +680,8 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
-               or passed as such for multipart form data if ``files`` is also
-                  defined
+               or passed as such for multipart form data if ``files`` is also defined
+               or file descriptor retrieved by Get File For Streaming Upload
 
         ``json`` a value that will be json encoded
                and sent as POST data if files or data is not specified
@@ -710,6 +712,10 @@ class RequestsKeywords(object):
             headers=headers,
             allow_redirects=redir,
             timeout=timeout)
+
+        if isinstance(data, io.IOBase):
+            data.close()
+
         return response
 
     @keyword('POST On Session')
@@ -747,6 +753,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
+               or file descriptor retrieved by Get File For Streaming Upload
 
         ``json`` a value that will be json encoded
                and sent as PATCH data if data is not specified
@@ -800,6 +807,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PUT data
                or binary data that is sent as the raw body content
+               or file descriptor retrieved by Get File For Streaming Upload
 
         ``json`` a value that will be json encoded
                and sent as PUT data if data is not specified
@@ -968,6 +976,10 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
+        # TODO this won't log the real headers that have been added by requests itself
+        # it should be moved after the real request to log those.
+        # But at the same time in case of failure debug information are not logged.
+        # (maybe it should be analysed)
         log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
 
@@ -985,6 +997,19 @@ class RequestsKeywords(object):
         log.log_response(method, resp)
 
         return resp
+
+    @staticmethod
+    def get_file_for_streaming_upload(path):
+        """
+        Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter
+        to other requests keywords.
+
+        This allows streaming upload of large files without reading them into memory.
+
+        File descriptor is binary mode and read only. Requests keywords will automatically close the file,
+        if used outside this library it's up to the caller to close it.
+        """
+        return open(path, 'rb')
 
     @staticmethod
     def _check_status(expected_status, resp, msg=None):
