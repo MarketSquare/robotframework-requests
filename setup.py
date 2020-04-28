@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
+import sys
 from os.path import abspath, dirname, join
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+
+
+PY3 = sys.version_info > (3,)
 
 VERSION = None
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
@@ -24,6 +28,9 @@ Operating System :: OS Independent
 Programming Language :: Python
 Topic :: Software Development :: Testing
 """[1:-1]
+
+TEST_REQUIRE = ['pytest', 'flask', 'coverage', 'flake8'] if PY3 \
+    else ['pytest', 'flask', 'coverage', 'flake8', 'mock']
 
 setup(name='robotframework-requests',
       version=VERSION,
@@ -45,5 +52,5 @@ setup(name='robotframework-requests',
           'requests'
       ],
       extras_require={
-          'test': ['pytest', 'flask', 'coverage', 'flake8']
+          'test': TEST_REQUIRE
       })
