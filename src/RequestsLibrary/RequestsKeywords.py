@@ -624,6 +624,7 @@ class RequestsKeywords(object):
         ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -707,6 +708,7 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         if not files:
             data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -787,6 +789,7 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -842,6 +845,7 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -914,6 +918,7 @@ class RequestsKeywords(object):
         """
         session = self._cache.switch(alias)
         data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -954,6 +959,7 @@ class RequestsKeywords(object):
         ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = False if allow_redirects is None else allow_redirects
         response = self._common_request(
             "head",
@@ -1014,6 +1020,7 @@ class RequestsKeywords(object):
         ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
         response = self._common_request(
             "options",
@@ -1056,8 +1063,6 @@ class RequestsKeywords(object):
             session,
             uri,
             **kwargs):
-
-        # TODO move redirect checks in _common_request
 
         fail_on_error_default = self.fail_on_error
         fail_on_error_override = kwargs.pop('fail_on_error', None)
