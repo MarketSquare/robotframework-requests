@@ -30,7 +30,7 @@ def merge_headers(session, headers):
         # have priority and can override values
         merged_headers = session.headers.copy()
 
-    # Make sure merged_headers are CaseIsensitiveDict
+    # Make sure merged_headers are CaseInsensitiveDict
     if not isinstance(merged_headers, CaseInsensitiveDict):
         merged_headers = CaseInsensitiveDict(merged_headers)
 
@@ -70,6 +70,14 @@ def is_string_type(data):
     return False
 
 
+def is_file_descriptor(fd):
+    if PY3 and isinstance(fd, io.IOBase):
+        return True
+    if not PY3 and isinstance(fd, file): # noqa
+        return True
+    return False
+
+
 def utf8_urlencode(data):
     if is_string_type(data):
         return data.encode('utf-8')
@@ -87,7 +95,7 @@ def utf8_urlencode(data):
 
 def format_data_according_to_header(session, data, headers):
     # when data is an open file descriptor we ignore it
-    if isinstance(data, io.IOBase):
+    if is_file_descriptor(data):
         return data
 
     # Merged headers are already case insensitive

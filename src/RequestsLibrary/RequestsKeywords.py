@@ -1,7 +1,6 @@
 import json
 import copy
 import sys
-import io
 
 import requests
 from requests.models import Response
@@ -18,6 +17,7 @@ from robot.utils.asserts import assert_equal
 from RequestsLibrary import utils, log
 from RequestsLibrary.compat import httplib, PY3
 from RequestsLibrary.exceptions import InvalidResponse
+from RequestsLibrary.utils import is_file_descriptor
 
 
 try:
@@ -686,9 +686,6 @@ class RequestsKeywords(object):
             allow_redirects=redir,
             timeout=timeout)
 
-        if isinstance(data, io.IOBase):
-            data.close()
-
         return response
 
     def patch_request(
@@ -935,14 +932,9 @@ class RequestsKeywords(object):
             uri,
             **kwargs):
 
-        # TODO this won't log the real headers that have been added by requests itself
-        # it should be moved after the real request to log those.
-        # But at the same time in case of failure debug information are not logged.
-        # (maybe it should be analysed)
-        log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
-
         self._capture_output()
+
         resp = method_function(
             self._get_url(session, uri),
             params=utils.utf8_urlencode(kwargs.pop('params', None)),
@@ -950,10 +942,15 @@ class RequestsKeywords(object):
             cookies=self.cookies,
             verify=self.verify,
             **kwargs)
-        self._print_debug()
 
+        log.log_request(resp)
+        self._print_debug()
         session.last_resp = resp
-        log.log_response(method, resp)
+        log.log_response(resp)
+
+        data = kwargs.get('data', None)
+        if is_file_descriptor(data):
+            data.close()
 
         return resp
 
