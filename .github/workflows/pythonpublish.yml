@@ -27,6 +27,7 @@ jobs:
     - name: Commit updated documentation
       uses: stefanzweifel/git-auto-commit-action@dd055f6225757c369f948744463f63ac1bd4c277
       with:
+        branch: ${{ github.head_ref }}
         commit_message: Update keywords documentation
         file_pattern: doc/RequestsLibrary.html
     - name: Publish to PyPi
