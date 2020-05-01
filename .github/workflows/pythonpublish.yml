@@ -1,8 +1,6 @@
 name: Upload Python Package
 
-on:
-  release:
-    types: [published]
+on: push
 
 jobs:
   deploy:
@@ -20,6 +18,9 @@ jobs:
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
+    - uses: actions/checkout@v2
+      with:
+        ref: master
     - name: Update keywords documentation
       run: |
         pip install robotframework
@@ -30,9 +31,4 @@ jobs:
         branch: master
         commit_message: Update keywords documentation
         file_pattern: doc/RequestsLibrary.html
-    - name: Publish to PyPi
-      env:
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      run: |
-        twine upload dist/*
+
