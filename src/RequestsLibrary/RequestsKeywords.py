@@ -19,6 +19,7 @@ from robot.utils.asserts import assert_equal
 from RequestsLibrary import utils, log
 from RequestsLibrary.compat import httplib, PY3
 from RequestsLibrary.exceptions import InvalidResponse
+from RequestsLibrary.utils import is_file_descriptor
 
 
 try:
@@ -94,7 +95,8 @@ class RequestsKeywords(object):
         # Disable requests warnings, useful when you have large number of testcase
         # you will observe drastical changes in Robot log.html and output.xml files size
         if disable_warnings:
-            logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
+            # you need to initialize logging, otherwise you will not see anything from requests
+            logging.basicConfig()
             logging.getLogger().setLevel(logging.ERROR)
             requests_log = logging.getLogger("requests")
             requests_log.setLevel(logging.ERROR)
@@ -105,7 +107,7 @@ class RequestsKeywords(object):
         # verify can be a Boolean or a String
         if isinstance(verify, bool):
             s.verify = verify
-        elif isinstance(verify, str) or isinstance(verify, unicode):
+        elif utils.is_string_type(verify):
             if verify.lower() == 'true' or verify.lower() == 'false':
                 s.verify = self.builtin.convert_to_boolean(verify)
             else:
@@ -118,7 +120,7 @@ class RequestsKeywords(object):
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
-        self.verify = verify if self.builtin.convert_to_boolean(verify) != True else None
+        self.verify = verify if self.builtin.convert_to_boolean(verify) is not True else None
 
         s.url = url
 
@@ -687,8 +689,8 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as POST data
                or binary data that is sent as the raw body content
-               or passed as such for multipart form data if ``files`` is also
-                  defined
+               or passed as such for multipart form data if ``files`` is also defined
+               or file descriptor retrieved by Get File For Streaming Upload
 
         ``json`` a value that will be json encoded
                and sent as POST data if files or data is not specified
@@ -771,6 +773,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PATCH data
                or binary data that is sent as the raw body content
+               or file descriptor retrieved by Get File For Streaming Upload
 
         ``json`` a value that will be json encoded
                and sent as PATCH data if data is not specified
@@ -829,6 +832,7 @@ class RequestsKeywords(object):
         ``data`` a dictionary of key-value pairs that will be urlencoded
                and sent as PUT data
                or binary data that is sent as the raw body content
+               or file descriptor retrieved by Get File For Streaming Upload
 
         ``json`` a value that will be json encoded
                and sent as PUT data if data is not specified
@@ -1071,10 +1075,9 @@ class RequestsKeywords(object):
         else:
             raise_for_status = fail_on_error_default
 
-        log.log_request(method, session, uri, **kwargs)
         method_function = getattr(session, method)
-
         self._capture_output()
+
         resp = method_function(
             self._get_url(session, uri),
             params=utils.utf8_urlencode(kwargs.pop('params', None)),
@@ -1082,10 +1085,15 @@ class RequestsKeywords(object):
             cookies=self.cookies,
             verify=self.verify,
             **kwargs)
-        self._print_debug()
 
+        log.log_request(resp)
+        self._print_debug()
         session.last_resp = resp
-        log.log_response(method, resp)
+        log.log_response(resp)
+
+        data = kwargs.get('data', None)
+        if is_file_descriptor(data):
+            data.close()
 
         if raise_for_status:
             try:
@@ -1094,6 +1102,19 @@ class RequestsKeywords(object):
                 raise http_exception
 
         return resp
+
+    @staticmethod
+    def get_file_for_streaming_upload(path):
+        """
+        Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter
+        to other requests keywords.
+
+        This allows streaming upload of large files without reading them into memory.
+
+        File descriptor is binary mode and read only. Requests keywords will automatically close the file,
+        if used outside this library it's up to the caller to close it.
+        """
+        return open(path, 'rb')
 
     @staticmethod
     def _check_status(expected_status, resp, msg=None):

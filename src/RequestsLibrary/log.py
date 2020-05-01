@@ -1,43 +1,44 @@
+import logging
+
+from RequestsLibrary.utils import is_file_descriptor
 from robot.api import logger
 
-from RequestsLibrary import utils
+
+LOG_CHAR_LIMIT = 10000
 
 
-def log_response(method, response):
-    # TODO big responses should be truncated to avoid huge logs
-    logger.debug('%s Response : status=%s, reason=%s\n' % (method.upper(),
-                                                           response.status_code,
-                                                           response.reason) +
-                 response.text)
+def log_response(response):
+    logger.info("%s Response : url=%s \n " % (response.request.method.upper(),
+                                              response.url) +
+                "status=%s, reason=%s \n " % (response.status_code,
+                                              response.reason) +
+                "body=%s \n " % format_data_to_log_string(response.text))
 
 
-def log_request(
-        method,
-        session,
-        uri,
-        **kwargs):
+def log_request(response):
+    request = response.request
+    if response.history:
+        original_request = response.history[0].request
+        redirected = '(redirected) '
+    else:
+        original_request = request
+        redirected = ''
+    logger.info("%s Request : " % original_request.method.upper() +
+                "url=%s %s\n " % (original_request.url, redirected) +
+                "path_url=%s \n " % original_request.path_url +
+                "headers=%s \n " % original_request.headers +
+                "body=%s \n " % format_data_to_log_string(original_request.body))
 
-    # TODO would be nice to add also the alias
-    # TODO would be nice to pretty format the headers / json / data
-    # TODO move in common the data formatting to have this as @staticmethod
-    # TODO big requests should be truncated to avoid huge logs
 
-    # kwargs might include: method, session, uri, params, files, headers,
-    #                       data, json, allow_redirects, timeout
-    args = kwargs.copy()
-    args.pop('session', None)
-    # This will log specific headers merged with session defined headers
-    merged_headers = utils.merge_headers(session, args.pop('headers', None))
-    formatted_data = utils.format_data_to_log_string_according_to_headers(session,
-                                                                          args.pop('data', None),
-                                                                          merged_headers)
-    formatted_json = args.pop('json', None)
-    method_log = '%s Request using : ' % method.upper()
-    uri_log = 'uri=%s' % uri
-    composed_log = method_log + uri_log
-    for arg in args:
-        composed_log += ', %s=%s' % (arg, kwargs.get(arg, None))
-    logger.info(composed_log + '\n' +
-                'headers=%s \n' % merged_headers +
-                'data=%s \n' % formatted_data +
-                'json=%s' % formatted_json)
+def format_data_to_log_string(data, limit=LOG_CHAR_LIMIT):
+
+    if not data:
+        return None
+
+    if is_file_descriptor(data):
+        return repr(data)
+
+    if len(data) > limit and logging.getLogger().level > 10:
+        data = "%s... (set the log level to DEBUG or TRACE to see the full content)" % data[:limit]
+
+    return data

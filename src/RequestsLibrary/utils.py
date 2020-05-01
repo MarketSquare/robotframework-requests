@@ -1,12 +1,12 @@
+import io
 import json
 import types
-
 
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 
-from RequestsLibrary.exceptions import UnknownStatusError
 from RequestsLibrary.compat import urlencode, PY3
+from RequestsLibrary.exceptions import UnknownStatusError
 
 
 def parse_named_status(status_code):
@@ -30,7 +30,7 @@ def merge_headers(session, headers):
         # have priority and can override values
         merged_headers = session.headers.copy()
 
-    # Make sure merged_headers are CaseIsensitiveDict
+    # Make sure merged_headers are CaseInsensitiveDict
     if not isinstance(merged_headers, CaseInsensitiveDict):
         merged_headers = CaseInsensitiveDict(merged_headers)
 
@@ -65,7 +65,15 @@ def json_pretty_print(content):
 def is_string_type(data):
     if PY3 and isinstance(data, str):
         return True
-    elif not PY3 and isinstance(data, unicode):
+    elif not PY3 and isinstance(data, unicode): # noqa
+        return True
+    return False
+
+
+def is_file_descriptor(fd):
+    if PY3 and isinstance(fd, io.IOBase):
+        return True
+    if not PY3 and isinstance(fd, file): # noqa
         return True
     return False
 
@@ -85,25 +93,11 @@ def utf8_urlencode(data):
     return urlencode(utf8_data)
 
 
-def format_data_to_log_string_according_to_headers(session, data, headers):
-    data_str = None
-    # Merged headers are already case insensitive
-    headers = merge_headers(session, headers)
-
-    if data is not None and headers is not None and 'Content-Type' in headers:
-        if (headers['Content-Type'].find("application/json") != -1) or \
-                (headers['Content-Type'].find("application/x-www-form-urlencoded") != -1):
-            if isinstance(data, bytes):
-                data_str = data.decode('utf-8')
-            else:
-                data_str = data
-        else:
-            data_str = "<" + headers['Content-Type'] + ">"
-
-    return data_str
-
-
 def format_data_according_to_header(session, data, headers):
+    # when data is an open file descriptor we ignore it
+    if is_file_descriptor(data):
+        return data
+
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
 

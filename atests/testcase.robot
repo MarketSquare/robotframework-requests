@@ -4,12 +4,23 @@ Library  String
 Library  ../src/RequestsLibrary/RequestsKeywords.py
 Library  OperatingSystem
 Library  customAuthenticator.py
+Library  base64Decode.py
 Resource  res_setup.robot
 
 Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Test Cases ***
+Readme Test
+    [Tags]  get    skip
+    Create Session    github         http://api.github.com
+    Create Session    google         http://www.google.com
+    ${resp}=          Get Request    google               /
+    Status Should Be  200            ${resp}
+    ${resp}=          Get Request    github               /users/bulkan
+    Request Should Be Successful     ${resp}
+    Dictionary Should Contain Value  ${resp.json()}       Bulkan Evcimen
+
 Get Requests
     [Tags]  get    skip
     Create Session  google  http://www.google.com
@@ -192,8 +203,8 @@ Post Request With Arbitrary Binary Data
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
     ${resp}=  Post Request  httpbin  /post  data=${data}  headers=&{headers}
-    # TODO Compare binaries. Content is json with base64 encoded data
-    Log    "Success"
+    ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
+    Should Be Equal  ${receivedData}  ${data}
 
 Post Request With File
     [Tags]  post
@@ -327,3 +338,9 @@ Verify a non existing session
     [Tags]    session
     ${exists}=          Session Exists    non-existing-session
     Should Not Be True  ${exists}
+
+Post Request With Large Truncated Body
+    [Tags]  post
+    ${html}=  Get File  ${CURDIR}${/}index.html
+    ${resp}=  Post Request  ${SESSION}  /anything  data=${html}
+    Status Should be  200  ${resp}
