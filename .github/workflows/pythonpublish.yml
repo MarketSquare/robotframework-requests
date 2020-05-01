@@ -20,6 +20,9 @@ jobs:
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
+    - uses: actions/checkout@v2
+      with:
+        ref: master
     - name: Update keywords documentation
       run: |
         pip install robotframework
