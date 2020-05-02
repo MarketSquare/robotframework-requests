@@ -140,3 +140,27 @@ Head Request Expect An Error And Evaluate Response
     [Tags]  head
     ${resp}=    HEAD On Session  ${SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
+
+Patch Request On Existing Session
+    [Tags]  Patch
+    ${resp}=            PATCH On Session  ${SESSION}  /anything
+    Status Should Be    OK  ${resp}
+
+Patch Request With Data
+    [Tags]  Patch
+    ${resp}=            PATCH On Session  ${SESSION}  /anything  string
+    Status Should Be    OK  ${resp}
+    Should Be Equal As Strings  ${resp.json()}[data]  string
+
+Patch Request With Json
+    [Tags]  Patch
+    ${body}=            Create Dictionary  a=1  b=2
+    ${resp}=            PATCH On Session  ${SESSION}  /anything  json=${body}
+    Status Should Be    OK  ${resp}
+    ${data}=            To Json  ${resp.json()}[data]
+    Dictionaries Should Be Equal  ${data}  ${body}
+
+Patch Request Expect An Error And Evaluate Response
+    [Tags]  Patch
+    ${resp}=    PATCH On Session  ${SESSION}  /status/401  expected_status=401
+    Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
