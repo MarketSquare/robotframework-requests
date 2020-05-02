@@ -1014,7 +1014,7 @@ class RequestsKeywords(object):
 
     @keyword("HEAD On Session")
     def head_on_session(self, alias, url, params=None,
-                       expected_status=None, msg=None, **kwargs):
+                        expected_status=None, msg=None, **kwargs):
         """
         Sends a HEAD request on a previously created HTTP Session.
 
@@ -1073,6 +1073,8 @@ class RequestsKeywords(object):
 
         return response
 
+    # TODO maybe this should be a staticmethod
+    @keyword("Status Should be")
     def status_should_be(self, expected_status, response, msg=None):
         """
         Fails if response status code is different than the expected.
@@ -1087,6 +1089,8 @@ class RequestsKeywords(object):
         """
         self._check_status(expected_status, response, msg)
 
+    # TODO maybe this should be a staticmethod
+    @keyword("Request Should Be Successful")
     def request_should_be_successful(self, response):
         """
         Fails if response status code is a client or server error (4xx, 5xx).
@@ -1140,6 +1144,7 @@ class RequestsKeywords(object):
         return resp
 
     @staticmethod
+    @keyword("Get File For Streaming Upload")
     def get_file_for_streaming_upload(path):
         """
         Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter
