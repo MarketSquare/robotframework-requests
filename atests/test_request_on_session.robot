@@ -122,11 +122,6 @@ Head Request With Url Params
     ${resp}=            HEAD On Session  ${SESSION}  /anything  ${params}
     Status Should Be    OK  ${resp}
 
-Head Request And Fail By Default On Http Error
-    [Tags]  head
-    Run Keyword And Expect Error  HTTPError: 400*
-    ...                           HEAD On Session  ${SESSION}  /status/400
-
 Head Request With Header
     [Tags]  head
     ${accept_type}=     Set Variable                 application/json
@@ -135,3 +130,13 @@ Head Request With Header
     Status Should Be    OK  ${resp}
     ${content_type_response}=  Get From Dictionary      ${resp.headers}   Content-Type
     Should Be Equal   ${accept_type}  ${content_type_response}
+
+Head Request And Fail By Default On Http Error
+    [Tags]  head
+    Run Keyword And Expect Error  HTTPError: 400*
+    ...                           HEAD On Session  ${SESSION}  /status/400
+
+Head Request Expect An Error And Evaluate Response
+    [Tags]  head
+    ${resp}=    HEAD On Session  ${SESSION}  /status/401  expected_status=401
+    Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}

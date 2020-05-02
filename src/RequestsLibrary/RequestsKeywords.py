@@ -629,7 +629,7 @@ class RequestsKeywords(object):
         # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
-        response = self._common_request(
+        response = self._common_equest(
             "get",
             session,
             uri,
@@ -1059,7 +1059,7 @@ class RequestsKeywords(object):
 
         In case of failure an HTTPError will be automatically raised.
         """
-        self._check_status(None, response, msg=None)
+        self._check_status(None, rresponse, msg=None)
 
     def _common_request(
             self,
