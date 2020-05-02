@@ -12,6 +12,11 @@ Get Request On Existing Session
     ${resp}=            GET On Session  ${SESSION}  /anything
     Status Should Be    OK  ${resp}
 
+Get Request Should Have Get Method
+    [Tags]  get
+    ${resp}=            GET On Session  ${SESSION}  /anything
+    Should Be Equal As Strings    ${resp.json()}[method]  GET
+
 Get Request With Url Params
     [Tags]  get
     ${params}=          Create Dictionary   param1=1  param2=2
@@ -63,6 +68,11 @@ Post Request On Existing Session
     ${resp}=            POST On Session  ${SESSION}  /anything
     Status Should Be    OK  ${resp}
 
+Post Request Should Have Post Method
+    [Tags]  Post
+    ${resp}=            POST On Session  ${SESSION}  /anything
+    Should Be Equal As Strings    ${resp.json()}[method]  POST
+
 Post Request With Data
     [Tags]  post
     ${resp}=            POST On Session  ${SESSION}  /anything  string
@@ -92,6 +102,11 @@ Put Request On Existing Session
     ${resp}=            PUT On Session  ${SESSION}  /anything
     Status Should Be    OK  ${resp}
 
+Put Request Should Have Put Method
+    [Tags]  Put
+    ${resp}=            PUT On Session  ${SESSION}  /anything
+    Should Be Equal As Strings    ${resp.json()}[method]  PUT
+
 Put Request With Data
     [Tags]  put
     ${resp}=            PUT On Session  ${SESSION}  /anything  string
@@ -115,6 +130,11 @@ Head Request On Existing Session
     [Tags]  head
     ${resp}=            HEAD On Session  ${SESSION}  /anything
     Status Should Be    OK  ${resp}
+
+Head Request Should Not Have A Body
+    [Tags]  head
+    ${resp}=            HEAD On Session  ${SESSION}  /anything
+    Should Be Equal As Strings     ${resp.content}   ${Empty}
 
 Head Request With Url Params
     [Tags]  head
@@ -146,6 +166,11 @@ Patch Request On Existing Session
     ${resp}=            PATCH On Session  ${SESSION}  /anything
     Status Should Be    OK  ${resp}
 
+Patch Request Should Have Patch Method
+    [Tags]  Patch
+    ${resp}=            PATCH On Session  ${SESSION}  /anything
+    Should Be Equal As Strings    ${resp.json()}[method]  PATCH
+
 Patch Request With Data
     [Tags]  Patch
     ${resp}=            PATCH On Session  ${SESSION}  /anything  string
@@ -164,3 +189,19 @@ Patch Request Expect An Error And Evaluate Response
     [Tags]  Patch
     ${resp}=    PATCH On Session  ${SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
+
+Delete Request On Existing Session
+    [Tags]  Delete
+    ${resp}=            DELETE On Session  ${SESSION}  /anything
+    Status Should Be    OK  ${resp}
+
+Delete Request Should Have Delete Method
+    [Tags]  Delete
+    ${resp}=            DELETE On Session  ${SESSION}  /anything
+    Should Be Equal As Strings    ${resp.json()}[method]  DELETE
+
+Delete Request Expect An Error And Evaluate Response
+    [Tags]  Delete
+    ${resp}=    DELETE On Session  ${SESSION}  /status/202  expected_status=202
+    Should Be Equal As Strings  ACCEPTED  ${resp.reason}
+

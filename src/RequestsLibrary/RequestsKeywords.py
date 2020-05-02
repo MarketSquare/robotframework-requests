@@ -893,7 +893,7 @@ class RequestsKeywords(object):
 
     @keyword('PUT On Session')
     def put_on_session(self, alias, url, data=None, json=None,
-                        expected_status=None, msg=None, **kwargs):
+                       expected_status=None, msg=None, **kwargs):
         """
         Sends a PUT request on a previously created HTTP Session.
 
@@ -911,6 +911,18 @@ class RequestsKeywords(object):
         session = self._cache.switch(alias)
         response = self._common_request("put", session, url,
                                         data=data, json=json, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('DELETE On Session')
+    def delete_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
+        """
+        #TODO write documentation
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("delete", session, url,
+                                        fail_on_error=False,
                                         **kwargs)
         self._check_status(expected_status, response, msg)
         return response
