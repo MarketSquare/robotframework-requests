@@ -6,8 +6,12 @@
 2) I suggest to create a python virtual environment
 3) Install the library in editing mode and all the test dependencies:
     `python -m pip install -e .[test]`
+4) Run acceptance tests with robot:
+    `robot ./atests`
+5) Run unit tests wiht pytest:
+    `pytest ./utests`
 
-You're now ready to go!
+If everything went well now you're ready to go!
 
 ## Coding guidelines
 
