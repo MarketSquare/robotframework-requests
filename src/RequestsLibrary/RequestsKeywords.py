@@ -3,6 +3,7 @@ import copy
 import sys
 
 import requests
+from requests import HTTPError
 from requests.models import Response
 from requests.sessions import merge_setting
 from requests.cookies import merge_cookies
@@ -41,10 +42,14 @@ class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
     DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
-    def __init__(self):
+    def __init__(self, fail_on_error=None):
+        """``fail_on_error`` Set to True to let all Requests keywords fail if the HTTP status code of the returned
+        response is an error code.
+        """
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
+        self.fail_on_error = fail_on_error
 
     def _create_session(
             self,
@@ -594,7 +599,8 @@ class RequestsKeywords(object):
             json=None,
             params=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a GET request on the session object found using the
         given `alias`
 
@@ -616,8 +622,11 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -629,8 +638,33 @@ class RequestsKeywords(object):
             data=data,
             json=json,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
+        return response
+
+    @keyword("GET On Session")
+    def get_on_session(self, alias, url, params=None,
+                       expected_status=None, msg=None, **kwargs):
+        """
+        Sends a GET request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("get", session, url,
+                                        params=params,  fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     @keyword("GET On Session")
@@ -669,7 +703,8 @@ class RequestsKeywords(object):
             headers=None,
             files=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a POST request on the session object found using the
         given `alias`
 
@@ -695,10 +730,13 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         if not files:
             data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -711,8 +749,32 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
+        return response
 
+    @keyword('POST On Session')
+    def post_on_session(self, alias, url, data=None, json=None,
+                        expected_status=None, msg=None, **kwargs):
+        """
+        Sends a POST request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("post", session, url,
+                                        data=data, json=json, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     @keyword('POST On Session')
@@ -739,7 +801,8 @@ class RequestsKeywords(object):
             headers=None,
             files=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a PATCH request on the session object found using the
         given `alias`
 
@@ -764,9 +827,12 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -779,8 +845,33 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
+        return response
+
+    @keyword('PATCH On Session')
+    def patch_on_session(self, alias, url, data=None, json=None,
+                         expected_status=None, msg=None, **kwargs):
+        """
+        Sends a PATCH request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("patch", session, url,
+                                        data=data, json=json, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     def put_request(
@@ -793,7 +884,8 @@ class RequestsKeywords(object):
             files=None,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a PUT request on the session object found using the
         given `alias`
 
@@ -816,9 +908,12 @@ class RequestsKeywords(object):
         ``params`` url parameters to append to the uri
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -831,8 +926,45 @@ class RequestsKeywords(object):
             files=files,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
+        return response
+
+    @keyword('PUT On Session')
+    def put_on_session(self, alias, url, data=None, json=None,
+                       expected_status=None, msg=None, **kwargs):
+        """
+        Sends a PUT request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("put", session, url,
+                                        data=data, json=json, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('DELETE On Session')
+    def delete_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
+        """
+        #TODO write documentation
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("delete", session, url,
+                                        fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     def delete_request(
@@ -844,7 +976,8 @@ class RequestsKeywords(object):
             params=None,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a DELETE request on the session object found using the
         given `alias`
 
@@ -860,9 +993,12 @@ class RequestsKeywords(object):
         ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
         data = utils.format_data_according_to_header(session, data, headers)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
 
         response = self._common_request(
@@ -874,7 +1010,8 @@ class RequestsKeywords(object):
             params=params,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
@@ -884,7 +1021,8 @@ class RequestsKeywords(object):
             uri,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send a HEAD request on the session object found using the
         given `alias`
 
@@ -897,8 +1035,11 @@ class RequestsKeywords(object):
         ``headers`` a dictionary of headers to use with the request
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = False if allow_redirects is None else allow_redirects
         response = self._common_request(
             "head",
@@ -906,8 +1047,33 @@ class RequestsKeywords(object):
             uri,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
+        return response
+
+    @keyword("HEAD On Session")
+    def head_on_session(self, alias, url, params=None,
+                        expected_status=None, msg=None, **kwargs):
+        """
+        Sends a HEAD request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the HTTP header from server about resource of the ``url``, while query
+        string parameters can be passed as dictionary (list of tuples or bytes)
+        through the ``params``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("head", session, url,
+                                        params=params, fail_on_error=False,
+                                        **kwargs)
+        self._check_status(expected_status, response, msg)
         return response
 
     def options_request(
@@ -916,7 +1082,8 @@ class RequestsKeywords(object):
             uri,
             headers=None,
             allow_redirects=None,
-            timeout=None):
+            timeout=None,
+            fail_on_error=None):
         """ Send an OPTIONS request on the session object found using the
         given `alias`
 
@@ -929,8 +1096,11 @@ class RequestsKeywords(object):
         ``headers`` a dictionary of headers to use with the request
 
         ``timeout`` connection timeout
+
+        ``fail_on_error`` Fails with a HTTPError exception if the response returns an error code
         """
         session = self._cache.switch(alias)
+        # XXX workaround to restore library default behaviour. Not needed in new keywords
         redir = True if allow_redirects is None else allow_redirects
         response = self._common_request(
             "options",
@@ -938,10 +1108,13 @@ class RequestsKeywords(object):
             uri,
             headers=headers,
             allow_redirects=redir,
-            timeout=timeout)
+            timeout=timeout,
+            fail_on_error=fail_on_error)
 
         return response
 
+    # TODO maybe this should be a staticmethod
+    @keyword("Status Should be")
     def status_should_be(self, expected_status, response, msg=None):
         """
         Fails if response status code is different than the expected.
@@ -956,6 +1129,8 @@ class RequestsKeywords(object):
         """
         self._check_status(expected_status, response, msg)
 
+    # TODO maybe this should be a staticmethod
+    @keyword("Request Should Be Successful")
     def request_should_be_successful(self, response):
         """
         Fails if response status code is a client or server error (4xx, 5xx).
@@ -972,6 +1147,13 @@ class RequestsKeywords(object):
             session,
             uri,
             **kwargs):
+
+        fail_on_error_default = self.fail_on_error
+        fail_on_error_override = kwargs.pop('fail_on_error', None)
+        if fail_on_error_override is not None:
+            raise_for_status = fail_on_error_override
+        else:
+            raise_for_status = fail_on_error_default
 
         method_function = getattr(session, method)
         self._capture_output()
@@ -993,9 +1175,16 @@ class RequestsKeywords(object):
         if is_file_descriptor(data):
             data.close()
 
+        if raise_for_status:
+            try:
+                resp.raise_for_status()
+            except HTTPError as http_exception:
+                raise http_exception
+
         return resp
 
     @staticmethod
+    @keyword("Get File For Streaming Upload")
     def get_file_for_streaming_upload(path):
         """
         Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter
