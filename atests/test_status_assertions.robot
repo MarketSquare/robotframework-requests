@@ -30,8 +30,8 @@ Request And Status Should Be An Invalid Named Status
 
 Invalid Response
     [Tags]  get  status
-    Run Keyword And Expect Error  InvalidResponse: this-is-not-a-request*
-    ...  Status Should Be  123   this-is-not-a-request
+    Run Keyword And Expect Error  InvalidResponse: this-is-not-a-response*
+    ...  Status Should Be  123   this-is-not-a-response
 
 Request And Status Should Be With A Message
     [Tags]  get  status
