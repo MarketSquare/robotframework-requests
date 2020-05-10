@@ -1043,7 +1043,16 @@ class RequestsKeywords(object):
 
         return response
 
-    # TODO implement OPTIONS On Session
+    @keyword("OPTIONS On Session")
+    def options_on_session(self, alias, url,
+                           expected_status=None, msg=None, **kwargs):
+        """
+        Sends a OPTIONS request on a previously created HTTP Session.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("options", session, url, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
 
     # TODO maybe this should be a staticmethod
     @keyword("Status Should be")
