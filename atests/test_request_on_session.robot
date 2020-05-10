@@ -137,10 +137,10 @@ Head Request Should Not Have A Body
     ${resp}=            HEAD On Session  ${GLOBAL_SESSION}  /anything
     Should Be Equal As Strings     ${resp.content}   ${Empty}
 
-Head Request With Url Params
+Head Request With Kwargs Params
     [Tags]  head
     ${params}=          Create Dictionary   param1=1  param2=2
-    ${resp}=            HEAD On Session  ${GLOBAL_SESSION}  /anything  ${params}
+    ${resp}=            HEAD On Session  ${GLOBAL_SESSION}  /anything  params=${params}
     Status Should Be    OK  ${resp}
 
 Head Request With Header
