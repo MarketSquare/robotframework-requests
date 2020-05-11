@@ -23,7 +23,7 @@ Request And Status Should Be A Named Status Code
     ${resp}=  Get Request  ${GLOBAL_SESSION}  /status/418
     Status Should Be  I am a teapot  ${resp}
 
-Request And Status Should Be An Invalid Named Status
+Request And Status Should Be An Unknown Named Status
     [Tags]  get  status
     ${resp}=  Get Request  ${GLOBAL_SESSION}  /status/418
     Run Keyword And Expect Error    UnknownStatusError: i am an alien    Status Should Be  i am an alien  ${resp}
@@ -48,3 +48,9 @@ Request Should Not Be Successful
     [Tags]  get  status
     ${resp}=  Get Request  ${GLOBAL_SESSION}  /status/500
     Run Keyword And Expect Error  HTTPError: 500*  Request Should Be Successful  ${resp}
+
+Request And Status Should Be An Invalid Expected Status
+    [Tags]  get  status
+    ${invalid_expected_status}=     Create Dictionary  a=1
+    ${resp}=  Get Request  ${GLOBAL_SESSION}  /status/500
+    Run Keyword And Expect Error   InvalidExpectedStatus*  Status Should Be  ${invalid_expected_status}  ${resp}

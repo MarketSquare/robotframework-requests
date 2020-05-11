@@ -4,3 +4,7 @@ class UnknownStatusError(Exception):
 
 class InvalidResponse(Exception):
     pass
+
+
+class InvalidExpectedStatus(Exception):
+    pass

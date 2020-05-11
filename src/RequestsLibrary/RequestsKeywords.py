@@ -17,9 +17,8 @@ from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils, log
 from RequestsLibrary.compat import httplib, PY3
-from RequestsLibrary.exceptions import InvalidResponse
-from RequestsLibrary.utils import is_file_descriptor
-
+from RequestsLibrary.exceptions import InvalidResponse, InvalidExpectedStatus
+from RequestsLibrary.utils import is_file_descriptor, is_string_type
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -1132,6 +1131,8 @@ class RequestsKeywords(object):
         if expected_status is None:
             resp.raise_for_status()
         else:
+            if not is_string_type(expected_status):
+                raise InvalidExpectedStatus(expected_status)
             if expected_status.lower() in ['any', 'anything']:
                 return
             try:
