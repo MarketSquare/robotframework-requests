@@ -59,8 +59,13 @@ During the 17th April 2020 meetup we had the following todo list.
 - [X] **Tech:** [Integrate PyTest in CI](https://github.com/MarketSquare/robotframework-requests/issues/277) [Luca, Andrea, Kiro]
 
 ### New plans for 0.8 version
-- [ ] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276) [Angelo, Nicola, Roberta]
+- [X] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276) [Angelo, Nicola, Roberta]
 - [ ] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
+
+### Early Adopters and feedback needed for 0.8
+You can add in your requirements the alpha version in this way:
+
+    pip install git+https://github.com/MarketSquare/robotframework-requests@0.8#egg=robotframework-requests
 
 ### Others
 - [ ] **Review PR:** [Support sending arrays in query string and request body](https://github.com/MarketSquare/robotframework-requests/pull/220)
