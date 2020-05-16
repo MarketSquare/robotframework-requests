@@ -1,5 +1,5 @@
-from RequestsLibrary import RequestsKeywords
-from RequestsLibrary import SessionKeywords
+from RequestsLibrary.RequestsKeywords import RequestsKeywords
+from RequestsLibrary.SessionKeywords import SessionKeywords
 
 
 def test_session_class_extends_kewyords_class():

@@ -1,5 +1,4 @@
-from .RequestsKeywords import RequestsKeywords
-from .SessionKeywords import SessionKeywords
+from .RequestsOnSessionKeywords import RequestsOnSessionKeywords
 from .version import VERSION
 
 """
@@ -11,6 +10,6 @@ RequestsLibrary (__init__ wrapper file)
 """
 
 
-class RequestsLibrary(SessionKeywords):
+class RequestsLibrary(RequestsOnSessionKeywords):
     __version__ = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'

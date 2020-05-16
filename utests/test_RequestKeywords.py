@@ -2,7 +2,7 @@ import os
 
 from utests import mock
 
-from RequestsLibrary import RequestsKeywords
+from RequestsLibrary.RequestsKeywords import RequestsKeywords
 from utests import SCRIPT_DIR
 
 
