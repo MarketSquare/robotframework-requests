@@ -1,4 +1,4 @@
-from RequestsLibrary import RequestsKeywords
+from .RequestsKeywords import RequestsKeywords
 
 
 class SessionKeywords(RequestsKeywords):
