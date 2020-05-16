@@ -3,5 +3,6 @@ from .RequestsKeywords import RequestsKeywords
 
 class SessionKeywords(RequestsKeywords):
 
-    def _new_create_session(self):
+    # FIXME REMOVE ME
+    def get_request_deprecated(self):
         pass

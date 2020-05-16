@@ -3,11 +3,13 @@ from .RequestsOnSessionKeywords import RequestsOnSessionKeywords
 from .version import VERSION
 
 """
-RequestsLibrary (__init__ wrapper file)
-|_ RequestsKeywords (common requests and sessionless keywords)
+** Inheritance structure **
+RequestsKeywords (common requests and sessionless keywords)
     |_ SessionKeywords (session creation and data)
         |_ DeprecatedKeywords (old keywords that need sessions)
-        |_ RequestOnSessionKeywords (new keywords that use sessions)
+        |_ RequestsOnSessionKeywords (new keywords that use sessions)
+        
+RequestsLibrary (extends RequestsOnSessionKeywords, DeprecatedKeywords)
 """
 
 

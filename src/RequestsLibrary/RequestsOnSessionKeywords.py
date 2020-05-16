@@ -2,4 +2,7 @@ from .SessionKeywords import SessionKeywords
 
 
 class RequestsOnSessionKeywords(SessionKeywords):
-    pass
+
+    # FIXME REMOVE ME
+    def get_on_session_fake(self):
+        pass
