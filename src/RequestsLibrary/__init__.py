@@ -1,3 +1,4 @@
+from .DeprecatedKeywords import DeprecatedKeywords
 from .RequestsOnSessionKeywords import RequestsOnSessionKeywords
 from .version import VERSION
 
@@ -10,6 +11,6 @@ RequestsLibrary (__init__ wrapper file)
 """
 
 
-class RequestsLibrary(RequestsOnSessionKeywords):
+class RequestsLibrary(RequestsOnSessionKeywords, DeprecatedKeywords):
     __version__ = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'

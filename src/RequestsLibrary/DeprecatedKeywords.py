@@ -1,4 +1,4 @@
-from RequestsLibrary import SessionKeywords
+from .SessionKeywords import SessionKeywords
 
 
 class DeprecatedKeywords(SessionKeywords):
