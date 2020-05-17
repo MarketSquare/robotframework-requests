@@ -3,5 +3,5 @@ from .SessionKeywords import SessionKeywords
 
 class DeprecatedKeywords(SessionKeywords):
 
-    def get_on_session_deprecated(self):
+    def get_request_deprecated(self):
         pass

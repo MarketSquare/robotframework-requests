@@ -1,21 +1,15 @@
-import copy
 import json
-import logging
 import sys
 
-import requests
 import robot
-from requests.cookies import merge_cookies
 from requests.models import Response
-from requests.packages.urllib3.util import Retry
-from requests.sessions import merge_setting
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils, log
-from RequestsLibrary.compat import httplib, PY3
+from RequestsLibrary.compat import PY3
 from RequestsLibrary.exceptions import InvalidResponse, InvalidExpectedStatus
 from RequestsLibrary.utils import is_file_descriptor, is_string_type
 
@@ -32,122 +26,11 @@ class WritableObject:
 
 class RequestsKeywords(object):
     ROBOT_LIBRARY_SCOPE = 'Global'
-    # FIXME REMOVE ME
-    DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
 
     def __init__(self):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
-
-    def _create_session(
-            self,
-            alias,
-            url,
-            headers,
-            cookies,
-            auth,
-            timeout,
-            proxies,
-            verify,
-            debug,
-            max_retries,
-            backoff_factor,
-            disable_warnings,
-            retry_status_list,
-            retry_method_list):
-
-        logger.debug('Creating session: %s' % alias)
-        s = session = requests.Session()
-        s.headers.update(headers)
-        s.auth = auth if auth else s.auth
-        s.proxies = proxies if proxies else s.proxies
-
-        try:
-            max_retries = int(max_retries)
-            retry_status_list = [int(x) for x in retry_status_list] if retry_status_list else None
-        except ValueError as err:
-            raise ValueError("Error converting session parameter: %s" % err)
-
-        if max_retries > 0:
-            retry = Retry(total=max_retries,
-                          backoff_factor=backoff_factor,
-                          status_forcelist=retry_status_list,
-                          method_whitelist=retry_method_list)
-            http = requests.adapters.HTTPAdapter(max_retries=retry)
-            https = requests.adapters.HTTPAdapter(max_retries=retry)
-
-            # Replace the session's original adapters
-            s.mount('http://', http)
-            s.mount('https://', https)
-
-        # Disable requests warnings, useful when you have large number of testcase
-        # you will observe drastical changes in Robot log.html and output.xml files size
-        if disable_warnings:
-            # you need to initialize logging, otherwise you will not see anything from requests
-            logging.basicConfig()
-            logging.getLogger().setLevel(logging.ERROR)
-            requests_log = logging.getLogger("requests")
-            requests_log.setLevel(logging.ERROR)
-            requests_log.propagate = True
-            if not verify:
-                requests.packages.urllib3.disable_warnings()
-
-        # verify can be a Boolean or a String
-        if isinstance(verify, bool):
-            s.verify = verify
-        elif utils.is_string_type(verify):
-            if verify.lower() == 'true' or verify.lower() == 'false':
-                s.verify = self.builtin.convert_to_boolean(verify)
-            else:
-                # String for CA_BUNDLE, not a Boolean String
-                s.verify = verify
-        else:
-            # not a Boolean nor a String
-            s.verify = verify
-
-        # cant pass these into the Session anymore
-        self.timeout = float(timeout) if timeout is not None else None
-        self.cookies = cookies
-        self.verify = verify if self.builtin.convert_to_boolean(verify) is not True else None
-
-        s.url = url
-
-        # Enable http verbosity
-        if int(debug) >= 1:
-            self.debug = int(debug)
-            httplib.HTTPConnection.debuglevel = self.debug
-
-        self._cache.register(session, alias=alias)
-        return session
-
-    def session_exists(self, alias):
-        """Return True if the session has been already created
-
-        ``alias`` that has been used to identify the Session object in the cache
-        """
-        try:
-            self._cache[alias]
-            return True
-        except RuntimeError:
-            return False
-
-    def delete_all_sessions(self):
-        """ Removes all the session objects """
-        logger.info('Delete All Sessions')
-
-        self._cache.empty_cache()
-
-    def update_session(self, alias, headers=None, cookies=None):
-        """Update Session Headers: update a HTTP Session Headers
-
-        ``alias`` Robot Framework alias to identify the session
-
-        ``headers`` Dictionary of headers merge into session
-        """
-        session = self._cache.switch(alias)
-        session.headers = merge_setting(headers, session.headers)
-        session.cookies = merge_cookies(session.cookies, cookies)
 
     def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
