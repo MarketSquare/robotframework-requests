@@ -1,7 +1,7 @@
 *** Settings ***
 Library  Collections
 Library  String
-Library  ../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 Resource  res_setup.robot
 
 Suite Setup     Setup Flask Http Server
@@ -210,7 +210,7 @@ Options Request On Existing Session
     [Tags]  options
     ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /anything
     Status Should Be    OK  ${resp}
-    
+
 Options Request Check Allow Header
     [Tags]  options
     ${allow_header}=    Create List   POST  HEAD  PATCH  GET  TRACE  DELETE  OPTIONS  PUT

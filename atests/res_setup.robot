@@ -1,6 +1,6 @@
 *** Settings ***
 Library  Process
-Library  ../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 
 
 *** Variables ***
