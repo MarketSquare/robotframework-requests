@@ -18,12 +18,58 @@ Get Request Should Have Get Method
     ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
     Should Be Equal As Strings    ${resp.json()}[method]  GET
 
-Get Request With Url Params
+Get Request With Url Params As Dictionary
     [Tags]  get
     ${params}=          Create Dictionary   param1=1  param2=2
     ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything  ${params}
     Status Should Be    OK  ${resp}
     Dictionaries Should Be Equal  ${params}  ${resp.json()}[args]
+
+Get Request With Url Params As Kwargs String
+    [Tags]  get
+    ${params}=          Create Dictionary   this_is_a_string=1  p2=2
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
+    ...                     params=this_is_a_string=1&p2=2
+    Status Should Be    OK  ${resp}
+    Dictionaries Should Be Equal  ${params}  ${resp.json()}[args]
+
+Get Request With Url Params As Escaped String
+    [Tags]  get
+    ${params}=          Create Dictionary   this_is_a_string=1  p2=2
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
+    ...                     this_is_a_string\=1&p2\=2
+    Status Should Be    OK  ${resp}
+    Dictionaries Should Be Equal  ${params}  ${resp.json()}[args]
+
+Get Request With Url Duplicated Keys In Params
+    [Tags]  get
+    ${array}=          Create List   1  2
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
+    ...                     params=key=1&key=2
+    Status Should Be    OK  ${resp}
+    Lists Should Be Equal  ${array}  ${resp.json()}[args][key]
+
+Get Request With Url Duplicated Keys In Params And PHP Style Array
+    [Tags]  get
+    ${array}=          Create List   1  2
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
+    ...                     params=key[]=1&key[]=2
+    Status Should Be    OK  ${resp}
+    Lists Should Be Equal  ${array}  ${resp.json()}[args][key[]]
+
+Get Request With Url Params As PHP Style Array
+    [Tags]  get
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
+    ...                     params=key[]=1,2
+    Status Should Be    OK  ${resp}
+    Should Be Equal As Strings  1,2  ${resp.json()}[args][key[]]
+
+Get Request With Url Params As Array
+    [Tags]  get
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
+    ...                     params=key=[1,2]
+    Status Should Be    OK  ${resp}
+    Should Be Equal As Strings  [1,2]  ${resp.json()}[args][key]
 
 Get Request With Unordered Parameters
     [Tags]  get
