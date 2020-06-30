@@ -31,6 +31,5 @@ class TestRequestsLibraryInheritance():
     def test_make_sure_it_has_methods_from_deprecated_keywords(self):
         assert hasattr(self.requests_library, 'get_request_deprecated')
 
-    # FIXME with real methods
     def test_make_sure_it_has_methods_from_requests_on_session_keywords(self):
-        assert hasattr(self.requests_library, 'get_on_session_fake')
+        assert hasattr(self.requests_library, 'get_on_session')
