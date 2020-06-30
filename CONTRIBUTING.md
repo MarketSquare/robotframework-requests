@@ -55,12 +55,17 @@ During the 17th April 2020 meetup we had the following todo list.
 
 ### New upcoming 0.7 version
 - [X] **Review PR:** [Add a post method that allows sending binary data ](https://github.com/MarketSquare/robotframework-requests/pull/224) [Nello]
-- [ ] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276) [Angelo, Nicola, Roberta]
 - [X] **Fix:** [Continuous Integration on Windows](https://github.com/MarketSquare/robotframework-requests/issues/271) [Vincenzo, Diego]
 - [X] **Tech:** [Integrate PyTest in CI](https://github.com/MarketSquare/robotframework-requests/issues/277) [Luca, Andrea, Kiro]
 
-### New plans for 1.0 major version
+### New plans for 0.8 version
+- [X] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276) [Angelo, Nicola, Roberta]
 - [ ] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
+
+### Early Adopters and feedback needed for 0.8
+You can add in your requirements the alpha version in this way:
+
+    pip install git+https://github.com/MarketSquare/robotframework-requests@0.8#egg=robotframework-requests
 
 ### Others
 - [ ] **Review PR:** [Support sending arrays in query string and request body](https://github.com/MarketSquare/robotframework-requests/pull/220)
