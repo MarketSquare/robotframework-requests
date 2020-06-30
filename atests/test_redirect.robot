@@ -8,51 +8,51 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 *** Test Cases ***
 Get Request With Default Redirection
     [Tags]  get
-    ${resp}=  Get Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything
+    ${resp}=  Get Request  ${GLOBAL_SESSION}  /redirect-to?url=anything
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
 Get Request With Redirection
     [Tags]  get
-    ${resp}=  Get Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    ${resp}=  Get Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
 Get Request Without Redirection
     [Tags]  get
-    ${resp}=  Get Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
+    ${resp}=  Get Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
 # TODO understand whether this is the right behavior or not
 Options Request Without Redirection By Default
     [Tags]  options
-    ${resp}=  Options Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything
+    ${resp}=  Options Request  ${GLOBAL_SESSION}  /redirect-to?url=anything
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  0
 
 # TODO understand whether this is the right behavior or not
 Options Request With Redirection
     [Tags]  options
-    ${resp}=  Options Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    ${resp}=  Options Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  0
 
 Head Request With Redirection
     [Tags]  head
-    ${resp}=  Head Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
+    ${resp}=  Head Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${true}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
 Head Request Without Redirection By Default
     [Tags]  head
-    ${resp}=  Head Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything
+    ${resp}=  Head Request  ${GLOBAL_SESSION}  /redirect-to?url=anything
     ${status}=  Convert To String  ${resp.status_code}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
 Head Request Without Redirection
-    ${resp}=  Head Request  ${GLOBAL_LOCAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
+    ${resp}=  Head Request  ${GLOBAL_SESSION}  /redirect-to?url=anything  allow_redirects=${false}
     ${status}=  Convert To String  ${resp.status_code}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
