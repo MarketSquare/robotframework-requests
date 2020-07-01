@@ -6,6 +6,7 @@ from requests.cookies import merge_cookies
 from requests.packages.urllib3.util import Retry
 from requests.sessions import merge_setting
 from robot.api import logger
+from robot.api.deco import keyword
 
 from RequestsLibrary import utils
 from RequestsLibrary.compat import httplib
@@ -101,6 +102,7 @@ class SessionKeywords(RequestsKeywords):
         self._cache.register(session, alias=alias)
         return session
 
+    @keyword("Create Session")
     def create_session(self,
                        alias,
                        url,
@@ -181,6 +183,7 @@ class SessionKeywords(RequestsKeywords):
             retry_status_list=retry_status_list,
             retry_method_list=retry_method_list)
 
+    @keyword("Create Client Cert Session")
     def create_client_cert_session(
             self,
             alias,
@@ -265,6 +268,7 @@ class SessionKeywords(RequestsKeywords):
         session.cert = tuple(client_certs)
         return session
 
+    @keyword("Create Custom Session")
     def create_custom_session(
             self,
             alias,
@@ -347,6 +351,7 @@ class SessionKeywords(RequestsKeywords):
             retry_status_list=retry_status_list,
             retry_method_list=retry_method_list)
 
+    @keyword("Create Digest Session")
     def create_digest_session(
             self,
             alias,
@@ -423,6 +428,7 @@ class SessionKeywords(RequestsKeywords):
             retry_status_list=retry_status_list,
             retry_method_list=retry_method_list)
 
+    @keyword("Create Ntlm Session")
     def create_ntlm_session(
             self,
             alias,
@@ -512,6 +518,7 @@ class SessionKeywords(RequestsKeywords):
                 retry_status_list=retry_status_list,
                 retry_method_list=retry_method_list)
 
+    @keyword("Session Exists")
     def session_exists(self, alias):
         """Return True if the session has been already created
 
@@ -523,6 +530,7 @@ class SessionKeywords(RequestsKeywords):
         except RuntimeError:
             return False
 
+    @keyword("Delete All Sessions")
     def delete_all_sessions(self):
         """ Removes all the session objects """
         logger.info('Delete All Sessions')
@@ -530,6 +538,7 @@ class SessionKeywords(RequestsKeywords):
         self._cache.empty_cache()
 
     # TODO this is not covered by any tests
+    @keyword("Update Session")
     def update_session(self, alias, headers=None, cookies=None):
         """Update Session Headers: update a HTTP Session Headers
 

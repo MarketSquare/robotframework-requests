@@ -32,7 +32,6 @@ class RequestsKeywords(object):
         self.builtin = BuiltIn()
         self.debug = 0
 
-    # TODO maybe this should be a staticmethod
     @keyword("Status Should be")
     def status_should_be(self, expected_status, response, msg=None):
         """
@@ -48,7 +47,6 @@ class RequestsKeywords(object):
         """
         self._check_status(expected_status, response, msg)
 
-    # TODO maybe this should be a staticmethod
     @keyword("Request Should Be Successful")
     def request_should_be_successful(self, response):
         """
@@ -74,6 +72,7 @@ class RequestsKeywords(object):
         """
         return open(path, 'rb')
 
+    @keyword("To Json")
     def to_json(self, content, pretty_print=False):
         """ Convert a string to a JSON object
 
@@ -155,6 +154,7 @@ class RequestsKeywords(object):
             url = "%s%s%s" % (session.url, slash, uri)
         return url
 
+    # FIXME might be broken we need a test for this
     def _get_timeout(self, timeout):
         return float(timeout) if timeout is not None else self.timeout
 
