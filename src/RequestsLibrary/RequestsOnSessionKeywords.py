@@ -13,14 +13,32 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         Session will be identified using the ``alias`` name.
         The endpoint used to retrieve the resource is the ``url``, while query
-        string parameters can be passed as dictionary (list of tuples or bytes)
+        string parameters can be passed as dictionary (or list of tuples or bytes)
         through the ``params``.
 
         By default the response should not have a status code with error values,
         the expected status could be modified using ``expected_status`` that works in the
         same way as the `Status Should Be` keyword.
 
-        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        Other optional requests arguments can be passed using ``**kwargs`` here is a list:
+
+        | ``data``     | Dictionary, list of tuples, bytes, or file-like object to send in the body of the request. |
+        | ``json``     | A JSON serializable Python object to send in the body of the request. |
+        | ``headers``  | Dictionary of HTTP Headers to send with the request. |
+        | ``cookies``  | Dict or CookieJar object to send with the request. |
+        | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. |
+        | ``file-tuple`` | can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
+        | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
+        | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
+        | ``allow_redirects`` | Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``. |
+        | ``proxies`` | Dictionary mapping protocol to the URL of the proxy. |
+        | ``verify``  | Either a boolean, in which case it controls whether we verify the server's TLS certificate, or a string, in which case it must be a path to a CA bundle to use. Defaults to ``True``. |
+        | ``stream`` | if ``False``, the response content will be immediately downloaded. |
+        | ``cert`` | if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair. |
+
+    For more updated and completed information verify the official Requests api documentation:
+    https://requests.readthedocs.io/en/latest/api/
+
         """
         session = self._cache.switch(alias)
         response = self._common_request("get", session, url,
@@ -43,7 +61,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         the expected status could be modified using ``expected_status`` that works in the
         same way as the `Status Should Be` keyword.
 
-        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
+          the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("post", session, url,
@@ -66,7 +85,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         the expected status could be modified using ``expected_status`` that works in the
         same way as the `Status Should Be` keyword.
 
-        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
+          the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("patch", session, url,
@@ -89,7 +109,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         the expected status could be modified using ``expected_status`` that works in the
         same way as the `Status Should Be` keyword.
 
-        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
+          the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("put", session, url,
@@ -130,7 +151,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         the expected status could be modified using ``expected_status`` that works in the
         same way as the `Status Should Be` keyword.
 
-        Other optional ``requests`` arguments can be passed using ``**kwargs``.
+        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
+          the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("head", session, url, **kwargs)
@@ -142,6 +164,16 @@ class RequestsOnSessionKeywords(SessionKeywords):
                            expected_status=None, msg=None, **kwargs):
         """
         Sends a OPTIONS request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``.
+
+        By default the response should not have a status code with error values,
+        the expected status could be modified using ``expected_status`` that works in the
+        same way as the `Status Should Be` keyword.
+
+        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
+          the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("options", session, url, **kwargs)

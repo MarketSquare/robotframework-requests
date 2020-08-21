@@ -18,7 +18,7 @@ class RequestsKeywords(object):
         self.builtin = BuiltIn()
         self.debug = 0
 
-    @keyword("Status Should be")
+    @keyword("Status Should Be")
     def status_should_be(self, expected_status, response, msg=None):
         """
         Fails if response status code is different than the expected.
