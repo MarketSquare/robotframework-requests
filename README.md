@@ -22,27 +22,41 @@ Library               RequestsLibrary
 
 *** Test Cases ***
 Get Requests
-    Create Session    github         http://api.github.com
-    Create Session    google         http://www.google.com
-    ${resp}=          Get Request    google               /
-    Status Should Be  200            ${resp}
-    ${resp}=          Get Request    github               /users/bulkan
-    Request Should Be Successful     ${resp}
-    Dictionary Should Contain Value  ${resp.json()}       Bulkan Evcimen
+    Create Session    github          http://api.github.com
+    Create Session    google          http://www.google.com
+    ${resp}=          GET On Session  google               /
+    ${resp}=          GET On Session  github               /users/bulkan
+    Dictionary Should Contain Value   ${resp.json()}       Bulkan Evcimen
 ```
-RequestsLibrary tries to follow the same API as requests. In the above example, we load in the ``RequestsLibrary`` using the ``Library`` keyword. To be able to distinguish HTTP requests to different hosts and for ease of creation of test cases, you need to create a `Session`. Internally this will create a `request.Session` object.  The `Create Session` keyword accepts two arguments:
+RequestsLibrary follow the same API as requests. 
+In the above example, we load in the ``RequestsLibrary`` using the ``Library`` keyword.
+To be able to distinguish HTTP requests to different hosts and for ease of creation of test cases, you need to create a `Session`.
+
+The `Create Session` keyword needs two arguments:
 
 * _alias_ to identify the session later
-* _root url_ to the server
+* _url_ to the server
 
 HTTP verbs are mapped keywords which accept two arguments:
 
 * _alias_ identifying the Session we created earlier.
-* _URI_  to send the request to.
+* _url_ to send the request to.
 
-Above we create two Sessions - one to the _github api_, and the other to _google_. Creating sessions doesn't send any requests.
+Above we create two Sessions - one to _github_, and the other to _google_. Creating sessions doesn't send any requests.
 
-After we create a Session we can send any of the following ``Get, Post, Put, Patch, Options, Delete, and Head`` requests. In the above example we send a GET request to the session with the alias _google_ and check the HTTP response code. Then send a another GET request but this time to the session with the alias _github_ and pass in a `uri`. In this case it is ``/users/bulkan`` which will return a JSON string. `RequestsLibrary` returned object provides a method to get the content as a JSON object format called json().
+After we create a Session we can send any of the following ``Get, Post, Put, Patch, Options, Delete, and Head`` requests.
+In the above example we send a GET request to the session with the alias _google_ and check the HTTP response code.
+Then send a another GET request but this time to the session with the alias _github_ and pass in a `uri`.
+In this case it is ``/users/bulkan`` which will return a JSON string.
+`RequestsLibrary` returned object provides a method to get the content as a JSON object format called json().
+
+You could also assert on the response status code like below, but with the ``GET On Session`` keyword automatically fails if an error is returned.
+
+```robotframework
+    Status Should Be  Ok              ${resp}
+    Status Should Be  200             ${resp}
+    Request Should Be Successful      ${resp}
+```  
 
 Here is another test case where an outbound http proxy is used.
 
@@ -72,7 +86,7 @@ Cookies in request
     Should Be Equal As Strings           ${resp.status_code}    200
 ```
 
-For more examples see the `tests` folder which contains testcase files that is used to test the keywords in this library against [httpbin.org](http://httpbin.org).
+For more examples see the `atests` folder which contains testcase files that is used to test the keywords in this library against a [httpbin.org](http://httpbin.org) local server.
 
 # Documentation
 
