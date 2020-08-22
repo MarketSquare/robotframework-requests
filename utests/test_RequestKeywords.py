@@ -1,13 +1,13 @@
 import os
 
+from RequestsLibrary import RequestsLibrary
 from utests import mock
 
-from RequestsLibrary import RequestsKeywords
 from utests import SCRIPT_DIR
 
 
 def test_common_request_file_descriptor_closing():
-    keywords = RequestsKeywords()
+    keywords = RequestsLibrary()
     session = keywords.create_session('alias', 'http://mocking.rules')
     # this prevents a real network call from being executed
     session.get = mock.MagicMock()

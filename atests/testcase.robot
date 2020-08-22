@@ -1,7 +1,7 @@
 *** Settings ***
 Library  Collections
 Library  String
-Library  ../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 Library  OperatingSystem
 Library  customAuthenticator.py
 Library  base64Decode.py

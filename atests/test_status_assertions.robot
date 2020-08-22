@@ -1,5 +1,5 @@
 *** Settings ***
-Library  ../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 Resource  res_setup.robot
 
 Suite Setup     Setup Flask Http Server
@@ -36,8 +36,8 @@ Invalid Response
 Request And Status Should Be With A Message
     [Tags]  get  status
     ${resp}=  Get Request  ${GLOBAL_SESSION}  /status/418
-    Run Keyword And Expect Error  He should be a teapot! Url: http://localhost:5000/status/418 Expected status: 418 != 200
-    ...   Status Should Be  OK  ${resp}  He should be a teapot!
+    Run Keyword And Expect Error  It should be a teapot! Url: http://localhost:5000/status/418 Expected status: 418 != 200
+    ...   Status Should Be  OK  ${resp}  It should be a teapot!
 
 Request Should Be Successful
     [Tags]  get  status
