@@ -29,7 +29,7 @@ class RequestsKeywords(object):
 
         The ``response`` is the output of other requests keywords like ``Get Request``.
 
-        A custom message ``msg`` can be added to work like built in keywords.
+        A custom message ``msg`` can be added to work like built-in keywords.
         """
         self._check_status(expected_status, response, msg)
 

@@ -16,9 +16,9 @@ class RequestsOnSessionKeywords(SessionKeywords):
         string parameters can be passed as dictionary (or list of tuples or bytes)
         through the ``params``.
 
-        By default the response should not have a status code with error values,
-        the expected status could be modified using ``expected_status`` that works in the
-        same way as the `Status Should Be` keyword.
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs`` here is a list:
 
@@ -36,8 +36,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         | ``stream`` | if ``False``, the response content will be immediately downloaded. |
         | ``cert`` | if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair. |
 
-    For more updated and completed information verify the official Requests api documentation:
-    https://requests.readthedocs.io/en/latest/api/
+        For more updated and complete information verify the official Requests api documentation:
+        https://requests.readthedocs.io/en/latest/api/
 
         """
         session = self._cache.switch(alias)
@@ -53,16 +53,18 @@ class RequestsOnSessionKeywords(SessionKeywords):
         Sends a POST request on a previously created HTTP Session.
 
         Session will be identified using the ``alias`` name.
-        The endpoint used to retrieve the resource is the ``url``, while query
-        string parameters can be passed as dictionary (list of tuples or bytes)
-        through the ``params``.
+        The endpoint used to send the request is the ``url`` parameter, while its body
+        can be passed using ``data`` or ``json`` parameters.
 
-        By default the response should not have a status code with error values,
-        the expected status could be modified using ``expected_status`` that works in the
-        same way as the `Status Should Be` keyword.
+        ``data`` can be a dictionary, list of tuples, bytes, or file-like object.
+        If you want to pass a json body pass a dictionary as ``json`` parameter.
 
-        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
-          the complete list.
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET On Session` keyword for the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("post", session, url,
@@ -77,16 +79,18 @@ class RequestsOnSessionKeywords(SessionKeywords):
         Sends a PATCH request on a previously created HTTP Session.
 
         Session will be identified using the ``alias`` name.
-        The endpoint used to retrieve the resource is the ``url``, while query
-        string parameters can be passed as dictionary (list of tuples or bytes)
-        through the ``params``.
+        The endpoint used to send the request is the ``url`` parameter, while its body
+        can be passed using ``data`` or ``json`` parameters.
 
-        By default the response should not have a status code with error values,
-        the expected status could be modified using ``expected_status`` that works in the
-        same way as the `Status Should Be` keyword.
+        ``data`` can be a dictionary, list of tuples, bytes, or file-like object.
+        If you want to pass a json body pass a dictionary as ``json`` parameter.
 
-        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
-          the complete list.
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET On Session` keyword for the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("patch", session, url,
@@ -101,16 +105,18 @@ class RequestsOnSessionKeywords(SessionKeywords):
         Sends a PUT request on a previously created HTTP Session.
 
         Session will be identified using the ``alias`` name.
-        The endpoint used to retrieve the resource is the ``url``, while query
-        string parameters can be passed as dictionary (list of tuples or bytes)
-        through the ``params``.
+        The endpoint used to send the request is the ``url`` parameter, while its body
+        can be passed using ``data`` or ``json`` parameters.
 
-        By default the response should not have a status code with error values,
-        the expected status could be modified using ``expected_status`` that works in the
-        same way as the `Status Should Be` keyword.
+        ``data`` can be a dictionary, list of tuples, bytes, or file-like object.
+        If you want to pass a json body pass a dictionary as ``json`` parameter.
 
-        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
-          the complete list.
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET On Session` keyword for the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("put", session, url,
@@ -122,16 +128,17 @@ class RequestsOnSessionKeywords(SessionKeywords):
     def delete_on_session(self, alias, url,
                           expected_status=None, msg=None, **kwargs):
         """
+        Sends a DELETE request on a previously created HTTP Session.
 
-        Args:
-            alias:
-            url:
-            expected_status:
-            msg:
-            **kwargs:
+        Session will be identified using the ``alias`` name.
+        The endpoint used to send the request is the ``url`` parameter.
 
-        Returns:
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
 
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET On Session` keyword for the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("delete", session, url, **kwargs)
@@ -145,14 +152,17 @@ class RequestsOnSessionKeywords(SessionKeywords):
         Sends a HEAD request on a previously created HTTP Session.
 
         Session will be identified using the ``alias`` name.
-        The endpoint used to retrieve the HTTP header from server about resource of the ``url``.
+        The endpoint used to retrieve the HTTP headers is the ``url``.
 
-        By default the response should not have a status code with error values,
-        the expected status could be modified using ``expected_status`` that works in the
-        same way as the `Status Should Be` keyword.
+        ``allow_redirects`` parameter is not provided, it will be set to `False` (as
+        opposed to the default behavior).
 
-        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
-          the complete list.
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET On Session` keyword for the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("head", session, url, **kwargs)
@@ -168,12 +178,12 @@ class RequestsOnSessionKeywords(SessionKeywords):
         Session will be identified using the ``alias`` name.
         The endpoint used to retrieve the resource is the ``url``.
 
-        By default the response should not have a status code with error values,
-        the expected status could be modified using ``expected_status`` that works in the
-        same way as the `Status Should Be` keyword.
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in 'Status Should Be' keyword documentation.
 
-        Other optional requests arguments can be passed using ``**kwargs`` see the `GET On Session` keyword for
-          the complete list.
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET On Session` keyword for the complete list.
         """
         session = self._cache.switch(alias)
         response = self._common_request("options", session, url, **kwargs)
