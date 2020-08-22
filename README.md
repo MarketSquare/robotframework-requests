@@ -50,7 +50,7 @@ Then send a another GET request but this time to the session with the alias _git
 In this case it is ``/users/bulkan`` which will return a JSON string.
 `RequestsLibrary` returned object provides a method to get the content as a JSON object format called json().
 
-You could also assert on the response status code like below, but with the ``GET On Session`` keyword automatically fails if an error is returned.
+You could also assert on the response status code like below, but the ``GET On Session`` keyword automatically fails if an error is returned.
 
 ```robotframework
     Status Should Be  Ok              ${resp}
