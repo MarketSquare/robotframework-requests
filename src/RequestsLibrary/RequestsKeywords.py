@@ -582,7 +582,7 @@ class RequestsKeywords(object):
             json_ = utils.json_pretty_print(content)
         else:
             json_ = json.loads(content)
-        logger.console('WARNING: This keyword has been deprecated. Please use ${resp.json()} instead.)
+        logger.console('WARNING: This keyword has been deprecated. Please use ${resp.json()} instead.')
 
 
         return json_
