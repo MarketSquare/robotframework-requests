@@ -37,7 +37,7 @@ Get Requests with Url Parameters
     &{params}=   Create Dictionary   key=value     key2=value2
     ${resp}=     Get Request  httpbin  /get    params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['args']}     ${params}
 
 Get Requests with Json Data
@@ -46,7 +46,7 @@ Get Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Get Request  httpbin  /get    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     # httpbin does not support this... Should Be Equal     ${jsondata['json]}     ${data}
 
 Get HTTPS & Verify Cert
@@ -105,7 +105,7 @@ Post Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Post Request  httpbin  /post    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Put Requests with Json Data
@@ -114,7 +114,7 @@ Put Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Put Request  httpbin  /put    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Post Request With No Data
@@ -212,7 +212,7 @@ Post Request With File
     ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
     &{files}=  Create Dictionary  file=${file_data}
     ${resp}=  Post Request  httpbin  /post  files=${files}
-    ${file}=  To Json  ${resp.json()['files']['file']}
+    ${file}=  Set Variable  ${{dict(${resp.json()['files']['file']})}}
     Dictionary Should Contain Key  ${file}  one
     Dictionary Should Contain Key  ${file}  two
 
@@ -277,7 +277,7 @@ Delete Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Delete Request  httpbin  /delete    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Patch Requests
@@ -295,38 +295,8 @@ Patch Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Patch Request  httpbin  /patch    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
-
-Do Not Pretty Print a JSON object
-    [Tags]    json
-    Comment    Define json variable.
-    &{var}=    Create Dictionary    key_one=true    key_two=this is a test string
-    ${resp}=    Get Request    httpbin    /get    params=${var}
-    Set Suite Variable    ${resp}
-    Should Be Equal As Strings    ${resp.status_code}    200
-    ${jsondata}=    To Json    ${resp.content}
-    Dictionaries Should Be Equal   ${jsondata['args']}    ${var}
-
-Pretty Print a JSON object
-    [Tags]    json
-    Comment    Define json variable.
-    Log    ${resp}
-    ${output}=    To Json    ${resp.content}    pretty_print=True
-    Log    ${output}
-    Should Contain    ${output}    "key_one": "true"
-    Should Contain    ${output}    "key_two": "this is a test string"
-    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
-
-Set Pretty Print to non-Boolean value
-    [Tags]    json
-    Comment    Define json variable.
-    Log    ${resp}
-    ${output}=    To Json    ${resp.content}    pretty_print="Hello"
-    Log    ${output}
-    Should Contain    ${output}    "key_one": "true"
-    Should Contain    ${output}    "key_two": "this is a test string"
-    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
 
 Create a session and make sure it exists
     [Tags]    session
