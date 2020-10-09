@@ -12,6 +12,7 @@ def log_response(response):
                                               response.url) +
                 "status=%s, reason=%s \n " % (response.status_code,
                                               response.reason) +
+                "headers=%s \n " % response.headers +
                 "body=%s \n " % format_data_to_log_string(response.text))
 
 

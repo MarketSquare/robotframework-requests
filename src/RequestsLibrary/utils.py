@@ -9,6 +9,16 @@ from RequestsLibrary.compat import urlencode, PY3
 from RequestsLibrary.exceptions import UnknownStatusError
 
 
+class WritableObject:
+    """ HTTP stream handler """
+
+    def __init__(self):
+        self.content = []
+
+    def write(self, string):
+        self.content.append(string)
+
+
 def parse_named_status(status_code):
     """
     Converts named status from human readable to integer
