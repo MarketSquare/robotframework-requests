@@ -1,8 +1,37 @@
+import json
+
+from robot.api import logger
+from robot.api.deco import keyword
+
 from RequestsLibrary import utils
+from RequestsLibrary.compat import PY3
+
 from .SessionKeywords import SessionKeywords
 
 
 class DeprecatedKeywords(SessionKeywords):
+
+    @keyword("To Json")
+    def to_json(self, content, pretty_print=False):
+        """
+        *DEPRECATED* Please use ${resp.json()} instead.
+
+        Convert a string to a JSON object
+
+        ``content`` String content to convert into JSON
+
+        ``pretty_print`` If defined, will output JSON is pretty print format
+        """
+        if PY3:
+            if isinstance(content, bytes):
+                content = content.decode(encoding='utf-8')
+        if pretty_print:
+            json_ = utils.json_pretty_print(content)
+        else:
+            json_ = json.loads(content)
+        logger.info('To JSON using : content=%s ' % (content))
+        logger.info('To JSON using : pretty_print=%s ' % (pretty_print))
+        return json_
 
     def get_request(
             self,

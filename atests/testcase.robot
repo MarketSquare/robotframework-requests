@@ -13,7 +13,7 @@ Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Variables ***
-${test_session}     local test session created in setup
+${test_session}     local test session created in Test Setup
 
 *** Test Cases ***
 Readme Test

@@ -1,13 +1,9 @@
 import json
 
 import robot
-from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
-
-from RequestsLibrary import utils
-from RequestsLibrary.compat import PY3
 
 
 class RequestsKeywords(object):
@@ -57,26 +53,3 @@ class RequestsKeywords(object):
         if used outside this library it's up to the caller to close it.
         """
         return open(path, 'rb')
-
-    @keyword("To Json")
-    def to_json(self, content, pretty_print=False):
-        """ 
-        WARNING: This keyword has been deprecated. Please use ${resp.json()} instead.
-
-        Convert a string to a JSON object
-
-        ``content`` String content to convert into JSON
-
-        ``pretty_print`` If defined, will output JSON is pretty print format
-        """
-        if PY3:
-            if isinstance(content, bytes):
-                content = content.decode(encoding='utf-8')
-        if pretty_print:
-            json_ = utils.json_pretty_print(content)
-        else:
-            json_ = json.loads(content)
-        logger.info('To JSON using : content=%s ' % (content))
-        logger.info('To JSON using : pretty_print=%s ' % (pretty_print))
-        logger.console('WARNING: This keyword has been deprecated. Please use ${resp.json()} instead.')
-        return json_
