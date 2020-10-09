@@ -60,7 +60,10 @@ class RequestsKeywords(object):
 
     @keyword("To Json")
     def to_json(self, content, pretty_print=False):
-        """ Convert a string to a JSON object
+        """ 
+        WARNING: This keyword has been deprecated. Please use ${resp.json()} instead.
+
+        Convert a string to a JSON object
 
         ``content`` String content to convert into JSON
 
@@ -75,5 +78,5 @@ class RequestsKeywords(object):
             json_ = json.loads(content)
         logger.info('To JSON using : content=%s ' % (content))
         logger.info('To JSON using : pretty_print=%s ' % (pretty_print))
-
+        logger.console('WARNING: This keyword has been deprecated. Please use ${resp.json()} instead.')
         return json_

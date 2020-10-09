@@ -41,7 +41,7 @@ Get Request with Url Parameters
     ${params}=   Create Dictionary   key=value     key2=value2
     ${resp}=     Get Request  ${test_session}  /anything    params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal As Strings     ${jsondata['method']}   GET
     Should Be Equal     ${jsondata['args']}     ${params}
 
@@ -50,7 +50,7 @@ Get Request with Json Data
     ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Get Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal As Strings     ${jsondata['method']}   GET
     Should Be Equal     ${jsondata['json']}     ${data}
 
@@ -109,7 +109,7 @@ Post Requests with Json Data
     ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Post Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal As Strings     ${jsondata['method']}   POST
     Should Be Equal     ${jsondata['json']}     ${data}
 
@@ -118,7 +118,7 @@ Put Requests with Json Data
     ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Put Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal As Strings     ${jsondata['method']}   PUT
     Should Be Equal     ${jsondata['json']}     ${data}
 
@@ -221,7 +221,7 @@ Post Request With File
     ${resp}=  Post Request  ${test_session}  /anything  files=${files}
     Should Be Equal As Strings  ${resp.status_code}  200
     Should Be Equal As Strings     ${resp.json()['method']}   POST
-    ${file}=  To Json  ${resp.json()['files']['file']}
+    ${file}=  Set Variable  ${{dict(${resp.json()['files']['file']})}}
     Dictionary Should Contain Key  ${file}  one
     Dictionary Should Contain Key  ${file}  two
 
@@ -286,7 +286,7 @@ Delete Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Delete Request  httpbin  /delete    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Patch Requests
@@ -304,7 +304,7 @@ Patch Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Patch Request  httpbin  /patch    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Create a session and make sure it exists
