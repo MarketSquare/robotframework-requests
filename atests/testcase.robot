@@ -323,3 +323,10 @@ Post Request With Large Truncated Body
     ${html}=  Get File  ${CURDIR}${/}index.html
     ${resp}=  Post Request  ${test_session}  /anything  data=${html}
     Status Should be  200  ${resp}
+
+Last response
+    [Tags]  last_response
+    Create Session  github  https://api.github.com   verify=${CURDIR}${/}cacert.pem
+    Get Request  github  /users/bulkan
+    Should Be Equal As Strings  ${last_response.status_code}  200
+    Dictionary Should Contain Value  ${last_response.json()}  Bulkan Evcimen
