@@ -103,3 +103,16 @@ Send your questions to the
 # Contribute
 
 See the [How To Contribute](CONTRIBUTING.md) to the project page.
+
+### NEW 0.8 pre-release alpha version available
+
+Please install it:
+
+```bash
+pip install robotframework-requests --pre
+```
+
+and give us feedback!
+
+- [0.8 README](https://github.com/MarketSquare/robotframework-requests/blob/0.8/README.md)
+- [0.8 Keywords documentation](https://robotframework-requests.netlify.app/doc/requestslibrary)
