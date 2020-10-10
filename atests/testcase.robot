@@ -330,3 +330,13 @@ Last response
     Get Request  github  /users/bulkan
     Should Be Equal As Strings  ${last_response.status_code}  200
     Dictionary Should Contain Value  ${last_response.json()}  Bulkan Evcimen
+
+New Last response
+    [Tags]  last_response
+    [Documentation]   Given a new request has been done
+    ...               Then ${last_response} should be equal to latest request's response
+    Create Session  jsonplaceholder  https://jsonplaceholder.typicode.com
+    Get Request  jsonplaceholder  /todos/1
+    Should Be Equal As Strings  ${last_response.status_code}  200
+    Dictionary Should Contain Value  ${last_response.json()}  delectus aut autem
+    log to console  ${last_response.json()}
