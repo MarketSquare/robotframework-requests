@@ -339,4 +339,3 @@ New Last response
     Get Request  jsonplaceholder  /todos/1
     Should Be Equal As Strings  ${last_response.status_code}  200
     Dictionary Should Contain Value  ${last_response.json()}  delectus aut autem
-    log to console  ${last_response.json()}
