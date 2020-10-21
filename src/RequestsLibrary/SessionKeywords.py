@@ -555,7 +555,7 @@ class SessionKeywords(RequestsKeywords):
         session = self._cache.switch(alias)
         session.headers = merge_setting(headers, session.headers)
         session.cookies = merge_cookies(session.cookies, cookies)
-    
+
     def save_last_response(self, response):
         self.builtin.set_global_variable('${LAST_RESPONSE}', response)
 
@@ -576,14 +576,14 @@ class SessionKeywords(RequestsKeywords):
             cookies=self.cookies,
             verify=self.verify,
             **kwargs)
-        self.save_last_response(resp)
         log.log_request(resp)
         self._print_debug()
-        session.last_resp = resp
         log.log_response(resp)
         data = kwargs.get('data', None)
         if is_file_descriptor(data):
             data.close()
+        session.last_resp = resp
+        self.save_last_response(resp)
         return resp
 
     @staticmethod
