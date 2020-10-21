@@ -21,6 +21,7 @@ def setup_session(setup_keywords):
     session = keywords.create_session('alias', 'http://mocking.rules')
     # this prevents a real network call from being executed
     session.get = mock.MagicMock()
+    session.post = mock.MagicMock()
     return session
 
 
