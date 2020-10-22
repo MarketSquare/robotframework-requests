@@ -23,7 +23,7 @@ class RequestsKeywords(object):
         But it could also be a named status code like 'ok', 'created', 'accepted' or
         'bad request', 'not found' etc.
 
-        The ``response`` is the output of other requests keywords like ``Get Request``.
+        The ``response`` is the output of other requests keywords like `GET On Session`.
 
         A custom message ``msg`` can be added to work like built-in keywords.
         """
@@ -34,7 +34,7 @@ class RequestsKeywords(object):
         """
         Fails if response status code is a client or server error (4xx, 5xx).
 
-        The ``response`` is the output of other requests keywords like ``Get Request``.
+        The ``response`` is the output of other requests keywords like `GET On Session`.
 
         In case of failure an HTTPError will be automatically raised.
         """

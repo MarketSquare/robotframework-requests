@@ -18,7 +18,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs`` here is a list:
 
@@ -61,7 +61,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET On Session` keyword for the complete list.
@@ -87,7 +87,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET On Session` keyword for the complete list.
@@ -113,7 +113,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET On Session` keyword for the complete list.
@@ -135,7 +135,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET On Session` keyword for the complete list.
@@ -159,7 +159,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET On Session` keyword for the complete list.
@@ -180,7 +180,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
-        read more about it in 'Status Should Be' keyword documentation.
+        read more about it in `Status Should Be` keyword documentation.
 
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET On Session` keyword for the complete list.
