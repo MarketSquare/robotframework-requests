@@ -43,7 +43,7 @@ Robotframework-requests offers a wide set of keywords which can be found in the 
 You can find many test examples inside the `atests` folder.
 
 ## 🤝 Contributing ✍️
-Feel free to contribute and open an issue in order to discuss it. Before doing it take a look at the [cotnribution guidelines](CONTRIBUTING.md).
+Feel free to contribute and open an issue in order to discuss it. Before doing it take a look at the [contribution guidelines](CONTRIBUTING.md).
 
 📢 Get in touch with the community via slack and Users group
 - [Robot Framework Slack #requests channel](https://robotframework-slack-invite.herokuapp.com/)
