@@ -43,7 +43,10 @@ class DeprecatedKeywords(SessionKeywords):
             params=None,
             allow_redirects=None,
             timeout=None):
-        """ Send a GET request on the session object found using the
+        """
+        *DEPRECATED* Please use `GET On Session` instead
+
+        Send a GET request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
@@ -93,7 +96,10 @@ class DeprecatedKeywords(SessionKeywords):
             files=None,
             allow_redirects=None,
             timeout=None):
-        """ Send a POST request on the session object found using the
+        """
+        *DEPRECATED* Please use `POST On Session` instead
+
+        Send a POST request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
@@ -149,7 +155,10 @@ class DeprecatedKeywords(SessionKeywords):
             files=None,
             allow_redirects=None,
             timeout=None):
-        """ Send a PATCH request on the session object found using the
+        """
+        *DEPRECATED* Please use `PATCH On Session` instead
+
+        Send a PATCH request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
@@ -204,7 +213,10 @@ class DeprecatedKeywords(SessionKeywords):
             headers=None,
             allow_redirects=None,
             timeout=None):
-        """ Send a PUT request on the session object found using the
+        """
+        *DEPRECATED* Please use `PUT On Session` instead
+
+        Send a PUT request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
@@ -256,7 +268,10 @@ class DeprecatedKeywords(SessionKeywords):
             headers=None,
             allow_redirects=None,
             timeout=None):
-        """ Send a DELETE request on the session object found using the
+        """
+        *DEPRECATED* Please use `DELETE On Session` instead
+
+        Send a DELETE request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
@@ -297,7 +312,10 @@ class DeprecatedKeywords(SessionKeywords):
             headers=None,
             allow_redirects=None,
             timeout=None):
-        """ Send a HEAD request on the session object found using the
+        """
+        *DEPRECATED* Please use `HEAD On Session` instead
+
+        Send a HEAD request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
@@ -330,7 +348,10 @@ class DeprecatedKeywords(SessionKeywords):
             headers=None,
             allow_redirects=None,
             timeout=None):
-        """ Send an OPTIONS request on the session object found using the
+        """
+        *DEPRECATED* Please use `OPTIONS On Session` instead
+
+        Send an OPTIONS request on the session object found using the
         given `alias`
 
         ``alias`` that will be used to identify the Session object in the cache
