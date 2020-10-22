@@ -11,7 +11,7 @@
 pip install robotframework-requests
 ```
 
-## ✨ Latest pre-release 0.8 version (recommended) ✨
+## ✨ Install latest 0.8 pre-release version (recommended) ✨
 ```sh
 pip install robotframework-requests --pre
 ```
@@ -28,7 +28,7 @@ Library               RequestsLibrary
 Get Request
     Create Session    jsonplaceholder         https://jsonplaceholder.typicode.com
     ${resp}=          Get request    jsonplaceholder     /posts/1
-    Dictionary Should Contain Value   ${resp.json()}     sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+    Dictionary Should Contain Value   ${resp.json()}     sunt aut facere repellat provident occaecati excepturi
 
 Post Request
     Create Session    jsonplaceholder         https://jsonplaceholder.typicode.com
