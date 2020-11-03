@@ -14,7 +14,7 @@ class DeprecatedKeywords(SessionKeywords):
     @keyword("To Json")
     def to_json(self, content, pretty_print=False):
         """
-        *DEPRECATED* Please use ${resp.json()} instead.
+        *DEPRECATED* Please use ${resp.json()} instead. Have a look at the improved HTML output as pretty printing replacement.
 
         Convert a string to a JSON object
 
@@ -44,7 +44,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `GET On Session` instead
+        *DEPRECATED* Please use `GET On Session` instead.
 
         Send a GET request on the session object found using the
         given `alias`
@@ -97,7 +97,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `POST On Session` instead
+        *DEPRECATED* Please use `POST On Session` instead.
 
         Send a POST request on the session object found using the
         given `alias`
@@ -156,7 +156,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `PATCH On Session` instead
+        *DEPRECATED* Please use `PATCH On Session` instead.
 
         Send a PATCH request on the session object found using the
         given `alias`
@@ -214,7 +214,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `PUT On Session` instead
+        *DEPRECATED* Please use `PUT On Session` instead.
 
         Send a PUT request on the session object found using the
         given `alias`
@@ -269,7 +269,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `DELETE On Session` instead
+        *DEPRECATED* Please use `DELETE On Session` instead.
 
         Send a DELETE request on the session object found using the
         given `alias`
@@ -313,7 +313,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `HEAD On Session` instead
+        *DEPRECATED* Please use `HEAD On Session` instead.
 
         Send a HEAD request on the session object found using the
         given `alias`
@@ -349,7 +349,7 @@ class DeprecatedKeywords(SessionKeywords):
             allow_redirects=None,
             timeout=None):
         """
-        *DEPRECATED* Please use `OPTIONS On Session` instead
+        *DEPRECATED* Please use `OPTIONS On Session` instead.
 
         Send an OPTIONS request on the session object found using the
         given `alias`
