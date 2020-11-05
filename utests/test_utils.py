@@ -2,8 +2,9 @@ import os
 
 from requests import Session
 
-from RequestsLibrary.utils import is_file_descriptor, merge_headers
+from RequestsLibrary.utils import is_file_descriptor, merge_headers, warn_if_equal_symbol_in_url
 from utests import SCRIPT_DIR
+from utests import mock
 
 
 def test_none():
@@ -39,3 +40,30 @@ def test_merge_headers_with_all():
     merged = merge_headers(session, headers)
     session.headers.update(headers)
     assert merged == session.headers
+
+
+@mock.patch('RequestsLibrary.utils.logger')
+def test_warn_that_url_is_missing(mocked_logger):
+    @warn_if_equal_symbol_in_url
+    def keyword(url=None):
+        assert url is None
+    keyword()
+    mocked_logger.warn.assert_called()
+
+
+@mock.patch('RequestsLibrary.utils.logger')
+def test_no_warn_if_url_passed_as_named(mocked_logger):
+    @warn_if_equal_symbol_in_url
+    def keyword(url=None):
+        pass
+    keyword(url='http://this.is.a.url')
+    mocked_logger.warn.assert_not_called()
+
+
+@mock.patch('RequestsLibrary.utils.logger')
+def test_no_warn_if_url_passed_as_positional(mocked_logger):
+    @warn_if_equal_symbol_in_url
+    def keyword(url=None):
+        pass
+    keyword('http://this.is.a.url')
+    mocked_logger.warn.assert_not_called()

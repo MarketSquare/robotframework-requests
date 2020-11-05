@@ -4,6 +4,7 @@ import types
 
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
+from robot.api import logger
 
 from RequestsLibrary.compat import urlencode, PY3
 from RequestsLibrary.exceptions import UnknownStatusError
@@ -122,3 +123,18 @@ def format_data_according_to_header(session, data, headers):
         data = utf8_urlencode(data)
 
     return data
+
+
+def warn_if_equal_symbol_in_url(func):
+    def decorator(*args, **kwargs):
+        try:
+            positional = None
+            positional = args[0]
+        except IndexError:
+            pass
+
+        if not positional and 'url' not in kwargs:
+            logger.warn("FIXME!!")
+
+        return func(*args, **kwargs)
+    return decorator
