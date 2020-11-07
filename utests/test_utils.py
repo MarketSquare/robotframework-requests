@@ -1,7 +1,9 @@
 import os
 
+import pytest
 from requests import Session
 
+from RequestsLibrary import RequestsLibrary
 from RequestsLibrary.utils import is_file_descriptor, merge_headers, warn_if_equal_symbol_in_url
 from utests import SCRIPT_DIR
 from utests import mock
@@ -42,28 +44,31 @@ def test_merge_headers_with_all():
     assert merged == session.headers
 
 
+@pytest.fixture(scope='function')
+def mocked_keywords():
+    keywords = RequestsLibrary()
+    keywords._cache = mock.MagicMock()
+    keywords._common_request = mock.MagicMock()
+    keywords._check_status = mock.MagicMock()
+    return keywords
+
+
 @mock.patch('RequestsLibrary.utils.logger')
-def test_warn_that_url_is_missing(mocked_logger):
-    @warn_if_equal_symbol_in_url
-    def keyword(url=None):
-        assert url is None
-    keyword()
+def test_no_warn_if_url_passed_as_named(mocked_logger, mocked_keywords):
+    mocked_keywords.get_on_session('alias', url='http://this.is.a.url')
+    mocked_logger.warn.assert_not_called()
+
+
+@mock.patch('RequestsLibrary.utils.logger')
+def test_no_warn_if_url_passed_as_positional(mocked_logger, mocked_keywords):
+    mocked_keywords.get_on_session('alias', 'http://this.is.a.url')
+    mocked_logger.warn.assert_not_called()
+
+
+@mock.patch('RequestsLibrary.utils.logger')
+def test_warn_that_url_is_missing(mocked_logger, mocked_keywords):
+    try:
+        mocked_keywords.get_on_session(alias=None)
+    except TypeError:
+        pass
     mocked_logger.warn.assert_called()
-
-
-@mock.patch('RequestsLibrary.utils.logger')
-def test_no_warn_if_url_passed_as_named(mocked_logger):
-    @warn_if_equal_symbol_in_url
-    def keyword(url=None):
-        pass
-    keyword(url='http://this.is.a.url')
-    mocked_logger.warn.assert_not_called()
-
-
-@mock.patch('RequestsLibrary.utils.logger')
-def test_no_warn_if_url_passed_as_positional(mocked_logger):
-    @warn_if_equal_symbol_in_url
-    def keyword(url=None):
-        pass
-    keyword('http://this.is.a.url')
-    mocked_logger.warn.assert_not_called()

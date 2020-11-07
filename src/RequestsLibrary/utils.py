@@ -128,12 +128,12 @@ def format_data_according_to_header(session, data, headers):
 def warn_if_equal_symbol_in_url(func):
     def decorator(*args, **kwargs):
         try:
-            positional = None
-            positional = args[0]
+            positional_url = None
+            positional_url = args[2]
         except IndexError:
             pass
 
-        if not positional and 'url' not in kwargs:
+        if not positional_url and 'url' not in kwargs:
             logger.warn("FIXME!!")
 
         return func(*args, **kwargs)

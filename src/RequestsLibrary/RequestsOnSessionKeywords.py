@@ -1,19 +1,12 @@
 from robot.api.deco import keyword
-from robot.api import logger
 
+from RequestsLibrary.utils import warn_if_equal_symbol_in_url
 from .SessionKeywords import SessionKeywords
 
 
-def warn_if_equal_symbol_in_url(func):
-    def decorator(*args, **kwargs):
-        logger.warn(kwargs)
-        if '=' in args[1]:
-            pass
-        return func(*args, **kwargs)
-    return decorator
-
 class RequestsOnSessionKeywords(SessionKeywords):
 
+    @warn_if_equal_symbol_in_url
     @keyword("GET On Session")
     def get_on_session(self, alias, url, params=None,
                        expected_status=None, msg=None, **kwargs):
