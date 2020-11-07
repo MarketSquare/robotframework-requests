@@ -275,3 +275,6 @@ Options Request Expect A Success On Unauthorized Request
     [Tags]  options
     ${resp}=    OPTIONS On Session  ${GLOBAL_SESSION}  /status/401  expected_status=200
     Status Should Be    OK  ${resp}
+
+Positional URL with = symbol
+   Run Keyword And Expect Error   TypeError:*  GET On Session  ${GLOBAL_SESSION}  /anything?a=a&b=b
