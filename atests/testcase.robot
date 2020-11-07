@@ -18,13 +18,20 @@ ${test_session}     local test session created in Test Setup
 *** Test Cases ***
 Readme Test
     [Tags]  get    skip
-    Create Session    github         http://api.github.com
-    Create Session    google         http://www.google.com
-    ${resp}=          Get Request    google               /
-    Status Should Be  200            ${resp}
-    ${resp}=          Get Request    github               /users/bulkan
-    Request Should Be Successful     ${resp}
-    Dictionary Should Contain Value  ${resp.json()}       Bulkan Evcimen
+    Create Session    google             http://www.google.com
+    Create Session    jsonplaceholder    https://jsonplaceholder.typicode.com
+
+    ${resp_google}=   GET On Session     google             /           expected_status=200
+    ${resp_json}=     GET On Session     jsonplaceholder    /posts/1
+
+    Should Be Equal As Strings           ${resp_google.reason}    OK
+    Dictionary Should Contain Value      ${resp_json.json()}    sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+
+    &{data}=        Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
+    ${resp}=        POST On Session    jsonplaceholder     /posts    json=${data}
+
+    Status Should Be                 201    ${resp}
+    Dictionary Should Contain Key    ${resp.json()}     id
 
 Get Requests
     [Tags]  get    skip

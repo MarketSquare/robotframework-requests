@@ -60,7 +60,7 @@ During the 17th April 2020 meetup we had the following todo list.
 
 ### New plans for 0.8 version
 - [X] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276) [Angelo, Nicola, Roberta]
-- [x] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
+- [X] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
 
 ### Early Adopters and feedback needed for 0.8
 You can add in your requirements the alpha version in this way:
