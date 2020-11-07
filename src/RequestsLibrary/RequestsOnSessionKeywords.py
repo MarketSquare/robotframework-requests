@@ -15,7 +15,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
         Session will be identified using the ``alias`` name.
         The endpoint used to retrieve the resource is the ``url``, while query
-        string parameters can be passed as dictionary (or list of tuples or bytes)
+        string parameters can be passed as string, dictionary (or list of tuples or bytes)
         through the ``params``.
 
         By default this keyword fails if a status code with error values is returned in the response,
@@ -48,6 +48,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
+    @warn_if_equal_symbol_in_url
     @keyword('POST On Session')
     def post_on_session(self, alias, url, data=None, json=None,
                         expected_status=None, msg=None, **kwargs):
@@ -74,6 +75,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
+    @warn_if_equal_symbol_in_url
     @keyword('PATCH On Session')
     def patch_on_session(self, alias, url, data=None, json=None,
                          expected_status=None, msg=None, **kwargs):
@@ -100,6 +102,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
+    @warn_if_equal_symbol_in_url
     @keyword('PUT On Session')
     def put_on_session(self, alias, url, data=None, json=None,
                        expected_status=None, msg=None, **kwargs):
@@ -126,6 +129,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
+    @warn_if_equal_symbol_in_url
     @keyword('DELETE On Session')
     def delete_on_session(self, alias, url,
                           expected_status=None, msg=None, **kwargs):
@@ -147,6 +151,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
+    @warn_if_equal_symbol_in_url
     @keyword("HEAD On Session")
     def head_on_session(self, alias, url,
                         expected_status=None, msg=None, **kwargs):
@@ -171,6 +176,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
+    @warn_if_equal_symbol_in_url
     @keyword("OPTIONS On Session")
     def options_on_session(self, alias, url,
                            expected_status=None, msg=None, **kwargs):

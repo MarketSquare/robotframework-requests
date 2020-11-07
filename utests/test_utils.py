@@ -55,13 +55,13 @@ def mocked_keywords():
 
 @mock.patch('RequestsLibrary.utils.logger')
 def test_no_warn_if_url_passed_as_named(mocked_logger, mocked_keywords):
-    mocked_keywords.get_on_session('alias', url='http://this.is.a.url')
+    mocked_keywords.get_on_session('alias', url='http://this.is.an.url')
     mocked_logger.warn.assert_not_called()
 
 
 @mock.patch('RequestsLibrary.utils.logger')
 def test_no_warn_if_url_passed_as_positional(mocked_logger, mocked_keywords):
-    mocked_keywords.get_on_session('alias', 'http://this.is.a.url')
+    mocked_keywords.get_on_session('alias', 'http://this.is.an.url')
     mocked_logger.warn.assert_not_called()
 
 
