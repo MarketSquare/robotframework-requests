@@ -34,6 +34,9 @@ when a session is not needed.
 New keywords have the same parameter orders and structure as the original.
 Lot of pre-parsing / encoding has been removed to have a more accurate and unchanged behaviour.
 
+**Cleaner project architecture:**
+Main keywords file has been split with a more logic division to allow better and faster maintenance.
+
 ## 🤖 Example usage
 ```robotframework
 *** Settings ***
