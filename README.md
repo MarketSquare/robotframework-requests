@@ -11,6 +11,11 @@
 pip install robotframework-requests
 ```
 
+## ✨ Install latest 0.8 pre-release version (recommended) ✨
+```sh
+pip install robotframework-requests --pre
+```
+
 ### What's new in 0.8
 
 **New keywords structure:**
