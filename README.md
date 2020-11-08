@@ -13,21 +13,21 @@ pip install robotframework-requests
 
 ### What's new in 0.8
 
-#####New keywords structure
+####New keywords structure
 All requests keywords have been rewritten because of many not backward compatible changes
 and to allow in the near future requests keywords without a session.
 Example `Get Request` become `GET On Session` and soon there will be also just `GET` 
 when a session is not needed.
 
-#####Implicit assert on status code
+####Implicit assert on status code
 `* On Session` keywords automatically fail if an error status code is returned.
 `expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`) or `any` if you want to evaluate the response in any case. 
 
-#####Closer to the original Requests library
+####Closer to the original Requests library
 New keywords have the same parameter orders and structure as the original.
 Lot of pre-parsing / encoding has been removed to have a more accurate and unchanged behaviour.
 
-#####Cleaner project architecture
+####Cleaner project architecture
 Main keywords file has been split with a more logic division to allow better and faster maintenance.
 
 ## 🤖 Example usage
