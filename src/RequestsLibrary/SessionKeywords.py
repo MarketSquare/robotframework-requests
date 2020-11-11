@@ -494,9 +494,11 @@ class SessionKeywords(RequestsKeywords):
                               eg. set to [502, 503] to retry requests if those status are returned.
                               Note that max_retries must be greater than 0.
         """
-        if not HttpNtlmAuth:
-            raise AssertionError('Requests NTLM module not loaded')
-        elif len(auth) != 3:
+        try:
+            HttpNtlmAuth
+        except NameError:
+            raise AssertionError('requests_ntlm module not installed')
+        if len(auth) != 3:
             raise AssertionError('Incorrect number of authentication arguments'
                                  ' - expected 3, got {}'.format(len(auth)))
         else:
