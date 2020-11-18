@@ -58,10 +58,10 @@ During the 17th April 2020 meetup we had the following todo list.
 - [X] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
 - [ ] **Documentation:** Write a better introductive documentation to keywords (session best practives, parameters description, response object)
 
-### Early Adopters and feedback needed for 0.8
-You can add in your requirements the alpha version in this way:
+### Early Adopters and feedback needed for pre-release versions
+You can install pre-release versions in this way:
 
-    pip install git+https://github.com/MarketSquare/robotframework-requests@0.8#egg=robotframework-requests
+    pip install robotframework-requests --pre
 
 ### Others
 - [X] **Review PR:** [Support sending arrays in query string and request body](https://github.com/MarketSquare/robotframework-requests/pull/220)
