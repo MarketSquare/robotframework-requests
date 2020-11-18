@@ -53,14 +53,10 @@ Of course you can always reply to issues and review pull requests.
 ## Robot Framework Milano Meetup
 During the 17th April 2020 meetup we had the following todo list. 
 
-### New upcoming 0.7 version
-- [X] **Review PR:** [Add a post method that allows sending binary data ](https://github.com/MarketSquare/robotframework-requests/pull/224) [Nello]
-- [X] **Fix:** [Continuous Integration on Windows](https://github.com/MarketSquare/robotframework-requests/issues/271) [Vincenzo, Diego]
-- [X] **Tech:** [Integrate PyTest in CI](https://github.com/MarketSquare/robotframework-requests/issues/277) [Luca, Andrea, Kiro]
-
 ### New plans for 0.8 version
-- [X] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276) [Angelo, Nicola, Roberta]
-- [x] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
+- [X] **Feature:** [New On Session keywords](https://github.com/MarketSquare/robotframework-requests/issues/276)
+- [X] **Experiment:** [Reorganize Keywords in classes](https://github.com/MarketSquare/robotframework-requests/issues/270)
+- [ ] **Documentation:** Write a better introductive documentation to keywords (session best practives, parameters description, response object)
 
 ### Early Adopters and feedback needed for 0.8
 You can add in your requirements the alpha version in this way:
@@ -71,9 +67,9 @@ You can add in your requirements the alpha version in this way:
 - [X] **Review PR:** [Support sending arrays in query string and request body](https://github.com/MarketSquare/robotframework-requests/pull/220)
 - [ ] **Review PR:** [disable cert warnings](https://github.com/MarketSquare/robotframework-requests/pull/209)
 - [ ] **Feature:** [Allow passing auth param to create client cert session](https://github.com/MarketSquare/robotframework-requests/issues/245)
-- [ ] **Tech:** [Deprecate To Json keyword in favor of response.json attribute](https://github.com/MarketSquare/robotframework-requests/issues/219)
+- [X] **Tech:** [Deprecate To Json keyword in favor of response.json attribute](https://github.com/MarketSquare/robotframework-requests/issues/219)
 - [ ] **Tech**: Moving all tests to local http server (Flask)
-- [ ] **Challenge**: Start local http server (Flask) only once per test run instead of start/stop for each suite [Vincenzo, Diego]
+- [ ] **Challenge**: Start local http server (Flask) only once per test run instead of start/stop for each suite
 
 ### Reply / close issues as you will :)
 https://github.com/MarketSquare/robotframework-requests/issues
