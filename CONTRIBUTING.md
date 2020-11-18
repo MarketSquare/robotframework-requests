@@ -3,12 +3,19 @@
 ## Setup a development environment
 
 1) First of all make sure to have a 3.x python version installed
-2) I suggest to create a python virtual environment
-3) Install the library in editing mode and all the test dependencies:
+2) Clone the source code:
+    `git clone git@github.com:MarketSquare/robotframework-requests.git`
+3) I suggest to create a python virtual environment:
+```sh
+    cd robotframework-requests/
+    python -m venv venv
+    source venv/bin/activate
+```
+4) Install the library in editing mode and all the test dependencies:
     `python -m pip install -e .[test]`
-4) Run acceptance tests with robot:
+5) Run acceptance tests with robot:
     `robot ./atests`
-5) Run unit tests wiht pytest:
+6) Run unit tests wiht pytest:
     `pytest ./utests`
 
 If everything went well now you're ready to go!
