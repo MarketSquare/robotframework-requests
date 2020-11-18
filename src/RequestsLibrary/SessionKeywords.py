@@ -1,10 +1,8 @@
 import sys
-import copy
 import logging
 
 import requests
 from requests.cookies import merge_cookies
-from requests.packages.urllib3.util import Retry
 from requests.sessions import merge_setting
 from requests.models import Response
 
@@ -13,7 +11,7 @@ from robot.api.deco import keyword
 from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils, log
-from RequestsLibrary.compat import httplib, PY3
+from RequestsLibrary.compat import httplib, PY3, RetryAdapter
 from .RequestsKeywords import RequestsKeywords
 from RequestsLibrary.exceptions import InvalidResponse, InvalidExpectedStatus
 from RequestsLibrary.utils import is_file_descriptor, is_string_type
@@ -25,7 +23,7 @@ except ImportError:
 
 
 class SessionKeywords(RequestsKeywords):
-    DEFAULT_RETRY_METHOD_LIST = list(copy.copy(Retry.DEFAULT_METHOD_WHITELIST))
+    DEFAULT_RETRY_METHOD_LIST = RetryAdapter.get_default_allowed_methods()
 
     def _create_session(
             self,
@@ -57,10 +55,10 @@ class SessionKeywords(RequestsKeywords):
             raise ValueError("Error converting session parameter: %s" % err)
 
         if max_retries > 0:
-            retry = Retry(total=max_retries,
-                          backoff_factor=backoff_factor,
-                          status_forcelist=retry_status_list,
-                          method_whitelist=retry_method_list)
+            retry = RetryAdapter(total=max_retries,
+                                 backoff_factor=backoff_factor,
+                                 status_forcelist=retry_status_list,
+                                 allowed_methods=retry_method_list)
             http = requests.adapters.HTTPAdapter(max_retries=retry)
             https = requests.adapters.HTTPAdapter(max_retries=retry)
 
