@@ -23,8 +23,8 @@ class RetryAdapter(Retry):
 
     def __init__(self, **kwargs):
         try:
-            Retry.DEFAULT_ALLOWED_METHODS
-        except AttributeError:
+            super(RetryAdapter, self).__init__(**kwargs)
+        except TypeError:
             value = kwargs.pop('allowed_methods', None)
-            kwargs.set('method_whitelist', value)
-        super(RetryAdapter, self).__init__(**kwargs)
+            kwargs['method_whitelist'] = value
+            super(RetryAdapter, self).__init__(**kwargs)
