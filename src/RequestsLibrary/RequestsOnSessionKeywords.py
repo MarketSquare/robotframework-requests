@@ -49,7 +49,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         return response
 
     @warn_if_equal_symbol_in_url
-    @keyword('POST On Session')
+    @keyword("POST On Session")
     def post_on_session(self, alias, url, data=None, json=None,
                         expected_status=None, msg=None, **kwargs):
         """
@@ -76,7 +76,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         return response
 
     @warn_if_equal_symbol_in_url
-    @keyword('PATCH On Session')
+    @keyword("PATCH On Session")
     def patch_on_session(self, alias, url, data=None, json=None,
                          expected_status=None, msg=None, **kwargs):
         """
@@ -103,7 +103,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         return response
 
     @warn_if_equal_symbol_in_url
-    @keyword('PUT On Session')
+    @keyword("PUT On Session")
     def put_on_session(self, alias, url, data=None, json=None,
                        expected_status=None, msg=None, **kwargs):
         """

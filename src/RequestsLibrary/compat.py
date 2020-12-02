@@ -24,6 +24,7 @@ class RetryAdapter(Retry):
     def __init__(self, **kwargs):
         try:
             super(RetryAdapter, self).__init__(**kwargs)
+            # FIXME more specific except
         except TypeError:
             value = kwargs.pop('allowed_methods', None)
             kwargs['method_whitelist'] = value
