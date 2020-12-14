@@ -1,20 +1,362 @@
 <!DOCTYPE html>
-<html>
+<html id="library-documentation-top">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta content="Robot Framework 3.2.2 (Python 3.6.9 on linux)" name="Generator">
+<meta content="Robot Framework 4.0b1 (Python 3.6.9 on linux)" name="Generator">
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==">
 <style media="all" type="text/css">
-body {
-    background: white;
-    color: black;
-    font-size: small;
-    font-family: sans-serif;
-    padding: 0 0.5em;
+:root {
+    --background-color: white;
+    --text-color: black;
+    --border-color: #e0e0e2;
+    --light-background-color: #f3f3f3;
+    --robot-highlight: #00c0b5;
+    --highlighted-color: var(--text-color);
+    --highlighted-background-color: yellow;
+    --less-important-text-color: gray;
+    --link-color: #0000ee;
 }
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #1c2227;
+        --text-color: #e2e1d7;
+        --border-color: #4e4e4e;
+        --light-background-color: #002b36;
+        --robot-highlight: yellow;
+        --highlighted-color: var(--background-color);
+        --highlighted-background-color: yellow;
+        --less-important-text-color: #5b6a6f;
+        --link-color: #52adff;
+    }
+}
+body {
+    background: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+input, button, select {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+a {
+    color: var(--link-color);
+}
+.base-container {
+    display: flex;
+}
+.libdoc-overview {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    background: var(--background-color);
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+}
+.libdoc-overview h4 {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+.keyword-search-box {
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    margin-top: 0.5rem;
+}
+#tags-shortcuts-container {
+    margin-top: 0.5rem;
+    height: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+}
+.search-input {
+    flex: 1;
+    border: none;
+    text-indent: 4px;
+}
+.clear-search {
+    border: none;
+}
+#shortcuts-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.libdoc-details {
+    margin-top: 60px;
+    padding-left: 2%;
+    padding-right: 2%;
+    overflow: auto;
+    max-width: 1000px;
+}
+.libdoc-title {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 36px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color);
+}
+.hamburger-menu {
+    display: none;
+    position: fixed;
+    z-index: 100;
+}
+input.hamburger-menu
+{
+  display: none;
+  width: 67px;
+  height: 46px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 2;
+  -webkit-touch-callout: none;
+}
+span.hamburger-menu
+{
+  width: 31px;
+  height: 2px;
+  margin-bottom: 5px;
+  position: fixed;
+  right: 20px;
+  background: black;
+  background: var(--text-color);
+  border-radius: 2px;
+  z-index: 1;
+  transform-origin: 4px 0;
+  transition: transform 0.3s cubic-bezier(0.77,0.2,0.05,1.0),
+              opacity 0.35s ease;
+}
+span.hamburger-menu-1
+{
+    top: 14px;
+    transform-origin: 0 0;
+}
+span.hamburger-menu-2
+{
+    top: 24px;
+}
+span.hamburger-menu-3
+{
+    top: 34px;
+    transform-origin: 0 100%;
+}
+input.hamburger-menu:checked ~ span.hamburger-menu-1
+{
+  opacity: 1;
+  transform: rotate(45deg) translate(2px, -3px);
+  background: var(--text-color);
+}
+input.hamburger-menu:checked ~ span.hamburger-menu-2
+{
+  opacity: 0;
+  transform: rotate(0deg) scale(0.2, 0.2);
+}
+input.hamburger-menu:checked ~ span.hamburger-menu-3
+{
+  transform: rotate(-45deg) translate(2px, 3px);
+  background: var(--text-color);
+}
+.libdoc-title > svg {
+    padding-top: 2px;
+    height: 42px;
+    width: 42px;
+}
+#robot-svg-path {
+    fill: var(--text-color);
+    stroke: none;
+    fill-opacity:1;
+    fill-rule:nonzero;
+}
+.keywords-overview {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    max-height: calc(100vh - 60px - 0.5rem);
+    flex: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    margin: 60px 0 0.5rem 0.5rem;
+}
+.keywords-overview-header-row {
+    display: flex;
+    justify-content: space-between;
+}
+.shortcuts {
+    font-size: 0.9em;
+    overflow: auto;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    flex: 1;
+    max-width: 320px;
+}
+.shortcuts.keyword-wall{
+    flex: unset;
+}
+.shortcuts a {
+    display: block;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--text-color);
+    padding: 0.5rem;
+}
+.shortcuts a:hover {
+    background: var(--light-background-color);
+}
+.shortcuts a::first-letter {
+    font-weight: bold;
+    letter-spacing: 0.1em;
+}
+.shortcuts.keyword-wall a {
+    padding: 0;
+    padding-right: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.shortcuts.keyword-wall a::after {
+    content: '·';
+    padding-left: 0.5rem;
+}
+.arguments-list-container {
+    overflow-y: auto;
+}
+.arguments-list {
+    display: -ms-inline-grid;
+    display: inline-grid;
+    -ms-grid-columns: 1fr 1fr 1fr;
+    grid-template-columns: auto auto auto;
+    row-gap: 3px;
+}
+.typed-dict-annotation > span,
+.enum-type-members span,
+.arguments-list .arg-name {
+    -ms-grid-column: 1;
+    grid-column: 1;
+    border-radius: 3px;
+    white-space: nowrap;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    justify-self: start;
+}
+.arguments-list .arg-default-container {
+    -ms-grid-column: 2;
+    grid-column: 2;
+    display: flex;
+}
+.optional-key,
+.arguments-list .arg-optional {
+    font-style: italic;
+}
+.arguments-list .arg-default-eq {
+    margin-left: 2rem;
+    margin-right: 0.5rem;
+    background: var(--background-color);
+}
+.arguments-list .arg-default-value {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 3px;
+}
+.arguments-list .base-arg-data {
+    display: flex;
+    min-width: 150px;
+}
+.arguments-list .arg-type {
+    margin-left: 2rem;
+    -ms-grid-column: 3;
+    grid-column: 3;
+    background: var(--background-color);
+    white-space: nowrap;
+    -webkit-text-size-adjust: none;
+}
+@media only screen and (min-width: 900px) {
+    .libdoc-details {
+        z-index: 1;
+        background: var(--background-color);
+    }
+    #toggle-keyword-shortcuts {
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
+    #toggle-keyword-shortcuts:hover {
+        background: var(--light-background-color);
+    }
+    .shortcuts.keyword-wall {
+        display: flex;
+        flex-wrap: wrap;
+        width: 320px;
+        max-width: none;
+    }
+}
+@media only screen and (min-width: 1200px) {
+    .shortcuts.keyword-wall {
+        width: 640px;
+    }
+}
+@media only screen and (max-width: 899px) {
+    .libdoc-overview {
+        display: none;
+    }
+    #toggle-keyword-shortcuts {
+        display: none;
+    }
+    .libdoc-title {
+        width: 100%;
+        padding: 0.5rem;
+        margin: 0;
+        border-bottom: 1px solid var(--border-color);
+        background: white;
+        background: var(--background-color);
+    }
+    .libdoc-title > svg {
+        margin-right: 60px;
+    }
+    .libdoc-details {
+        padding-left: 0.5rem;
+    }
+    input.hamburger-menu {
+        display: block;
+    }
+    .hamburger-menu {
+        display: block;
+    }
+    .hamburger-menu:checked ~ .libdoc-overview {
+        display: block;
+        position: fixed;
+        height: 100vh;
+        width: 100vw;
+    }
+    .keywords-overview {
+        border: none;
+        margin: 60px 0 0;
+    }
+    .shortcuts {
+        max-width: 100vw;
+    }
+}
+.metadata {
+    margin-top: 0.5rem;
+ }
 .metadata th {
     text-align: left;
     padding-right: 1em;
@@ -22,32 +364,15 @@ body {
 a.name, span.name {
     font-style: italic;
 }
-a, a:link, a:visited {
-    color: #c30;
-}
-a img {
+.libdoc-details a img {
     border: 1px solid #c30 !important;
 }
 a:hover, a:active {
     text-decoration: underline;
-    color: black;
+    color: var(--text-color);
 }
 a:hover {
     text-decoration: underline !important;
-}
-.shortcuts {
-    margin: 1em 0;
-    font-size: 0.9em;
-}
-.shortcuts a {
-    display: inline-block;
-    text-decoration: none;
-    white-space: nowrap;
-    color: black;
-}
-.shortcuts a::first-letter {
-    font-weight: bold;
-    letter-spacing: 0.1em;
 }
 .normal-first-letter::first-letter {
     font-weight: normal !important;
@@ -61,7 +386,7 @@ input.switch {
     display: none;
 }
 .slider {
-    background-color: grey;
+    background-color: var(--border-color);
     display: inline-block;
     position: relative;
     top: 5px;
@@ -69,7 +394,7 @@ input.switch {
     width: 36px;
 }
 .slider:before {
-    background-color: white;
+    background-color: var(--background-color);
     content: "";
     position: absolute;
     top: 3px;
@@ -78,45 +403,143 @@ input.switch {
     width: 12px;
 }
 input.switch:checked + .slider::before {
-    background-color: white;
+    background-color: var(--background-color);
     left: 21px;
 }
 .keywords {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-    empty-cells: show;
-    margin: 0.3em 0;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
-.keywords th, .keywords td {
-    border: 1px solid #ccc;
-    padding: 0.2em;
-    vertical-align: top;
+.kw-overview {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
 }
-.keywords th {
-    background: #ddd;
-    color: black;
+@media only screen and (min-width: 899px) {
+    .kw-overview {
+        max-width: 850px;
+        margin-right: 1.5rem;
+    }
+}
+.kw-docs {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.dt-name:link,
+.kw-name:link {
+    text-decoration: none;
+    color: var(--text-color);
+}
+.dt-name:visited,
+.kw-name:visited {
+    text-decoration: none;
+    color: var(--text-color);
 }
 .kw {
-    width: 15%;
+    display: flex;
+    align-items: baseline;
+    min-width: 250px
 }
-.args {
-    width: 25%;
+h4 {
+    margin-right: 0.5rem;
 }
-.tags {
-    width: 10%;
+.keyword-container {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 0.5rem 1.0rem 0.5rem 1.0rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: 60px;
 }
-.doc {
-    width: 60%;
+.keyword-container:target {
+    box-shadow: 0 0 4px var(--robot-highlight);
 }
-td.kw a {
+.data-type-content,
+.keyword-content {
+    display: flex;
+    flex-direction: column;
+}
+.enum-type-members{
+    list-style: none;
+}
+.data-type-container {
+    border-top: 1px solid var(--border-color);
+    padding: 0.5rem 1.0rem 0.5rem 1.0rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: 60px;
+}
+.kw-row {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    justify-content: start;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 0.5rem 1.0rem 0.5rem 1.0rem;
+    margin-bottom: 0.5rem;
+}
+.kw a {
     color: inherit;
     text-decoration: none;
     font-weight: bold;
 }
-.args span {
-    font-style: italic;
+.args {
+    min-width: 200px;
+}
+.enum-type-members span,
+.args span,
+.args a
+ {
+    font-family: monospace;
+    background: var(--light-background-color);
     padding: 0 0.1em;
+    font-size: 1.1em;
+}
+span.type,
+a.type {
+    font-size: 1em;
+    background: none;
+    padding: 0 0
+}
+.arg-type span.or::after {
+    content: ' or ';
+}
+span.or {
+    background: none;
+    font-size: 0.7em;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+.arg-type span.or:nth-last-of-type(1) {
+    display: none;
+}
+.typed-dict-item .td-type::after {
+    content: ',';
+}
+.typed-dict-item .td-type:nth-last-child(2)::after {
+    content: '';
+}
+.td-item::before {
+    content: '  ';
+    white-space: pre;
+}
+.typed-dict-item {
+    display: block;
+    padding: 0.4rem;
+    font-family: monospace;
+    background: var(--light-background-color);
+    font-size: 1.1em;
+}
+.args span .highlight {
+    background: var(--highlighted-background-color);
+    color: var(--highlighted-color);
+}
+.tags {
+    display: flex;
+    align-items: baseline;
 }
 .tags a {
     color: inherit;
@@ -126,76 +549,30 @@ td.kw a {
 .footer {
     font-size: 0.9em;
 }
-/* Docs originating from HTML and reST are wrapped to divs. */
-.doc div > *:first-child {
-    margin-top: 0;
-}
-.doc div > *:last-child {    /* Does not work with IE8. */
+.doc div > *:last-child {
     margin-bottom: 0;
 }
-#search, #open-search {
-    position: fixed;
-    bottom: 5px;
-    right: 5px;
-    z-index: 1000;
-}
-#search {
-    width: 30em;
-    display: none;
-}
-#open-search {
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    width: 40px;
-    height: 40px;
-    background-color: white;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAY5JREFUSImt1LtrFGEUBfCfURsFHwEr29UNkS3MFklrQK0EIYUk/5IQ0FSmCCKW1mpAommToCKoK+lsLUKeSFbXFLuT3B13Hjt64INvOPeec+fOnUs2mpjHBrbRwQE+YQFTObm5qGMZf0qct7gxjPgM9kqKJ+cAs2XFf4fEX3iOe7iKsxjFHTxFO8R2ikzqqcq/oVFQUANfUm8ynhUce97qVVoGo/gaclcGBTVDQDuvigw09Lfrr+maD+TSkOIJngWNx2lyI5C3KxrcDRof0+R2IC9XNLgSNPbTZDKa7YricFr/v3EqIUZ0xxPO4FxFg0vhnoz7scFmICcqGjTDvRWJEayG57mKBg/C/U2anHDSu5+oDSlex6GTlTE2KOhVMPmACyXFL+qOZZL7Xf/3OMY17KZMrheI13px6e26nmVyX3eDxnYt4lav0qTiaTzp8VkrPNdkNyOpkyM4lEkNL0uK/CjgXw8ySHATD7GGLd0/fgfv8QiTOI93BSb/jCKT/4Isk1ZOTiWTF0H8M8aPANvFyARlADGFAAAAAElFTkSuQmCC);
-    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPgogIDxwYXRoIGQ9Ik0zLjUgMGMtMS45MyAwLTMuNSAxLjU3LTMuNSAzLjVzMS41NyAzLjUgMy41IDMuNWMuNTkgMCAxLjE3LS4xNCAxLjY2LS40MWExIDEgMCAwIDAgLjEzLjEzbDEgMWExLjAyIDEuMDIgMCAxIDAgMS40NC0xLjQ0bC0xLTFhMSAxIDAgMCAwLS4xNi0uMTNjLjI3LS40OS40NC0xLjA2LjQ0LTEuNjYgMC0xLjkzLTEuNTctMy41LTMuNS0zLjV6bTAgMWMxLjM5IDAgMi41IDEuMTEgMi41IDIuNSAwIC42Ni0uMjQgMS4yNy0uNjYgMS43Mi0uMDEuMDEtLjAyLjAyLS4wMy4wM2ExIDEgMCAwIDAtLjEzLjEzYy0uNDQuNC0xLjA0LjYzLTEuNjkuNjMtMS4zOSAwLTIuNS0xLjExLTIuNS0yLjVzMS4xMS0yLjUgMi41LTIuNXoiCiAgLz4KPC9zdmc+), none;
-    background-size: 24px 24px;
-}
-#open-search:hover {
-    background-color: #ccc;
-}
-fieldset {
-    background: white;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    padding: 6px 8px;
-}
-fieldset fieldset {
-    border: 1px solid #ccc;
-    margin: 4px 0;
-}
-#search-title {
-    font-size: 1.1em;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-#search-string {
-    box-sizing: border-box;
-    width: 100%;
-}
-#hide-unmatched {
-    margin: 0.5em 0 0 1em;
-}
-#search-buttons {
-    float: right;
-}
 .highlight {
-    background: yellow;
+    background: var(--highlighted-background-color);
+    color: var(--highlighted-color);
+}
+.data-type {
+    font-style: italic;
 }
 .no-match {
-    color: gray !important;
+    color: var(--less-important-text-color) !important;
 }
-tr.no-match.hide-unmatched {
-    display: none;
+.no-match .dt-name,
+.no-match .kw-name {
+    color: var(--less-important-text-color);
 }
 </style>
 <style media="all" type="text/css">
 /* Pygments 'default' style sheet. Generated with Pygments 2.1.3 using:
-     pygmentize -S default -f html -a .code > src/robot/htmldata/libdoc/pygments.css
+    pygmentize -S default -f html -a .code > src/robot/htmldata/libdoc/pygments.css
+    and added for dark mode
+    @media (prefers-color-scheme: dark)
+    pygmentize -S solarized-dark -f html -a .code > src/robot/htmldata/libdoc/pygments.css
 */
 .code .hll { background-color: #ffffcc }
 .code  { background: #f8f8f8; }
@@ -246,8 +623,10 @@ tr.no-match.hide-unmatched {
 .code .mh { color: #666666 } /* Literal.Number.Hex */
 .code .mi { color: #666666 } /* Literal.Number.Integer */
 .code .mo { color: #666666 } /* Literal.Number.Oct */
+.code .sa { color: #BA2121 } /* Literal.String.Affix */
 .code .sb { color: #BA2121 } /* Literal.String.Backtick */
 .code .sc { color: #BA2121 } /* Literal.String.Char */
+.code .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .code .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .code .s2 { color: #BA2121 } /* Literal.String.Double */
 .code .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -258,10 +637,92 @@ tr.no-match.hide-unmatched {
 .code .s1 { color: #BA2121 } /* Literal.String.Single */
 .code .ss { color: #19177C } /* Literal.String.Symbol */
 .code .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.code .fm { color: #0000FF } /* Name.Function.Magic */
 .code .vc { color: #19177C } /* Name.Variable.Class */
 .code .vg { color: #19177C } /* Name.Variable.Global */
 .code .vi { color: #19177C } /* Name.Variable.Instance */
+.code .vm { color: #19177C } /* Name.Variable.Magic */
 .code .il { color: #666666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+    .code .hll { background-color: #073642 }
+    .code  { background: #002b36; color: #839496 }
+    .code .c { color: #586e75; font-style: italic } /* Comment */
+    .code .err { color: #839496; background-color: #dc322f } /* Error */
+    .code .esc { color: #839496 } /* Escape */
+    .code .g { color: #839496 } /* Generic */
+    .code .k { color: #859900 } /* Keyword */
+    .code .l { color: #839496 } /* Literal */
+    .code .n { color: #839496 } /* Name */
+    .code .o { color: #586e75 } /* Operator */
+    .code .x { color: #839496 } /* Other */
+    .code .p { color: #839496 } /* Punctuation */
+    .code .ch { color: #586e75; font-style: italic } /* Comment.Hashbang */
+    .code .cm { color: #586e75; font-style: italic } /* Comment.Multiline */
+    .code .cp { color: #d33682 } /* Comment.Preproc */
+    .code .cpf { color: #586e75 } /* Comment.PreprocFile */
+    .code .c1 { color: #586e75; font-style: italic } /* Comment.Single */
+    .code .cs { color: #586e75; font-style: italic } /* Comment.Special */
+    .code .gd { color: #dc322f } /* Generic.Deleted */
+    .code .ge { color: #839496; font-style: italic } /* Generic.Emph */
+    .code .gr { color: #dc322f } /* Generic.Error */
+    .code .gh { color: #839496; font-weight: bold } /* Generic.Heading */
+    .code .gi { color: #859900 } /* Generic.Inserted */
+    .code .go { color: #839496 } /* Generic.Output */
+    .code .gp { color: #839496 } /* Generic.Prompt */
+    .code .gs { color: #839496; font-weight: bold } /* Generic.Strong */
+    .code .gu { color: #839496; text-decoration: underline } /* Generic.Subheading */
+    .code .gt { color: #268bd2 } /* Generic.Traceback */
+    .code .kc { color: #2aa198 } /* Keyword.Constant */
+    .code .kd { color: #2aa198 } /* Keyword.Declaration */
+    .code .kn { color: #cb4b16 } /* Keyword.Namespace */
+    .code .kp { color: #859900 } /* Keyword.Pseudo */
+    .code .kr { color: #859900 } /* Keyword.Reserved */
+    .code .kt { color: #b58900 } /* Keyword.Type */
+    .code .ld { color: #839496 } /* Literal.Date */
+    .code .m { color: #2aa198 } /* Literal.Number */
+    .code .s { color: #2aa198 } /* Literal.String */
+    .code .na { color: #839496 } /* Name.Attribute */
+    .code .nb { color: #268bd2 } /* Name.Builtin */
+    .code .nc { color: #268bd2 } /* Name.Class */
+    .code .no { color: #268bd2 } /* Name.Constant */
+    .code .nd { color: #268bd2 } /* Name.Decorator */
+    .code .ni { color: #268bd2 } /* Name.Entity */
+    .code .ne { color: #268bd2 } /* Name.Exception */
+    .code .nf { color: #268bd2 } /* Name.Function */
+    .code .nl { color: #268bd2 } /* Name.Label */
+    .code .nn { color: #268bd2 } /* Name.Namespace */
+    .code .nx { color: #839496 } /* Name.Other */
+    .code .py { color: #839496 } /* Name.Property */
+    .code .nt { color: #268bd2 } /* Name.Tag */
+    .code .nv { color: #268bd2 } /* Name.Variable */
+    .code .ow { color: #859900 } /* Operator.Word */
+    .code .w { color: #839496 } /* Text.Whitespace */
+    .code .mb { color: #2aa198 } /* Literal.Number.Bin */
+    .code .mf { color: #2aa198 } /* Literal.Number.Float */
+    .code .mh { color: #2aa198 } /* Literal.Number.Hex */
+    .code .mi { color: #2aa198 } /* Literal.Number.Integer */
+    .code .mo { color: #2aa198 } /* Literal.Number.Oct */
+    .code .sa { color: #2aa198 } /* Literal.String.Affix */
+    .code .sb { color: #2aa198 } /* Literal.String.Backtick */
+    .code .sc { color: #2aa198 } /* Literal.String.Char */
+    .code .dl { color: #2aa198 } /* Literal.String.Delimiter */
+    .code .sd { color: #586e75 } /* Literal.String.Doc */
+    .code .s2 { color: #2aa198 } /* Literal.String.Double */
+    .code .se { color: #2aa198 } /* Literal.String.Escape */
+    .code .sh { color: #2aa198 } /* Literal.String.Heredoc */
+    .code .si { color: #2aa198 } /* Literal.String.Interpol */
+    .code .sx { color: #2aa198 } /* Literal.String.Other */
+    .code .sr { color: #cb4b16 } /* Literal.String.Regex */
+    .code .s1 { color: #2aa198 } /* Literal.String.Single */
+    .code .ss { color: #2aa198 } /* Literal.String.Symbol */
+    .code .bp { color: #268bd2 } /* Name.Builtin.Pseudo */
+    .code .fm { color: #268bd2 } /* Name.Function.Magic */
+    .code .vc { color: #268bd2 } /* Name.Variable.Class */
+    .code .vg { color: #268bd2 } /* Name.Variable.Global */
+    .code .vi { color: #268bd2 } /* Name.Variable.Instance */
+    .code .vm { color: #268bd2 } /* Name.Variable.Magic */
+    .code .il { color: #2aa198 } /* Literal.Number.Integer.Long */
+}
 </style>
 <style media="print" type="text/css">
 body {
@@ -300,25 +761,40 @@ a {
 }
 </style>
 <style media="all" type="text/css">
-.doc > * {
-    margin: 0.7em 1em 0.1em 1em;
-    padding: 0;
+#introduction-container > h2,
+.doc > h1,
+.doc > h2,
+.section > h1,
+.section > h2 {
+    margin-top: 4rem;
+    margin-bottom: 1rem;
 }
-.doc > p, .doc > h1, .doc > h2, .doc > h3, .doc > h4 {
-    margin: 0.7em 0 0.1em 0;
+.doc > h3, .section > h3 {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+.doc > h4, .section > h4 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+.doc > p, .section > p {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
 }
 .doc > *:first-child {
     margin-top: 0.1em;
 }
 .doc table {
-    border: 1px solid #ccc;
+    border: none;
     background: transparent;
     border-collapse: collapse;
     empty-cells: show;
     font-size: 0.9em;
+    overflow-y: auto;
+    display: block;
 }
 .doc table th, .doc table td {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     background: transparent;
     padding: 0.1em 0.3em;
     height: 1.2em;
@@ -330,12 +806,18 @@ a {
 .doc pre {
     font-size: 1.1em;
     letter-spacing: 0.05em;
-    background: #f4f4f4;
+    background: var(--light-background-color);
+    overflow-y: auto;
+    padding: 0.3rem;
+    border-radius: 3px;
 }
-.doc code {
-    padding: 0 0.2em;
+.doc code,
+.docutils.literal {
+    font-size: 1.1em;
     letter-spacing: 0.05em;
-    background: #eee;
+    background: var(--light-background-color);
+    padding: 1px;
+    border-radius: 3px;
 }
 .doc li {
     list-style-position: inside;
@@ -614,7 +1096,7 @@ window.util = function () {
 jQuery.extend({highlight:function(e,t,n,r){if(e.nodeType===3){var i=e.data.match(t);if(i){var s=document.createElement(n||"span");s.className=r||"highlight";var o=e.splitText(i.index);o.splitText(i[0].length);var u=o.cloneNode(true);s.appendChild(u);o.parentNode.replaceChild(s,o);return 1}}else if(e.nodeType===1&&e.childNodes&&!/(script|style)/i.test(e.tagName)&&!(e.tagName===n.toUpperCase()&&e.className===r)){for(var a=0;a<e.childNodes.length;a++){a+=jQuery.highlight(e.childNodes[a],t,n,r)}}return 0}});jQuery.fn.unhighlight=function(e){var t={className:"highlight",element:"span"};jQuery.extend(t,e);return this.find(t.element+"."+t.className).each(function(){var e=this.parentNode;e.replaceChild(this.firstChild,this);e.normalize()}).end()};jQuery.fn.highlight=function(e,t){var n={className:"highlight",element:"span",caseSensitive:false,wordsOnly:false};jQuery.extend(n,t);if(e.constructor===String){e=[e]}e=jQuery.grep(e,function(e,t){return e!=""});e=jQuery.map(e,function(e,t){return e.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,"\\$&")});if(e.length==0){return this}var r=n.caseSensitive?"":"i";var i="("+e.join("|")+")";if(n.wordsOnly){i="\\b"+i+"\\b"}var s=new RegExp(i,r);return this.each(function(){jQuery.highlight(this,s,n.element,n.className)})}
 </script>
 <script type="text/javascript">
-libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for library <code>RequestsLibrary\x3c/code>.\x3c/p>","generated":"2020-11-08 00:07:45","inits":[],"keywords":[{"args":["alias","url","headers={}","cookies={}","client_certs=None","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","backoff_factor=0.1","disable_warnings=0","retry_status_list=[]","retry_method_list=['PUT', 'GET', 'TRACE', 'HEAD', 'DELETE', 'OPTIONS']"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><code>url\x3c/code> Base url of the server\x3c/p>\n<p><code>alias\x3c/code> Robot Framework alias to identify the session\x3c/p>\n<p><code>headers\x3c/code> Dictionary of default headers\x3c/p>\n<p><code>cookies\x3c/code> Dictionary of cookies\x3c/p>\n<p><code>client_certs\x3c/code> ['client certificate', 'client key'] PEM files containing the client key and certificate\x3c/p>\n<p><code>timeout\x3c/code> Connection timeout\x3c/p>\n<p><code>proxies\x3c/code> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><code>verify\x3c/code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.\x3c/p>\n<p><code>debug\x3c/code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><code>max_retries\x3c/code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.\x3c/p>\n<p><code>disable_warnings\x3c/code> Disable requests warning useful when you have large number of testcases\x3c/p>\n<p><code>backoff_factor\x3c/code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\x3c/a>\x3c/p>\n<p><code>retry_method_list\x3c/code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.\x3c/p>\n<p><code>retry_status_list\x3c/code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.\x3c/p>","matched":true,"name":"Create Client Cert Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","url","auth","headers={}","cookies={}","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","backoff_factor=0.1","disable_warnings=0","retry_status_list=[]","retry_method_list=['PUT', 'GET', 'TRACE', 'HEAD', 'DELETE', 'OPTIONS']"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><code>url\x3c/code> Base url of the server\x3c/p>\n<p><code>alias\x3c/code> Robot Framework alias to identify the session\x3c/p>\n<p><code>headers\x3c/code> Dictionary of default headers\x3c/p>\n<p><code>cookies\x3c/code> Dictionary of cookies\x3c/p>\n<p><code>auth\x3c/code> A Custom Authentication object to be passed on to the requests library. <a href=\"http://docs.python-requests.org/en/master/user/advanced/#custom-authentication\">http://docs.python-requests.org/en/master/user/advanced/#custom-authentication\x3c/a>\x3c/p>\n<p><code>timeout\x3c/code> Connection timeout\x3c/p>\n<p><code>proxies\x3c/code> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><code>verify\x3c/code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.\x3c/p>\n<p><code>debug\x3c/code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><code>max_retries\x3c/code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.\x3c/p>\n<p><code>disable_warnings\x3c/code> Disable requests warning useful when you have large number of testcases\x3c/p>\n<p><code>backoff_factor\x3c/code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\x3c/a>\x3c/p>\n<p><code>retry_method_list\x3c/code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.\x3c/p>\n<p><code>retry_status_list\x3c/code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.\x3c/p>","matched":true,"name":"Create Custom Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","url","auth","headers={}","cookies={}","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","backoff_factor=0.1","disable_warnings=0","retry_status_list=[]","retry_method_list=['PUT', 'GET', 'TRACE', 'HEAD', 'DELETE', 'OPTIONS']"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><code>url\x3c/code> Base url of the server\x3c/p>\n<p><code>alias\x3c/code> Robot Framework alias to identify the session\x3c/p>\n<p><code>headers\x3c/code> Dictionary of default headers\x3c/p>\n<p><code>cookies\x3c/code> Dictionary of cookies\x3c/p>\n<p><code>auth\x3c/code> ['DOMAIN', 'username', 'password'] for NTLM Authentication\x3c/p>\n<p><code>timeout\x3c/code> Connection timeout\x3c/p>\n<p><code>proxies\x3c/code> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><code>verify\x3c/code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.\x3c/p>\n<p><code>debug\x3c/code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><code>max_retries\x3c/code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.\x3c/p>\n<p><code>disable_warnings\x3c/code> Disable requests warning useful when you have large number of testcases\x3c/p>\n<p><code>backoff_factor\x3c/code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\x3c/a>\x3c/p>\n<p><code>retry_method_list\x3c/code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.\x3c/p>\n<p><code>retry_status_list\x3c/code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.\x3c/p>","matched":true,"name":"Create Digest Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","url","auth","headers={}","cookies={}","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","backoff_factor=0.1","disable_warnings=0","retry_status_list=[]","retry_method_list=['PUT', 'GET', 'TRACE', 'HEAD', 'DELETE', 'OPTIONS']"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><code>url\x3c/code> Base url of the server\x3c/p>\n<p><code>alias\x3c/code> Robot Framework alias to identify the session\x3c/p>\n<p><code>headers\x3c/code> Dictionary of default headers\x3c/p>\n<p><code>cookies\x3c/code> Dictionary of cookies\x3c/p>\n<p><code>auth\x3c/code> ['DOMAIN', 'username', 'password'] for NTLM Authentication\x3c/p>\n<p><code>timeout\x3c/code> Connection timeout\x3c/p>\n<p><code>proxies\x3c/code> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><code>verify\x3c/code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.\x3c/p>\n<p><code>debug\x3c/code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><code>max_retries\x3c/code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.\x3c/p>\n<p><code>disable_warnings\x3c/code> Disable requests warning useful when you have large number of testcases\x3c/p>\n<p><code>backoff_factor\x3c/code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\x3c/a>\x3c/p>\n<p><code>retry_method_list\x3c/code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.\x3c/p>\n<p><code>retry_status_list\x3c/code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.\x3c/p>","matched":true,"name":"Create Ntlm Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":["alias","url","headers={}","cookies={}","auth=None","timeout=None","proxies=None","verify=False","debug=0","max_retries=3","backoff_factor=0.1","disable_warnings=0","retry_status_list=[]","retry_method_list=['PUT', 'GET', 'TRACE', 'HEAD', 'DELETE', 'OPTIONS']"],"doc":"<p>Create Session: create a HTTP session to a server\x3c/p>\n<p><code>alias\x3c/code> Robot Framework alias to identify the session\x3c/p>\n<p><code>url\x3c/code> Base url of the server\x3c/p>\n<p><code>headers\x3c/code> Dictionary of default headers\x3c/p>\n<p><code>cookies\x3c/code> Dictionary of cookies\x3c/p>\n<p><code>auth\x3c/code> List of username &amp; password for HTTP Basic Auth\x3c/p>\n<p><code>timeout\x3c/code> Connection timeout\x3c/p>\n<p><code>proxies\x3c/code> Dictionary that contains proxy urls for HTTP and HTTPS communication\x3c/p>\n<p><code>verify\x3c/code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.\x3c/p>\n<p><code>debug\x3c/code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\x3c/a>\x3c/p>\n<p><code>max_retries\x3c/code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.\x3c/p>\n<p><code>disable_warnings\x3c/code> Disable requests warning useful when you have large number of testcases\x3c/p>\n<p><code>backoff_factor\x3c/code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\x3c/a>\x3c/p>\n<p><code>retry_method_list\x3c/code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.\x3c/p>\n<p><code>retry_status_list\x3c/code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.\x3c/p>","matched":true,"name":"Create Session","shortdoc":"Create Session: create a HTTP session to a server","tags":[]},{"args":[],"doc":"<p>Removes all the session objects\x3c/p>","matched":true,"name":"Delete All Sessions","shortdoc":"Removes all the session objects","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Delete On Session","shortdoc":"","tags":[]},{"args":["alias","uri","data=None","json=None","params=None","headers=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Delete%20On%20Session\" class=\"name\">DELETE On Session\x3c/a> instead.\x3c/p>\n<p>Send a DELETE request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the DELETE request to\x3c/p>\n<p><code>json\x3c/code> a value that will be json encoded and sent as request data if data is not specified\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Delete Request","shortdoc":"*DEPRECATED* Please use `DELETE On Session` instead.","tags":[]},{"args":["path"],"doc":"<p>Opens and returns a file descriptor of a specified file to be passed as <code>data\x3c/code> parameter to other requests keywords.\x3c/p>\n<p>This allows streaming upload of large files without reading them into memory.\x3c/p>\n<p>File descriptor is binary mode and read only. Requests keywords will automatically close the file, if used outside this library it's up to the caller to close it.\x3c/p>","matched":true,"name":"Get File For Streaming Upload","shortdoc":"Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter to other requests keywords.","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Get On Session","shortdoc":"","tags":[]},{"args":["alias","uri","headers=None","data=None","json=None","params=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Get%20On%20Session\" class=\"name\">GET On Session\x3c/a> instead.\x3c/p>\n<p>Send a GET request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the GET request to\x3c/p>\n<p><code>params\x3c/code> url parameters to append to the uri\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>data\x3c/code> a dictionary of key-value pairs that will be urlencoded and sent as GET data or binary data that is sent as the raw body content\x3c/p>\n<p><code>json\x3c/code> a value that will be json encoded and sent as GET data if data is not specified\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Get Request","shortdoc":"*DEPRECATED* Please use `GET On Session` instead.","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Head On Session","shortdoc":"","tags":[]},{"args":["alias","uri","headers=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Head%20On%20Session\" class=\"name\">HEAD On Session\x3c/a> instead.\x3c/p>\n<p>Send a HEAD request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the HEAD request to\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Head Request","shortdoc":"*DEPRECATED* Please use `HEAD On Session` instead.","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Options On Session","shortdoc":"","tags":[]},{"args":["alias","uri","headers=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Options%20On%20Session\" class=\"name\">OPTIONS On Session\x3c/a> instead.\x3c/p>\n<p>Send an OPTIONS request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the OPTIONS request to\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Options Request","shortdoc":"*DEPRECATED* Please use `OPTIONS On Session` instead.","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Patch On Session","shortdoc":"","tags":[]},{"args":["alias","uri","data=None","json=None","params=None","headers=None","files=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Patch%20On%20Session\" class=\"name\">PATCH On Session\x3c/a> instead.\x3c/p>\n<p>Send a PATCH request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the PATCH request to\x3c/p>\n<p><code>data\x3c/code> a dictionary of key-value pairs that will be urlencoded and sent as PATCH data or binary data that is sent as the raw body content or file descriptor retrieved by Get File For Streaming Upload\x3c/p>\n<p><code>json\x3c/code> a value that will be json encoded and sent as PATCH data if data is not specified\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>files\x3c/code> a dictionary of file names containing file data to PATCH to the server\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>params\x3c/code> url parameters to append to the uri\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Patch Request","shortdoc":"*DEPRECATED* Please use `PATCH On Session` instead.","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Post On Session","shortdoc":"","tags":[]},{"args":["alias","uri","data=None","json=None","params=None","headers=None","files=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Post%20On%20Session\" class=\"name\">POST On Session\x3c/a> instead.\x3c/p>\n<p>Send a POST request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the POST request to\x3c/p>\n<p><code>data\x3c/code> a dictionary of key-value pairs that will be urlencoded and sent as POST data or binary data that is sent as the raw body content or passed as such for multipart form data if <code>files\x3c/code> is also defined or file descriptor retrieved by Get File For Streaming Upload\x3c/p>\n<p><code>json\x3c/code> a value that will be json encoded and sent as POST data if files or data is not specified\x3c/p>\n<p><code>params\x3c/code> url parameters to append to the uri\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>files\x3c/code> a dictionary of file names containing file data to POST to the server\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Post Request","shortdoc":"*DEPRECATED* Please use `POST On Session` instead.","tags":[]},{"args":["*args","**kwargs"],"doc":"","matched":true,"name":"Put On Session","shortdoc":"","tags":[]},{"args":["alias","uri","data=None","json=None","params=None","files=None","headers=None","allow_redirects=None","timeout=None"],"doc":"<p><b>DEPRECATED\x3c/b> Please use <a href=\"#Put%20On%20Session\" class=\"name\">PUT On Session\x3c/a> instead.\x3c/p>\n<p>Send a PUT request on the session object found using the given <span class=\"name\">alias\x3c/span>\x3c/p>\n<p><code>alias\x3c/code> that will be used to identify the Session object in the cache\x3c/p>\n<p><code>uri\x3c/code> to send the PUT request to\x3c/p>\n<p><code>data\x3c/code> a dictionary of key-value pairs that will be urlencoded and sent as PUT data or binary data that is sent as the raw body content or file descriptor retrieved by Get File For Streaming Upload\x3c/p>\n<p><code>json\x3c/code> a value that will be json encoded and sent as PUT data if data is not specified\x3c/p>\n<p><code>headers\x3c/code> a dictionary of headers to use with the request\x3c/p>\n<p><code>allow_redirects\x3c/code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.\x3c/p>\n<p><code>params\x3c/code> url parameters to append to the uri\x3c/p>\n<p><code>timeout\x3c/code> connection timeout\x3c/p>","matched":true,"name":"Put Request","shortdoc":"*DEPRECATED* Please use `PUT On Session` instead.","tags":[]},{"args":["response"],"doc":"<p>Fails if response status code is a client or server error (4xx, 5xx).\x3c/p>\n<p>The <code>response\x3c/code> is the output of other requests keywords like <a href=\"#Get%20On%20Session\" class=\"name\">GET On Session\x3c/a>.\x3c/p>\n<p>In case of failure an HTTPError will be automatically raised.\x3c/p>","matched":true,"name":"Request Should Be Successful","shortdoc":"Fails if response status code is a client or server error (4xx, 5xx).","tags":[]},{"args":["alias"],"doc":"<p>Return True if the session has been already created\x3c/p>\n<p><code>alias\x3c/code> that has been used to identify the Session object in the cache\x3c/p>","matched":true,"name":"Session Exists","shortdoc":"Return True if the session has been already created","tags":[]},{"args":["expected_status","response","msg=None"],"doc":"<p>Fails if response status code is different than the expected.\x3c/p>\n<p><code>expected_status\x3c/code> could be the code number as an integer or as string. But it could also be a named status code like 'ok', 'created', 'accepted' or 'bad request', 'not found' etc.\x3c/p>\n<p>The <code>response\x3c/code> is the output of other requests keywords like <a href=\"#Get%20On%20Session\" class=\"name\">GET On Session\x3c/a>.\x3c/p>\n<p>A custom message <code>msg\x3c/code> can be added to work like built-in keywords.\x3c/p>","matched":true,"name":"Status Should Be","shortdoc":"Fails if response status code is different than the expected.","tags":[]},{"args":["content","pretty_print=False"],"doc":"<p><b>DEPRECATED\x3c/b> Please use ${resp.json()} instead. Have a look at the improved HTML output as pretty printing replacement.\x3c/p>\n<p>Convert a string to a JSON object\x3c/p>\n<p><code>content\x3c/code> String content to convert into JSON\x3c/p>\n<p><code>pretty_print\x3c/code> If defined, will output JSON is pretty print format\x3c/p>","matched":true,"name":"To Json","shortdoc":"*DEPRECATED* Please use ${resp.json()} instead. Have a look at the improved HTML output as pretty printing replacement.","tags":[]},{"args":["alias","headers=None","cookies=None"],"doc":"<p>Update Session Headers: update a HTTP Session Headers\x3c/p>\n<p><code>alias\x3c/code> Robot Framework alias to identify the session\x3c/p>\n<p><code>headers\x3c/code> Dictionary of headers merge into session\x3c/p>","matched":true,"name":"Update Session","shortdoc":"Update Session Headers: update a HTTP Session Headers","tags":[]}],"name":"RequestsLibrary","named_args":true,"scope":"GLOBAL","version":"0.8b1"};
+libdoc = {"name": "RequestsLibrary", "doc": "<p>Documentation for library <code>RequestsLibrary</code>.</p>", "version": "0.8b4", "generated": "2020-12-14 22:00:29", "type": "LIBRARY", "scope": "GLOBAL", "docFormat": "HTML", "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/__init__.py", "lineno": 16, "tags": [], "inits": [], "keywords": [{"name": "Create Client Cert Session", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "url", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "url"}, {"name": "headers", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers={}"}, {"name": "cookies", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "cookies={}"}, {"name": "client_certs", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "client_certs=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}, {"name": "proxies", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "proxies=None"}, {"name": "verify", "types": [], "default": "False", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "verify=False"}, {"name": "debug", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "debug=0"}, {"name": "max_retries", "types": [], "default": "3", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "max_retries=3"}, {"name": "backoff_factor", "types": [], "default": "0.1", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "backoff_factor=0.1"}, {"name": "disable_warnings", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "disable_warnings=0"}, {"name": "retry_status_list", "types": [], "default": "[]", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_status_list=[]"}, {"name": "retry_method_list", "types": [], "default": "['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_method_list=['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']"}], "doc": "<p>Create Session: create a HTTP session to a server</p>\n<p><code>url</code> Base url of the server</p>\n<p><code>alias</code> Robot Framework alias to identify the session</p>\n<p><code>headers</code> Dictionary of default headers</p>\n<p><code>cookies</code> Dictionary of cookies</p>\n<p><code>client_certs</code> ['client certificate', 'client key'] PEM files containing the client key and certificate</p>\n<p><code>timeout</code> Connection timeout</p>\n<p><code>proxies</code> Dictionary that contains proxy urls for HTTP and HTTPS communication</p>\n<p><code>verify</code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.</p>\n<p><code>debug</code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel</a></p>\n<p><code>max_retries</code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.</p>\n<p><code>disable_warnings</code> Disable requests warning useful when you have large number of testcases</p>\n<p><code>backoff_factor</code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html</a></p>\n<p><code>retry_method_list</code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.</p>\n<p><code>retry_status_list</code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.</p>", "shortdoc": "Create Session: create a HTTP session to a server", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 191}, {"name": "Create Custom Session", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "url", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "url"}, {"name": "auth", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "auth"}, {"name": "headers", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers={}"}, {"name": "cookies", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "cookies={}"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}, {"name": "proxies", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "proxies=None"}, {"name": "verify", "types": [], "default": "False", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "verify=False"}, {"name": "debug", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "debug=0"}, {"name": "max_retries", "types": [], "default": "3", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "max_retries=3"}, {"name": "backoff_factor", "types": [], "default": "0.1", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "backoff_factor=0.1"}, {"name": "disable_warnings", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "disable_warnings=0"}, {"name": "retry_status_list", "types": [], "default": "[]", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_status_list=[]"}, {"name": "retry_method_list", "types": [], "default": "['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_method_list=['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']"}], "doc": "<p>Create Session: create a HTTP session to a server</p>\n<p><code>url</code> Base url of the server</p>\n<p><code>alias</code> Robot Framework alias to identify the session</p>\n<p><code>headers</code> Dictionary of default headers</p>\n<p><code>cookies</code> Dictionary of cookies</p>\n<p><code>auth</code> A Custom Authentication object to be passed on to the requests library. <a href=\"http://docs.python-requests.org/en/master/user/advanced/#custom-authentication\">http://docs.python-requests.org/en/master/user/advanced/#custom-authentication</a></p>\n<p><code>timeout</code> Connection timeout</p>\n<p><code>proxies</code> Dictionary that contains proxy urls for HTTP and HTTPS communication</p>\n<p><code>verify</code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.</p>\n<p><code>debug</code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel</a></p>\n<p><code>max_retries</code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.</p>\n<p><code>disable_warnings</code> Disable requests warning useful when you have large number of testcases</p>\n<p><code>backoff_factor</code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html</a></p>\n<p><code>retry_method_list</code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.</p>\n<p><code>retry_status_list</code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.</p>", "shortdoc": "Create Session: create a HTTP session to a server", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 276}, {"name": "Create Digest Session", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "url", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "url"}, {"name": "auth", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "auth"}, {"name": "headers", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers={}"}, {"name": "cookies", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "cookies={}"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}, {"name": "proxies", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "proxies=None"}, {"name": "verify", "types": [], "default": "False", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "verify=False"}, {"name": "debug", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "debug=0"}, {"name": "max_retries", "types": [], "default": "3", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "max_retries=3"}, {"name": "backoff_factor", "types": [], "default": "0.1", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "backoff_factor=0.1"}, {"name": "disable_warnings", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "disable_warnings=0"}, {"name": "retry_status_list", "types": [], "default": "[]", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_status_list=[]"}, {"name": "retry_method_list", "types": [], "default": "['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_method_list=['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']"}], "doc": "<p>Create Session: create a HTTP session to a server</p>\n<p><code>url</code> Base url of the server</p>\n<p><code>alias</code> Robot Framework alias to identify the session</p>\n<p><code>headers</code> Dictionary of default headers</p>\n<p><code>cookies</code> Dictionary of cookies</p>\n<p><code>auth</code> ['DOMAIN', 'username', 'password'] for NTLM Authentication</p>\n<p><code>timeout</code> Connection timeout</p>\n<p><code>proxies</code> Dictionary that contains proxy urls for HTTP and HTTPS communication</p>\n<p><code>verify</code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.</p>\n<p><code>debug</code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel</a></p>\n<p><code>max_retries</code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.</p>\n<p><code>disable_warnings</code> Disable requests warning useful when you have large number of testcases</p>\n<p><code>backoff_factor</code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html</a></p>\n<p><code>retry_method_list</code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.</p>\n<p><code>retry_status_list</code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.</p>", "shortdoc": "Create Session: create a HTTP session to a server", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 359}, {"name": "Create Ntlm Session", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "url", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "url"}, {"name": "auth", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "auth"}, {"name": "headers", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers={}"}, {"name": "cookies", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "cookies={}"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}, {"name": "proxies", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "proxies=None"}, {"name": "verify", "types": [], "default": "False", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "verify=False"}, {"name": "debug", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "debug=0"}, {"name": "max_retries", "types": [], "default": "3", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "max_retries=3"}, {"name": "backoff_factor", "types": [], "default": "0.1", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "backoff_factor=0.1"}, {"name": "disable_warnings", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "disable_warnings=0"}, {"name": "retry_status_list", "types": [], "default": "[]", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_status_list=[]"}, {"name": "retry_method_list", "types": [], "default": "['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_method_list=['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']"}], "doc": "<p>Create Session: create a HTTP session to a server</p>\n<p><code>url</code> Base url of the server</p>\n<p><code>alias</code> Robot Framework alias to identify the session</p>\n<p><code>headers</code> Dictionary of default headers</p>\n<p><code>cookies</code> Dictionary of cookies</p>\n<p><code>auth</code> ['DOMAIN', 'username', 'password'] for NTLM Authentication</p>\n<p><code>timeout</code> Connection timeout</p>\n<p><code>proxies</code> Dictionary that contains proxy urls for HTTP and HTTPS communication</p>\n<p><code>verify</code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided. Defaults to False.</p>\n<p><code>debug</code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel</a></p>\n<p><code>max_retries</code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.</p>\n<p><code>disable_warnings</code> Disable requests warning useful when you have large number of testcases</p>\n<p><code>backoff_factor</code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html</a></p>\n<p><code>retry_method_list</code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.</p>\n<p><code>retry_status_list</code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.</p>", "shortdoc": "Create Session: create a HTTP session to a server", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 436}, {"name": "Create Session", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "url", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "url"}, {"name": "headers", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers={}"}, {"name": "cookies", "types": [], "default": "{}", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "cookies={}"}, {"name": "auth", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "auth=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}, {"name": "proxies", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "proxies=None"}, {"name": "verify", "types": [], "default": "False", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "verify=False"}, {"name": "debug", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "debug=0"}, {"name": "max_retries", "types": [], "default": "3", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "max_retries=3"}, {"name": "backoff_factor", "types": [], "default": "0.1", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "backoff_factor=0.1"}, {"name": "disable_warnings", "types": [], "default": "0", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "disable_warnings=0"}, {"name": "retry_status_list", "types": [], "default": "[]", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_status_list=[]"}, {"name": "retry_method_list", "types": [], "default": "['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "retry_method_list=['DELETE', 'GET', 'TRACE', 'OPTIONS', 'HEAD', 'PUT']"}], "doc": "<p>Create Session: create a HTTP session to a server</p>\n<p><code>alias</code> Robot Framework alias to identify the session</p>\n<p><code>url</code> Base url of the server</p>\n<p><code>headers</code> Dictionary of default headers</p>\n<p><code>cookies</code> Dictionary of cookies</p>\n<p><code>auth</code> List of username &amp; password for HTTP Basic Auth</p>\n<p><code>timeout</code> Connection timeout</p>\n<p><code>proxies</code> Dictionary that contains proxy urls for HTTP and HTTPS communication</p>\n<p><code>verify</code> Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.</p>\n<p><code>debug</code> Enable http verbosity option more information <a href=\"https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel\">https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel</a></p>\n<p><code>max_retries</code> Number of maximum retries each connection should attempt. By default it will retry 3 times in case of connection errors only. A 0 value will disable any kind of retries regardless of other retry settings. In case the number of retries is reached a retry exception is raised.</p>\n<p><code>disable_warnings</code> Disable requests warning useful when you have large number of testcases</p>\n<p><code>backoff_factor</code> Introduces a delay time between retries that is longer after each retry. eg. if backoff_factor is set to 0.1 the sleep between attemps will be: 0.0, 0.2, 0.4 More info here: <a href=\"https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html\">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html</a></p>\n<p><code>retry_method_list</code> List of uppercased HTTP method verbs where retries are allowed. By default retries are allowed only on HTTP requests methods that are considered to be idempotent (multiple requests with the same parameters end with the same state). eg. set to ['POST', 'GET'] to retry only those kind of requests.</p>\n<p><code>retry_status_list</code> List of integer HTTP status codes that, if returned, a retry is attempted. eg. set to [502, 503] to retry requests if those status are returned. Note that max_retries must be greater than 0.</p>", "shortdoc": "Create Session: create a HTTP session to a server", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 110}, {"name": "Delete All Sessions", "args": [], "doc": "<p>Removes all the session objects</p>", "shortdoc": "Removes all the session objects", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 540}, {"name": "Delete On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Delete Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "data", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "data=None"}, {"name": "json", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "json=None"}, {"name": "params", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "params=None"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Delete%20On%20Session\" class=\"name\">DELETE On Session</a> instead.</p>\n<p>Send a DELETE request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the DELETE request to</p>\n<p><code>json</code> a value that will be json encoded and sent as request data if data is not specified</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `DELETE On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 261}, {"name": "Get File For Streaming Upload", "args": [{"name": "path", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "path"}], "doc": "<p>Opens and returns a file descriptor of a specified file to be passed as <code>data</code> parameter to other requests keywords.</p>\n<p>This allows streaming upload of large files without reading them into memory.</p>\n<p>File descriptor is binary mode and read only. Requests keywords will automatically close the file, if used outside this library it's up to the caller to close it.</p>", "shortdoc": "Opens and returns a file descriptor of a specified file to be passed as ``data`` parameter to other requests keywords.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/RequestsKeywords.py", "lineno": 45}, {"name": "Get On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Get Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "data", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "data=None"}, {"name": "json", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "json=None"}, {"name": "params", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "params=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Get%20On%20Session\" class=\"name\">GET On Session</a> instead.</p>\n<p>Send a GET request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the GET request to</p>\n<p><code>params</code> url parameters to append to the uri</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>data</code> a dictionary of key-value pairs that will be urlencoded and sent as GET data or binary data that is sent as the raw body content</p>\n<p><code>json</code> a value that will be json encoded and sent as GET data if data is not specified</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `GET On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 36}, {"name": "Head On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Head Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Head%20On%20Session\" class=\"name\">HEAD On Session</a> instead.</p>\n<p>Send a HEAD request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the HEAD request to</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `HEAD On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 308}, {"name": "Options On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Options Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Options%20On%20Session\" class=\"name\">OPTIONS On Session</a> instead.</p>\n<p>Send an OPTIONS request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the OPTIONS request to</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `OPTIONS On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 344}, {"name": "Patch On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Patch Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "data", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "data=None"}, {"name": "json", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "json=None"}, {"name": "params", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "params=None"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "files", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "files=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Patch%20On%20Session\" class=\"name\">PATCH On Session</a> instead.</p>\n<p>Send a PATCH request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the PATCH request to</p>\n<p><code>data</code> a dictionary of key-value pairs that will be urlencoded and sent as PATCH data or binary data that is sent as the raw body content or file descriptor retrieved by Get File For Streaming Upload</p>\n<p><code>json</code> a value that will be json encoded and sent as PATCH data if data is not specified</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>files</code> a dictionary of file names containing file data to PATCH to the server</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>params</code> url parameters to append to the uri</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `PATCH On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 147}, {"name": "Post On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Post Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "data", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "data=None"}, {"name": "json", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "json=None"}, {"name": "params", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "params=None"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "files", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "files=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Post%20On%20Session\" class=\"name\">POST On Session</a> instead.</p>\n<p>Send a POST request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the POST request to</p>\n<p><code>data</code> a dictionary of key-value pairs that will be urlencoded and sent as POST data or binary data that is sent as the raw body content or passed as such for multipart form data if <code>files</code> is also defined or file descriptor retrieved by Get File For Streaming Upload</p>\n<p><code>json</code> a value that will be json encoded and sent as POST data if files or data is not specified</p>\n<p><code>params</code> url parameters to append to the uri</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>files</code> a dictionary of file names containing file data to POST to the server</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `POST On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 88}, {"name": "Put On Session", "args": [{"name": "args", "types": [], "default": null, "kind": "VAR_POSITIONAL", "required": false, "repr": "*args"}, {"name": "kwargs", "types": [], "default": null, "kind": "VAR_NAMED", "required": false, "repr": "**kwargs"}], "doc": "", "shortdoc": "", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/utils.py", "lineno": 129}, {"name": "Put Request", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "uri", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "uri"}, {"name": "data", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "data=None"}, {"name": "json", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "json=None"}, {"name": "params", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "params=None"}, {"name": "files", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "files=None"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "allow_redirects", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "allow_redirects=None"}, {"name": "timeout", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "timeout=None"}], "doc": "<p><b>DEPRECATED</b> Please use <a href=\"#Put%20On%20Session\" class=\"name\">PUT On Session</a> instead.</p>\n<p>Send a PUT request on the session object found using the given <span class=\"name\">alias</span></p>\n<p><code>alias</code> that will be used to identify the Session object in the cache</p>\n<p><code>uri</code> to send the PUT request to</p>\n<p><code>data</code> a dictionary of key-value pairs that will be urlencoded and sent as PUT data or binary data that is sent as the raw body content or file descriptor retrieved by Get File For Streaming Upload</p>\n<p><code>json</code> a value that will be json encoded and sent as PUT data if data is not specified</p>\n<p><code>headers</code> a dictionary of headers to use with the request</p>\n<p><code>allow_redirects</code> Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.</p>\n<p><code>params</code> url parameters to append to the uri</p>\n<p><code>timeout</code> connection timeout</p>", "shortdoc": "*DEPRECATED* Please use `PUT On Session` instead.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 205}, {"name": "Request Should Be Successful", "args": [{"name": "response", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "response"}], "doc": "<p>Fails if response status code is a client or server error (4xx, 5xx).</p>\n<p>The <code>response</code> is the output of other requests keywords like <a href=\"#Get%20On%20Session\" class=\"name\">GET On Session</a>.</p>\n<p>In case of failure an HTTPError will be automatically raised.</p>", "shortdoc": "Fails if response status code is a client or server error (4xx, 5xx).", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/RequestsKeywords.py", "lineno": 33}, {"name": "Session Exists", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}], "doc": "<p>Return True if the session has been already created</p>\n<p><code>alias</code> that has been used to identify the Session object in the cache</p>", "shortdoc": "Return True if the session has been already created", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 528}, {"name": "Status Should Be", "args": [{"name": "expected_status", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "expected_status"}, {"name": "response", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "response"}, {"name": "msg", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "msg=None"}], "doc": "<p>Fails if response status code is different than the expected.</p>\n<p><code>expected_status</code> could be the code number as an integer or as string. But it could also be a named status code like 'ok', 'created', 'accepted' or 'bad request', 'not found' etc.</p>\n<p>The <code>response</code> is the output of other requests keywords like <a href=\"#Get%20On%20Session\" class=\"name\">GET On Session</a>.</p>\n<p>A custom message <code>msg</code> can be added to work like built-in keywords.</p>", "shortdoc": "Fails if response status code is different than the expected.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/RequestsKeywords.py", "lineno": 18}, {"name": "To Json", "args": [{"name": "content", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "content"}, {"name": "pretty_print", "types": [], "default": "False", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "pretty_print=False"}], "doc": "<p><b>DEPRECATED</b> Please use ${resp.json()} instead. Have a look at the improved HTML output as pretty printing replacement.</p>\n<p>Convert a string to a JSON object</p>\n<p><code>content</code> String content to convert into JSON</p>\n<p><code>pretty_print</code> If defined, will output JSON is pretty print format</p>", "shortdoc": "*DEPRECATED* Please use ${resp.json()} instead. Have a look at the improved HTML output as pretty printing replacement.", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/DeprecatedKeywords.py", "lineno": 15}, {"name": "Update Session", "args": [{"name": "alias", "types": [], "default": null, "kind": "POSITIONAL_OR_NAMED", "required": true, "repr": "alias"}, {"name": "headers", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "headers=None"}, {"name": "cookies", "types": [], "default": "None", "kind": "POSITIONAL_OR_NAMED", "required": false, "repr": "cookies=None"}], "doc": "<p>Update Session Headers: update a HTTP Session Headers</p>\n<p><code>alias</code> Robot Framework alias to identify the session</p>\n<p><code>headers</code> Dictionary of headers merge into session</p>", "shortdoc": "Update Session Headers: update a HTTP Session Headers", "tags": [], "source": "/home/luca/src/robotframework/robotframework-requests/src/RequestsLibrary/SessionKeywords.py", "lineno": 548}], "dataTypes": {"enums": [], "typedDicts": []}}
 </script>
 <title></title>
 </head>
@@ -624,7 +1106,7 @@ libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for librar
   <h1>Opening library documentation failed</h1>
   <ul>
     <li>Verify that you have <b>JavaScript enabled</b> in your browser.</li>
-    <li>Make sure you are using a <b>modern enough browser</b>. If using Internet Explorer, version 8 or newer is required.</li>
+    <li>Make sure you are using a <b>modern enough browser</b>. If using Internet Explorer, version 11 is required.</li>
     <li>Check are there messages in your browser's <b>JavaScript error log</b>. Please report the problem if you suspect you have encountered a bug.</li>
   </ul>
 </div>
@@ -632,33 +1114,71 @@ libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for librar
 <script type="text/javascript">
     // Not using jQuery here for speed and to support ancient browsers.
     document.getElementById('javascript-disabled').style.display = 'none';
+    window.addEventListener("hashchange", function() {
+      document.getElementsByClassName("hamburger-menu")[0].checked = false;
+    }, false);
 </script>
 
 <script type="text/javascript">
+
+    function linkArgs(container, typeNames) {
+      container.forEach(function(k) {
+          k.args.forEach(function (arg) {
+            arg.linked = arg.types.filter(function(value) {return typeNames.indexOf(value) > -1});
+          })
+        }
+      );
+    }
+
     $(document).ready(function() {
         parseTemplates();
         document.title = libdoc.name;
         storage.init('libdoc');
+        libdoc.dataTypes = libdoc.dataTypes.enums.concat(libdoc.dataTypes.typedDicts);
+        libdoc.dataTypes.sort(compare)
+        const typeNames = libdoc.dataTypes.map(function (d) {return d.name});
+        linkArgs(libdoc.inits, typeNames);
+        linkArgs(libdoc.keywords, typeNames);
         renderTemplate('base', libdoc, $('body'));
         if (libdoc.inits.length) {
             renderTemplate('importing', libdoc);
         }
         renderTemplate('shortcuts', libdoc);
-        initShortcutListStyle('shortcut', libdoc.keywords);
-        if (libdoc.contains_tags) {
-            renderTemplate('tags', libdoc);
-            initShortcutListStyle('tag', libdoc.all_tags);
-        }
+        renderTemplate('keyword-shortcuts', libdoc);
         renderTemplate('keywords', libdoc);
+        renderTemplate('data-types', libdoc);
         renderTemplate('footer', libdoc);
-        params = util.parseQueryString(window.location.search.slice(1));
+        const params = util.parseQueryString(window.location.search.slice(1));
+        let selectedTag = "";
         if ("tag" in params) {
-            tagSearch(params["tag"], window.location.hash);
+            selectedTag = params["tag"];
+            tagSearch(selectedTag, window.location.hash);
+        }
+        if (libdoc.tags.length) {
+          libdoc.selectedTag = selectedTag;
+          renderTemplate('tags-shortcuts', libdoc);
         }
         scrollToHash();
-        $(document).bind('keydown', handleKeyDown);
-        workaroundFirefoxWidthBug();
+        setTimeout(function() {
+          document.getElementById("keyword-statistics-header").innerText = '' + libdoc.keywords.length;
+          if (libdoc.dataTypes.length) {
+            document.getElementById("type-statistics-header").innerText = '' + libdoc.dataTypes.length;
+          }
+          if (storage.get('keyword-wall') === 'open') {
+            openKeywordWall();
+          }
+      }, 0);
     });
+
+     function compare( a, b ) {
+      if ( a.name < b.name ){
+        return -1;
+      }
+      if ( a.name > b.name ){
+        return 1;
+      }
+      return 0;
+    }
 
     function parseTemplates() {
         $('script[type="text/x-jquery-tmpl"]').map(function (idx, elem) {
@@ -667,43 +1187,14 @@ libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for librar
     }
 
     function renderTemplate(name, arguments, container) {
-        if (!container) {
-            container = $('#' + name + '-container');
-            container.empty();
-        }
-        if (!arguments.search) {
-            arguments.search = false;
-        }
-        $.tmpl(name + '-template', arguments).appendTo(container);
-    }
-
-    function workaroundFirefoxWidthBug() {
-        // https://github.com/robotframework/robotframework/issues/3456
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=1613163
-        $('.shortcuts a').width('max-content');
-    }
-
-    function initShortcutListStyle(name, items) {
-        var style = storage.get(name + '-list-style', 'compact');
-        if (style != 'compact' && items.length > 1) {
-            $('.' + name + '-list-separator').html('<br>');
-            $('.' + name + '-list-toggle .switch').prop('checked', true);
-        }
-    }
-
-    function setShortcutListStyle(name) {
-        var compact = !$('.' + name + '-list-toggle .switch').prop('checked');
-        $('.' + name + '-list-separator').html(compact ? '&middot;' : '<br>');
-        storage.set(name + '-list-style', compact ? 'compact' : 'expanded');
-    }
-
-    function handleKeyDown(event) {
-        event = event || window.event;
-        var keyCode = event.keyCode || event.which;
-        if (keyCode === 27)  // esc
-            setTimeout(closeSearch, 0);
-        if (keyCode === 83 && $('#search').is(':hidden'))  // s
-            setTimeout(openSearch, 0);
+      if (!container) {
+          container = $('#' + name + '-container');
+          container.empty();
+      }
+      if (!arguments.search) {
+          arguments.search = false;
+      }
+      $.tmpl(name + '-template', arguments).appendTo(container);
     }
 
     function scrollToHash() {
@@ -715,88 +1206,70 @@ libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for librar
     }
 
     function tagSearch(tag, hash) {
-        var include = {tags: true, tagsExact: true};
-        var url = window.location.pathname + "?tag=" + tag + (hash || "");
-        markMatches(tag, include);
-        highlightMatches(tag, include);
-        $('#keywords-container').find('.kw-row').addClass('hide-unmatched');
-        history.replaceState && history.replaceState(null, '', url);
-        document.getElementById('Shortcuts').scrollIntoView();
+      document.getElementsByClassName('search-input')[0].value = '';
+      const include = {tags: true, tagsExact: true};
+      const url = window.location.pathname + "?tag=" + tag + (hash || "");
+      markMatches(tag, include);
+      highlightMatches(tag, include);
+      history.replaceState && history.replaceState(null, '', url);
+      document.getElementById('keyword-shortcuts-container').scrollTop = 0;
     }
 
-    function doSearch() {
-        var string = $('#search-string').val();
-        var include = getIncludesAndDisableIfOnlyOneLeft();
-        if (string) {
-            markMatches(string, include);
-            highlightMatches(string, include);
-            setMatchVisibility();
-        } else {
-            resetKeywords();
-        }
+    function clearTagSearch() {
+      document.getElementsByClassName('search-input')[0].value = '';
+      history.replaceState && history.replaceState(null, '', window.location.pathname);
+      resetKeywords();
     }
 
-    function getIncludesAndDisableIfOnlyOneLeft() {
-        var name = $('#include-name');
-        var args = $('#include-args');
-        var doc = $('#include-doc');
-        var tags = $('#include-tags');
-        var include = {name: name.prop('checked'),
-                       args: args.prop('checked'),
-                       doc: doc.prop('checked'),
-                       tags: !!tags.prop('checked')};
-        if ((!include.name) && (!include.args) && (!include.doc)) {
-            tags.prop('disabled', true);
-        } else if ((!include.name) && (!include.args) && (!include.tags)) {
-            doc.prop('disabled', true);
-        } else if ((!include.name) && (!include.doc) && (!include.tags)) {
-            args.prop('disabled', true);
-        } else if ((!include.args) && (!include.doc) && (!include.tags)) {
-            name.prop('disabled', true);
-        } else {
-            name.prop('disabled', false);
-            args.prop('disabled', false);
-            doc.prop('disabled', false);
-            tags.prop('disabled', false);
-        }
-        return include;
+    function closeMenu() {
+      document.getElementById('hamburger-menu-input').checked = false;
     }
 
     function markMatches(pattern, include) {
-        pattern = util.regexpEscape(pattern);
+        let patternRegexp = util.regexpEscape(pattern);
         if (include.tagsExact) {
-            pattern = '^' + pattern + '$';
+            patternRegexp = '^' + patternRegexp + '$';
         }
-        var regexp = new RegExp(pattern, 'i');
-        var test = regexp.test.bind(regexp);
-        var result = {contains_tags: libdoc.contains_tags};
-        var matchCount = 0;
+        let regexp = new RegExp(patternRegexp, 'i');
+        let test = regexp.test.bind(regexp);
+        let result = {};
+        let keywordMatchCount = 0;
         result.keywords = util.map(libdoc.keywords, function (kw) {
             kw = $.extend({}, kw);
-            kw.matched = (include.name && test(kw.name) ||
-                          include.args && test(kw.args) ||
-                          include.doc && test($(kw.doc).text()) ||
-                          include.tags && util.any(util.map(kw.tags, test)));
-            if (kw.matched)
-                matchCount++;
-            return kw
+            kw.hidden =  !(include.name && test(kw.name)) &&
+                         !(include.args && test(kw.args)) &&
+                          !(include.doc && test($(kw.doc).text())) &&
+                          !(include.tags && util.any(util.map(kw.tags, test)));
+            if (!kw.hidden)
+                keywordMatchCount++;
+            return kw;
         });
-        renderTemplate('shortcuts', result);
+        let typeMatchCount = 0;
+        result.dataTypes = util.map(libdoc.dataTypes, function (dataType) {
+            dataType = $.extend({}, dataType);
+            dataType.hidden =  !(include.name && test(dataType.name));
+            if (!dataType.hidden)
+                typeMatchCount++;
+            return dataType;
+        });
+        renderTemplate('keyword-shortcuts', result);
         renderTemplate('keywords', result);
-        if (libdoc.contains_tags) {
-            renderTemplate('tags', libdoc);
+        renderTemplate('data-types', result);
+        if (libdoc.tags.length) {
+          libdoc.selectedTag = include.tagsExact ? pattern : "";
+          renderTemplate('tags-shortcuts', libdoc);
         }
-        var ending = matchCount != 1 ? 's.' : '.';
-        $('#match-count').show().text(matchCount + ' matched keyword' + ending);
-        $('#altogether-count').hide();
-        if (matchCount == 0)
+        document.getElementById("keyword-statistics-header").innerText = keywordMatchCount + ' / ' + result.keywords.length;
+        if (libdoc.dataTypes.length) {
+          document.getElementById("type-statistics-header").innerText = typeMatchCount + ' / ' + result.dataTypes.length;
+        }
+        if (keywordMatchCount === 0)
             $('#keywords-container').find('table').empty();
-        setTimeout(workaroundFirefoxWidthBug, 100);
     }
 
     function highlightMatches(string, include) {
-        var shortcuts = $('#shortcuts-container').find('.match');
-        var keywords = $('#keywords-container').find('.match');
+        const shortcuts = $('#shortcuts-container').find('.match');
+        const keywords = $('#keywords-container').find('.match');
         if (include.name) {
             shortcuts.highlight(string);
             keywords.find('.kw').highlight(string);
@@ -809,51 +1282,77 @@ libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for librar
         }
         if (include.tags) {
             var matches = keywords.find('.tags').find('a').add(
-                    $('#tags-container').find('a'));
+                    $('#tags-shortcuts-container').find('a'));
             if (include.tagsExact) {
                 matches = matches.filter(function (index, tag) {
-                    return $(tag).text().toUpperCase() == string.toUpperCase();
+                    return $(tag).text().toUpperCase() === string.toUpperCase();
                 });
             }
             matches.highlight(string);
         }
     }
 
-    function openSearch() {
-        $('#search').show();
-        $('#open-search').hide();
-        $('#search-string').focus().select();
-        $(document).scrollTop($("#Shortcuts").offset().top);
+    function clearSearch() {
+      document.getElementsByClassName('search-input')[0].value = '';
+      const tagsSelect = document.getElementById('tags-shortcuts-container');
+      if (tagsSelect) {
+        tagsSelect.selectedIndex = 0;
+      }
+      resetKeywords();
     }
 
-    function closeSearch() {
-        $('#search').hide();
-        $('#open-search').show();
+    function searching() {
+      const value = document.getElementsByClassName('search-input')[0].value;
+      const include = {name: true,
+                       args: true,
+                       doc: true,
+                       tags: true};
+      if (value) {
+          markMatches(value, include);
+          highlightMatches(value, include);
+          document.getElementById('keyword-shortcuts-container').scrollTop = 0;
+      } else {
+          resetKeywords();
+      }
     }
 
-    function resetSearch() {
-        $('#search-string').val('');
-        $('#search input:checkbox').prop({'checked': true, 'disabled': false});
-        resetKeywords();
+    function toggleShortcuts() {
+      const shortcuts = document.getElementsByClassName("shortcuts")[0];
+      if (shortcuts.classList.contains("keyword-wall")) {
+        closeKeywordWall();
+      } else {
+        openKeywordWall();
+      }
+    }
+
+    function openKeywordWall() {
+      const shortcuts = document.getElementsByClassName("shortcuts")[0];
+      shortcuts.classList.add("keyword-wall");
+      storage.set("keyword-wall", 'open');
+      const button = document.getElementById("toggle-keyword-shortcuts")
+      button.innerText = '-';
+    }
+
+    function closeKeywordWall() {
+      const shortcuts = document.getElementsByClassName("shortcuts")[0];
+      shortcuts.classList.remove("keyword-wall");
+      storage.set("keyword-wall", 'close');
+      const button = document.getElementById("toggle-keyword-shortcuts")
+      button.innerText = '+';
     }
 
     function resetKeywords() {
-        renderTemplate('shortcuts', libdoc);
+        renderTemplate('keyword-shortcuts', libdoc);
         renderTemplate('keywords', libdoc);
-        if (libdoc.contains_tags) {
+        renderTemplate('data-types', libdoc);
+        if (libdoc.tags.length) {
             renderTemplate('tags', libdoc);
         }
-        $('#match-count').hide();
-        $('#altogether-count').show();
-        history.replaceState && history.replaceState(null, '', location.pathname + location.hash);
-        setTimeout(workaroundFirefoxWidthBug, 100);
-        scrollToHash();
-    }
-
-    function setMatchVisibility() {
-        var kws = $('#keywords-container').find('.kw-row');
-        var hide = $('#hide-unmatched').prop('checked');
-        kws.toggleClass('hide-unmatched', hide);
+        document.getElementById("keyword-statistics-header").innerText = ''+libdoc.keywords.length;
+        if (libdoc.dataTypes.length) {
+          document.getElementById("type-statistics-header").innerText = '' + libdoc.dataTypes.length;
+        }
+        history.replaceState && history.replaceState(null, '', location.pathname);
     }
 
     // http://stackoverflow.com/a/18484799
@@ -868,164 +1367,316 @@ libdoc = {"all_tags":[],"contains_tags":false,"doc":"<p>Documentation for librar
 </script>
 
 <script type="text/x-jquery-tmpl" id="base-template">
-    <h1>${name}</h1>
-    <table class="metadata">
-        {{if version}}<tr><th>Library version:</th><td>${version}</td></tr>{{/if}}
-        {{if scope}}<tr><th>Library scope:</th><td>${scope}</td></tr>{{/if}}
-        <tr><th>Named arguments:</th><td>{{if named_args}}supported{{else}}not supported{{/if}}</td></tr>
-    </table>
-    <div id="introduction-container">
-        <h2 id="Introduction">Introduction</h2>
-        <div class="doc">{{html doc}}</div>
+  <div class="base-container">
+    <input id="hamburger-menu-input" class="hamburger-menu" type="checkbox" />
+    <span class="hamburger-menu hamburger-menu-1"></span>
+    <span class="hamburger-menu hamburger-menu-2"></span>
+    <span class="hamburger-menu hamburger-menu-3"></span>
+    <div class="libdoc-overview"><div id="shortcuts-container"></div></div>
+    <div class="libdoc-details">
+      <table class="metadata">
+          {{if version}}<tr><th>Library version:</th><td>${version}</td></tr>{{/if}}
+          {{if scope}}<tr><th>Library scope:</th><td>${scope}</td></tr>{{/if}}
+          <tr><th>Named arguments:</th><td>{{if named_args}}supported{{else}}not supported{{/if}}</td></tr>
+      </table>
+      <div id="introduction-container">
+          <h2 id="Introduction">Introduction</h2>
+          <div class="doc">{{html doc}}</div>
+      </div>
+      <div id="importing-container"></div>
+      <div id="keywords-container"></div>
+      <div id="data-types-container"></div>
+      <div id="footer-container"></div>
     </div>
-    <div id="importing-container"></div>
-    <div id="shortcuts-container"></div>
-    <div id="tags-container"></div>
-    <div id="keywords-container"></div>
-    <div id="footer-container"></div>
-    <form id="search" action="javascript:void(0)">
-        <fieldset>
-            <legend id="search-title">Search keywords</legend>
-            <input type="text" id="search-string" onkeyup="delay(doSearch, 500)">
-            <fieldset>
-                <legend>Search from</legend>
-                <input type="checkbox" id="include-name" onclick="doSearch()" checked>
-                <label for="include-name">Name</label>
-                <input type="checkbox" id="include-args" onclick="doSearch()" checked>
-                <label for="include-args">Arguments</label>
-                <input type="checkbox" id="include-doc" onclick="doSearch()" checked>
-                <label for="include-doc">Documentation</label>
-                {{if libdoc.contains_tags}}
-                <input type="checkbox" id="include-tags" onclick="doSearch()" checked>
-                <label for="include-tags">Tags</label>
-                {{/if}}
-            </fieldset>
-            <input type="checkbox" id="hide-unmatched" onclick="setMatchVisibility()" checked>
-            <label for="hide-unmatched">Hide unmatched keywords</label>
-            <div id="search-buttons">
-                <input type="button" value="Reset" onclick="resetSearch()"
-                       title="Reset search">
-                <input type="button" value="Close" onclick="closeSearch()"
-                       title="Close search (shortcut: <Esc>)">
-            </div>
-        </fieldset>
-    </form>
-    <div id="open-search" onclick="openSearch()" title="Search keywords (shortcut: s)"></div>
+    <a class="libdoc-title" href="#library-documentation-top">
+          <h1>${name}</h1>
+          <svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   viewBox="0 0 202.4325 202.34125"
+   height="42"
+   width="42"
+   xml:space="preserve"
+   version="1.1"><metadata
+     id="metadata8"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+     id="defs6"><clipPath
+       id="clipPath16"
+       clipPathUnits="userSpaceOnUse"><path
+         id="path18"
+         d="m 0,161.873 161.946,0 L 161.946,0 0,0 0,161.873 Z" /></clipPath></defs><g
+     transform="matrix(1.25,0,0,-1.25,0,202.34125)"
+     id="g10"><g
+       id="g12"><g
+         clip-path="url(#clipPath16)"
+         id="g14"><g
+           transform="translate(52.4477,88.1268)"
+           id="g20"><path
+             id="robot-svg-path"
+             d="m 0,0 c 0,7.6 6.179,13.779 13.77,13.779 7.6,0 13.779,-6.179 13.779,-13.779 0,-2.769 -2.238,-5.007 -4.998,-5.007 -2.761,0 -4.999,2.238 -4.999,5.007 0,2.078 -1.695,3.765 -3.782,3.765 C 11.693,3.765 9.997,2.078 9.997,0 9.997,-2.769 7.76,-5.007 4.999,-5.007 2.238,-5.007 0,-2.769 0,0 m 57.05,-23.153 c 0,-2.771 -2.237,-5.007 -4.998,-5.007 l -46.378,0 c -2.761,0 -4.999,2.236 -4.999,5.007 0,2.769 2.238,5.007 4.999,5.007 l 46.378,0 c 2.761,0 4.998,-2.238 4.998,-5.007 M 35.379,-2.805 c -1.545,2.291 -0.941,5.398 1.35,6.943 l 11.594,7.83 c 2.273,1.58 5.398,0.941 6.943,-1.332 1.545,-2.29 0.941,-5.398 -1.35,-6.943 l -11.594,-7.83 c -0.852,-0.586 -1.829,-0.87 -2.788,-0.87 -1.607,0 -3.187,0.781 -4.155,2.202 m 31.748,-30.786 c 0,-0.945 -0.376,-1.852 -1.045,-2.522 l -8.617,-8.617 c -0.669,-0.668 -1.576,-1.045 -2.523,-1.045 l -52.833,0 c -0.947,0 -1.854,0.377 -2.523,1.045 l -8.617,8.617 c -0.669,0.67 -1.045,1.577 -1.045,2.522 l 0,52.799 c 0,0.947 0.376,1.854 1.045,2.522 l 8.617,8.619 c 0.669,0.668 1.576,1.044 2.523,1.044 l 52.833,0 c 0.947,0 1.854,-0.376 2.523,-1.044 l 8.617,-8.619 c 0.669,-0.668 1.045,-1.575 1.045,-2.522 l 0,-52.799 z m 7.334,61.086 -11.25,11.25 c -1.705,1.705 -4.018,2.663 -6.428,2.663 l -56.523,0 c -2.412,0 -4.725,-0.959 -6.43,-2.665 L -17.412,27.494 c -1.704,-1.705 -2.661,-4.016 -2.661,-6.427 l 0,-56.515 c 0,-2.411 0.958,-4.725 2.663,-6.428 l 11.25,-11.25 c 1.705,-1.705 4.017,-2.662 6.428,-2.662 l 56.515,0 c 2.41,0 4.723,0.957 6.428,2.662 l 11.25,11.25 c 1.705,1.703 2.663,4.017 2.663,6.428 l 0,56.514 c 0,2.412 -0.958,4.724 -2.663,6.429" /></g></g></g></g></svg>
+    </a>
+  </div>
 </script>
 
 <script type="text/x-jquery-tmpl" id="importing-template">
     <h2 id="Importing">Importing</h2>
-    <table border="1" class="keywords">
-        <tr>
-            <th class="args">Arguments</th>
-            <th class="doc">Documentation</th>
-        </tr>
+    <div class="keywords">
         {{each inits}}
-        <tr class="kw-row">
-            <td class="args">
-            {{each args}}
-              <span>${$value}</span>{{if $index < args.length-1}},<br>{{/if}}
-            {{/each}}
-            </td>
-            <td class="doc">{{html $value.doc}}</td>
-        </tr>
+        <div class="kw-row">
+          <div class="kw-overview">
+          {{if args.length}}
+              <div class="args">
+                <h4>Arguments</h4>
+                <div class="arguments-list-container">
+                  <div class="arguments-list">
+                  {{each args}}
+                    <span class="arg-name {{if $value.required}}arg-required{{else}}arg-optional{{/if}}" title="Argument name">{{if $value.kind === 'VAR_POSITIONAL'}}*{{/if}}{{if $value.kind === 'VAR_NAMED'}}**{{/if}}${$value.name}</span>
+
+                    {{if $value.default !== null}}
+                      <div class="arg-default-container">
+                        <span class="arg-default-eq">=</span>
+                        <span class="arg-default-value" title="Argument default value">${$value.default}</span>
+                      </div>
+                    {{/if}}
+
+                    {{if $value.types.length}}
+                      <span class="arg-type" title="Argument '${$value.name}' will be converter to type ${$value.types}">
+                        ${( $data.linked = $value.linked ),''}
+                        {{each $value.types}}&lt;{{if $data.linked.indexOf($value) > -1}}<a class="type" href="#${$value}">${$value}</a>{{else}}<span class="type">${$value}</span>{{/if}}&gt;{{/each}}
+                      </span>
+                    {{/if}}
+                  {{/each}}
+                  </div>
+                </div>
+              </div>
+          {{/if}}
+          {{if $value.doc}}
+            <div class="kw-docs">
+              <h4>Documentation</h4>
+              <div class="kwdoc doc">{{html $value.doc}}</div>
+            </div>
+          {{/if}}
+        </div>
         {{/each}}
-    </table>
+    </div>
 </script>
 
 <script type="text/x-jquery-tmpl" id="shortcuts-template">
-    <h2 id="Shortcuts">Shortcuts</h2>
-    {{if keywords.length > 1}}
-    <div class="shortcut-list-toggle">
-        <b>List style:</b>&nbsp; Compact
-        <label title="Switch between compact list and expanded list">
-            <input type="checkbox" class="switch" onclick="setShortcutListStyle('shortcut');">
-            <span class="slider"></span>
-        </label>
-        Expanded
-    </div>
-    {{/if}}
-    <div class='shortcuts'>
-        {{each keywords}}
-        <a href="#${encodeURIComponent($value.name)}"
-           class="{{if $value.matched === false}}no-{{/if}}match"
-           title="${$value.shortdoc}">${$value.name}</a>
-        {{if $index < keywords.length-1}}
-        <span class="shortcut-list-separator">&middot;</span>
-        {{/if}}
-        {{/each}}
+    <div class="keywords-overview">
+      <div class="keyword-search-box">
+        <input placeholder="Search" type="text" class="search-input" onkeyup="delay(searching, 500)"/>
+        <button class="clear-search" onclick="clearSearch()">&#10005;</button>
+      </div>
+      {{if tags.length}}
+      <select id="tags-shortcuts-container" onchange="location = this.value;">
+      </select>
+      {{/if}}
+      <div class="keywords-overview-header-row">
+      <h4>Keywords (<span id="keyword-statistics-header"></span>)
+      {{if dataTypes.length}}& <span class="data-type">Types</span> (<span id="type-statistics-header"></span>){{/if}}
+      </h4>
+      <button id="toggle-keyword-shortcuts" onclick="toggleShortcuts()">+</button>
+      </div>
+      <ul class="shortcuts" id="keyword-shortcuts-container">
+      </ul>
     </div>
 </script>
 
-<script type="text/x-jquery-tmpl" id="tags-template">
-    <h2 id="Tags">Tags</h2>
-    {{if all_tags.length > 1}}
-    <div class="tag-list-toggle">
-        <b>List style:</b>&nbsp; Compact
-        <label title="Switch between compact list and expanded list">
-            <input type="checkbox" class="switch" onclick="setShortcutListStyle('tag');">
-            <span class="slider"></span>
-        </label>
-        Expanded
-    </div>
+<script type="text/x-jquery-tmpl" id="keyword-shortcuts-template">
+    {{each keywords}}
+    {{if !$value.hidden}}
+    <li>
+    <a href="#${encodeURIComponent($value.name)}"
+       onclick="closeMenu()"
+       class="match"
+       title="${$value.shortdoc}">${$value.name}</a>
+    </li>
     {{/if}}
-    <div class='shortcuts'>
-        {{each all_tags}}
-        <a href="javascript:tagSearch('${$value}')"
-           title="Show keywords with this tag">${$value}</a>
-        <span class="tag-list-separator">&middot;</span>
-        {{/each}}
-        <a href="javascript:resetKeywords()" class="normal-first-letter"
-           title="Show all keywords">[Reset]</a>
-    </div>
+    {{/each}}
+    {{each dataTypes}}
+    {{if !$value.hidden}}
+    <li>
+      <a href="#${encodeURIComponent($value.name)}"
+       onclick="closeMenu()"
+       class="data-type match"
+       title="${$value.shortdoc}">${$value.name}</a>
+    </li>
+    {{/if}}
+    {{/each}}
+    {{each keywords}}
+    {{if $value.hidden}}
+    <li>
+    <a href="#${encodeURIComponent($value.name)}"
+       onclick="closeMenu()"
+       class="no-match"
+       title="${$value.shortdoc}">${$value.name}</a>
+    </li>
+    {{/if}}
+    {{/each}}
+    {{each dataTypes}}
+    {{if $value.hidden}}
+    <li>
+      <a href="#${encodeURIComponent($value.name)}"
+       onclick="closeMenu()"
+       class="data-type no-match"
+       title="${$value.shortdoc}">${$value.name}</a>
+    </li>
+    {{/if}}
+    {{/each}}
+</script>
+
+
+<script type="text/x-jquery-tmpl" id="tags-shortcuts-template">
+  <option value="javascript:clearTagSearch()" {{if selectedTag === ""}}selected{{/if}}>- Show all tags -</option>
+  {{each tags}}
+    <option value="javascript:tagSearch('${$value}')" {{if selectedTag === $value}}selected{{/if}}>${$value}</a>
+    </option>
+  {{/each}}
 </script>
 
 <script type="text/x-jquery-tmpl" id="keywords-template">
     <h2 id="Keywords">Keywords</h2>
-    <table border="1" class="keywords">
-        <tr>
-            <th class="kw">Keyword</th>
-            <th class="args">Arguments</th>
-            {{if libdoc.contains_tags}}
-            <th class="tags">Tags</th>
-            {{/if}}
-            <th class="doc">Documentation</th>
-        </tr>
+    <div class="keywords">
         {{each keywords}}
+        {{if !$value.hidden}}
             {{tmpl($value) 'keyword-template'}}
+        {{/if}}
         {{/each}}
-    </table>
+        {{each keywords}}
+        {{if $value.hidden}}
+            {{tmpl($value) 'keyword-template'}}
+        {{/if}}
+        {{/each}}
+    </div>
 </script>
 
 <script type="text/x-jquery-tmpl" id="keyword-template">
-    <tr class="kw-row {{if matched === false}}no-{{/if}}match">
-        <td class="kw">
-            <a name="${name}" href="#${encodeURIComponent(name)}"
+    <div class="keyword-container {{if hidden}}no-{{/if}}match" id="${name}">
+       <div class="keyword-name">
+            <h2>
+            <a class="kw-name" href="#${encodeURIComponent(name)}"
                title="Link to this keyword">${name}</a>
-        </td>
-        <td class="args">
-            {{each args}}
-            <span>${$value}</span>{{if $index < args.length-1}},<br>{{/if}}
-            {{/each}}
-        </td>
-        {{if libdoc.contains_tags}}
-        <td class="tags">
-            {{each tags}}
-            <a href="javascript:tagSearch('${$value}')"
-               title="Show keywords with this tag">${$value}</a>{{if $index < tags.length-1}},<br>{{/if}}
-            {{/each}}
-        </td>
-        {{/if}}
-        <td class="doc">{{html doc}}</td>
-    </tr>
+            </h2>
+       </div>
+       <div class="keyword-content">
+          <div class="kw-overview">
+            {{if args.length}}
+              <div class="args">
+                <h4>Arguments</h4>
+                <div class="arguments-list-container">
+                  <div class="arguments-list">
+                  {{each args}}
+                    <span class="arg-name {{if $value.required}}arg-required{{else}}arg-optional{{/if}}" title="Argument name">{{if $value.kind === 'VAR_POSITIONAL'}}*{{/if}}{{if $value.kind === 'VAR_NAMED'}}**{{/if}}${$value.name}</span>
+
+                    {{if $value.default !== null}}
+                      <div class="arg-default-container">
+                        <span class="arg-default-eq">=</span>
+                        <span class="arg-default-value" title="Argument default value">${$value.default}</span>
+                      </div>
+                    {{/if}}
+
+                    {{if $value.types.length}}
+                      <span class="arg-type" title="Argument '${$value.name}' will be converter to type ${$value.types}">
+                        ${( $data.linked = $value.linked ),''}
+                        {{each $value.types}}&lt;{{if $data.linked.indexOf($value) > -1}}<a class="type" href="#${$value}">${$value}</a>{{else}}<span class="type">${$value}</span>{{/if}}&gt;<span class="or"></span>{{/each}}
+                      </span>
+                    {{/if}}
+                  {{/each}}
+                  </div>
+                </div>
+              </div>
+            {{/if}}
+            {{if libdoc.tags.length}}
+              <div class="tags">
+                <h4>Tags</h4>
+                {{each tags}}
+                  <a href="javascript:tagSearch('${$value}')"
+                    title="Show keywords with this tag">${$value}</a>{{if $index < tags.length-1}},<br>{{/if}}
+                {{/each}}
+              </div>
+            {{/if}}
+          </div>
+          {{if doc}}
+            <div class="kw-docs">
+              <h4>Documentation</h4>
+              <div class="kwdoc doc">{{html doc}}</div>
+            </div>
+          {{/if}}
+       </div>
+    </div>
 </script>
 
+<script type="text/x-jquery-tmpl" id="data-types-template">
+    {{if dataTypes.length}}
+    <h2 id="Data types">Data types</h2>
+    <div class="data-types">
+        {{each dataTypes}}
+        {{if !$value.hidden}}
+            {{tmpl($value) 'data-type-template'}}
+        {{/if}}
+        {{/each}}
+        {{each dataTypes}}
+        {{if $value.hidden}}
+            {{tmpl($value) 'data-type-template'}}
+        {{/if}}
+        {{/each}}
+    </div>
+    {{/if}}
+</script>
+
+<script type="text/x-jquery-tmpl" id="data-type-template">
+    <div class="data-type-container {{if hidden}}no-{{/if}}match" id="${name}">
+       <div class="data-type-name">
+            <h2>Type:
+            <a class="dt-name" href="#${encodeURIComponent(name)}"
+               title="Link to this data type">${name}</a>
+            </h2>
+       </div>
+       <div class="data-type-content">
+          {{if members}}
+            <div class="dt-members">
+              <h4>Allowed Values</h4>
+              <ul class="enum-type-members">
+                {{each members}}
+                <li>
+                  <span class="enum-member">${$value.name}</span>
+                </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{else items}}
+            <div class="dt-items">
+              <h4>Dictionary Structure</h4>
+                <div class="typed-dict-annotation">
+                <span class="typed-dict-item"
+                >{{{each items}}<br><span
+                  {{if required !== null}}
+                    class="td-item {{if required}}required-key{{else}}optional-key{{/if}}"
+                    title="{{if required}}required-key{{else}}optional-key{{/if}}"
+                  {{else}}
+                    class="td-item"
+                  {{/if}}
+                 >'${key}': </span>
+                   <span class="td-type">&lt;${type}&gt;</span>{{/each}}<br>}</span>
+                </div>
+            </div>
+          {{/if}}
+          {{if doc}}
+            <div class="dt-docs">
+              <h4>Documentation</h4>
+              <div class="dtdoc doc">{{html doc}}</div>
+            </div>
+          {{/if}}
+       </div>
+    </div>
+</script>
 
 <script type="text/x-jquery-tmpl" id="footer-template">
     <p class="footer">
-        <span id="altogether-count">Altogether ${keywords.length} keywords.</span>
-        <span id="match-count"></span>
-        <br>
         Generated by <a href="http://robotframework.org/robotframework/#built-in-tools">Libdoc</a> on ${generated}.
     </p>
 </script>
