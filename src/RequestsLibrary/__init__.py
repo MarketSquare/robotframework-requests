@@ -56,7 +56,7 @@ class RequestsLibrary(RequestsOnSessionKeywords, DeprecatedKeywords):
         = Response Object =
 
         All the HTTP requests keywords (GET, POST, PUT, etc.) return an extremely useful Response object.
-        The Response object contains a server’s response to an HTTP request.
+        The Response object contains a server's response to an HTTP request.
 
         You can access the different attributes with the dot notation in this way: ``${response.json()}`` or
         ``${response.text}``. Below the list of the most useful attributes:
@@ -68,7 +68,7 @@ class RequestsLibrary(RequestsOnSessionKeywords, DeprecatedKeywords):
         | encoding | Encoding to decode with when accessing ``response.text.`` |
         | headers | Case-insensitive Dictionary of Response Headers. For example, ``headers['content-encoding']`` will return the value of a `Content-Encoding' response header. |
         | history | A list of Response objects from the history of the Request. Any redirect responses will end up here. The list is sorted from the oldest to the most recent request. |
-        | json    | Returns the json-encoded content of a response, if any. Parameters:	``**kwargs`` – Optional arguments that json.loads takes. Raises:	ValueError – If the response body does not contain valid json. |
+        | json    | Returns the json-encoded content of a response, if any. Parameters:	``**kwargs`` - Optional arguments that json.loads takes. Raises:	ValueError ? If the response body does not contain valid json. |
         | ok      | Returns True if status_code is less than 400, False if not. |
         | reason  | Textual reason of responded HTTP Status, e.g. ``Not Found`` or ``OK``. |
         | status_code | Integer Code of responded HTTP Status, e.g. 404 or 200. |
