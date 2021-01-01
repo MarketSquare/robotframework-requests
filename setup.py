@@ -29,7 +29,7 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
 """[1:-1]
 
-TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'coverage', 'flake8'] if PY3 \
+TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8'] if PY3 \
     else ['robotframework>=3.2.1', 'pytest', 'flask', 'coverage', 'flake8', 'mock']
 
 setup(name='robotframework-requests',

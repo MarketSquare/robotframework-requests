@@ -23,6 +23,7 @@ Setup Flask Http Server
     ${flask_cmd} =  Set Variable If
     ...  '${platform}'=='win32'  ${CURDIR}/http_server/run.cmd
     ...  ${CURDIR}/http_server/run.sh
+    # No way to have the return code or other data on the process since it's in background
     Start Process  ${flask_cmd}  cwd=${CURDIR}/http_server/  alias=flask
     Create Session  ${GLOBAL_SESSION}  ${HTTP_LOCAL_SERVER}
     Wait Until Http Server Is Up And Running
