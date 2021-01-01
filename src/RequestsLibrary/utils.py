@@ -136,4 +136,6 @@ def warn_if_equal_symbol_in_url(func):
                             " or use '/your-url/foo  params=param=a' or escape it")
 
         return func(*args, **kwargs)
+    decorator.__name__ = func.__name__
+    decorator.__doc__ = func.__doc__
     return decorator
