@@ -3,17 +3,13 @@
 [![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 
-🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) test library that uses the [Requests](https://github.com/kennethreitz/requests) HTTP client.
+🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) library
+aimed to provide HTTP api testing functionalities by wrapping the well known [Python Requests Library](https://github.com/kennethreitz/requests).
 
 
 ## Install stable version
 ```sh
 pip install robotframework-requests
-```
-
-## ✨ Install latest 0.8 pre-release version (recommended) ✨
-```sh
-pip install robotframework-requests --pre
 ```
 
 ### What's new in 0.8
@@ -26,7 +22,8 @@ when a session is not needed.
 
 **Implicit assert on status code:**
 `* On Session` keywords automatically fail if an error status code is returned.
-`expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`) or `any` if you want to evaluate the response in any case. 
+`expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`) 
+or `any` if you want to evaluate the response in any case. 
 
 **Closer to the original Requests library:**
 New keywords have the same parameter orders and structure as the original.
