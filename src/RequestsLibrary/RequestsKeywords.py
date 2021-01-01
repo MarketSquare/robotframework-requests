@@ -23,10 +23,18 @@ class RequestsKeywords(object):
         But it could also be a named status code like 'ok', 'created', 'accepted' or
         'bad request', 'not found' etc.
 
-        The ``response`` is the output of other requests keywords like `GET On Session`.
+        ``response`` is the output of other requests keywords like `GET On Session`.
 
-        A custom message ``msg`` can be added to work like built-in keywords.
+        In case of failure an HTTPError will be automatically raised.
+        A custom failure message ``msg`` can be added like in built-in keywords.
+
+        `* On Session` keywords (like `GET On Session`) already have an implicit assert mechanism, that by default,
+        verifies the response status code.
+        `Status Should Be` keyword can be useful to do an explicit assert in case of `* On Session` keyword with
+        ``expected_status=anything`` to disable implicit assert.
         """
+        # TODO add an example in documentation of GET On Session expected=any than assert
+
         self._check_status(expected_status, response, msg)
 
     @keyword("Request Should Be Successful")
@@ -34,9 +42,12 @@ class RequestsKeywords(object):
         """
         Fails if response status code is a client or server error (4xx, 5xx).
 
-        The ``response`` is the output of other requests keywords like `GET On Session`.
+        ``response`` is the output of other requests keywords like `GET On Session`.
 
         In case of failure an HTTPError will be automatically raised.
+        A custom failure message ``msg`` can be added like in built-in keywords.
+
+        For a more versatile assert keyword see `Status Should Be`.
         """
         self._check_status(None, response, msg=None)
 
