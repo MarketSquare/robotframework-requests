@@ -53,7 +53,7 @@ jobs:
     - name: Test with Robot Framework and coverage
       run: |
         coverage erase
-        coverage run --branch --source src/ -m robot --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
+        coverage run --branch --source src/ -m robot --loglevel trace:info --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
     - name: Acceptance tests coverage
       run: |
         coverage report
