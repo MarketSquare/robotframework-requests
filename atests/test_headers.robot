@@ -1,7 +1,7 @@
 *** Settings ***
 Library  String
 Library  Collections
-Library  ../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 Resource  res_setup.robot
 
 Suite Setup     Setup Flask Http Server

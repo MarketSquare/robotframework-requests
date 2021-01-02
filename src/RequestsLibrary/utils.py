@@ -4,9 +4,20 @@ import types
 
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
+from robot.api import logger
 
 from RequestsLibrary.compat import urlencode, PY3
 from RequestsLibrary.exceptions import UnknownStatusError
+
+
+class WritableObject:
+    """ HTTP stream handler """
+
+    def __init__(self):
+        self.content = []
+
+    def write(self, string):
+        self.content.append(string)
 
 
 def parse_named_status(status_code):
@@ -112,3 +123,19 @@ def format_data_according_to_header(session, data, headers):
         data = utf8_urlencode(data)
 
     return data
+
+
+def warn_if_equal_symbol_in_url(func):
+    def decorator(*args, **kwargs):
+        try:
+            args[2]
+        except IndexError:
+            if 'url' not in kwargs:
+                logger.warn("You might have an = symbol in url."
+                            " You better place 'url=' before, example: 'url=/your-url/foo?param=a'"
+                            " or use '/your-url/foo  params=param=a' or escape it")
+
+        return func(*args, **kwargs)
+    decorator.__name__ = func.__name__
+    decorator.__doc__ = func.__doc__
+    return decorator

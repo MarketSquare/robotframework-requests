@@ -1,6 +1,5 @@
 *** Settings ***
-Library  ../../src/RequestsLibrary/RequestsKeywords.py
-
+Library   RequestsLibrary
 
 *** Test Cases ***
 Test NTLM Session without installed library

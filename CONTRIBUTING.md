@@ -46,9 +46,9 @@ Test coverage is evaluated for unit and acceptance tests, after test execution
 
 #### Documentation
 
-Keywords documentation can be updated running the following command:
+Keywords documentation (on Linux) can be updated running the following script:
 
-`python -m robot.libdoc src/RequestsLibrary doc/RequestsLibrary.html`
+`doc/generate_doc.sh`
 
 # What can I do?
 

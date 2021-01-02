@@ -3,20 +3,14 @@
 [![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
 
-🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) test library that uses the [Requests](https://github.com/kennethreitz/requests) HTTP client.
+🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) library
+aimed to provide HTTP api testing functionalities by wrapping the well known [Python Requests Library](https://github.com/kennethreitz/requests).
 
 
 ## Install stable version
 ```sh
 pip install robotframework-requests
 ```
-
-## ✨ Install latest 0.8 pre-release version (recommended) ✨
-```sh
-pip install robotframework-requests --pre
-```
-- [0.8 README](https://github.com/MarketSquare/robotframework-requests/blob/0.8/README.md)
-- [0.8 Keywords documentation](https://robotframework-requests.netlify.app/doc/requestslibrary)
 
 ### What's new in 0.8
 
@@ -28,7 +22,8 @@ when a session is not needed.
 
 **Implicit assert on status code:**
 `* On Session` keywords automatically fail if an error status code is returned.
-`expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`) or `any` if you want to evaluate the response in any case. 
+`expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`) 
+or `any` if you want to evaluate the response in any case. 
 
 **Closer to the original Requests library:**
 New keywords have the same parameter orders and structure as the original.
@@ -43,18 +38,27 @@ Main keywords file has been split with a more logic division to allow better and
 Library               Collections
 Library               RequestsLibrary
 
-*** Test Cases ***
-Get Request
-    Create Session    jsonplaceholder         https://jsonplaceholder.typicode.com
-    ${resp}=          Get request    jsonplaceholder     /posts/1
-    Dictionary Should Contain Value   ${resp.json()}     sunt aut facere repellat provident occaecati excepturi
+Suite Setup           Create Session    jsonplaceholder    https://jsonplaceholder.typicode.com
 
-Post Request
-    Create Session    jsonplaceholder         https://jsonplaceholder.typicode.com
-    &{data}=          Create dictionary       title=Robotframework requests  body=This is a test!  userId=1
-    ${resp}=          Post request    jsonplaceholder     /posts    json=${data}
-    Dictionary Should Contain Key   ${resp.json()}     id
+*** Test Cases ***
+
+Get Request Test
+    Create Session    google             http://www.google.com
+
+    ${resp_google}=   GET On Session     google             /           expected_status=200
+    ${resp_json}=     GET On Session     jsonplaceholder    /posts/1
+
+    Should Be Equal As Strings           ${resp_google.reason}    OK
+    Dictionary Should Contain Value      ${resp_json.json()}    sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+
+Post Request Test
+    &{data}=          Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
+    ${resp}=          POST On Session    jsonplaceholder     /posts    json=${data}
+    
+    Status Should Be                     201    ${resp}
+    Dictionary Should Contain Key        ${resp.json()}     id
 ```
+
 ### 📖 Keywords documentation
 Robotframework-requests offers a wide set of keywords which can be found in the [Keywords documentation](http://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html)
 

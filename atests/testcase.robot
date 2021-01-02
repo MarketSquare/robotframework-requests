@@ -1,25 +1,37 @@
 *** Settings ***
 Library  Collections
 Library  String
-Library  ../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 Library  OperatingSystem
 Library  customAuthenticator.py
 Library  base64Decode.py
 Resource  res_setup.robot
 
+Test Setup      Setup Test Session
+Test Teardown   Teardown Test Session
 Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
+
+*** Variables ***
+${test_session}     local test session created in Test Setup
 
 *** Test Cases ***
 Readme Test
     [Tags]  get    skip
-    Create Session    github         http://api.github.com
-    Create Session    google         http://www.google.com
-    ${resp}=          Get Request    google               /
-    Status Should Be  200            ${resp}
-    ${resp}=          Get Request    github               /users/bulkan
-    Request Should Be Successful     ${resp}
-    Dictionary Should Contain Value  ${resp.json()}       Bulkan Evcimen
+    Create Session    google             http://www.google.com
+    Create Session    jsonplaceholder    https://jsonplaceholder.typicode.com
+
+    ${resp_google}=   GET On Session     google             /           expected_status=200
+    ${resp_json}=     GET On Session     jsonplaceholder    /posts/1
+
+    Should Be Equal As Strings           ${resp_google.reason}    OK
+    Dictionary Should Contain Value      ${resp_json.json()}    sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+
+    &{data}=        Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
+    ${resp}=        POST On Session    jsonplaceholder     /posts    json=${data}
+
+    Status Should Be                 201    ${resp}
+    Dictionary Should Contain Key    ${resp.json()}     id
 
 Get Requests
     [Tags]  get    skip
@@ -31,23 +43,23 @@ Get Requests
     Should Be Equal As Strings  ${resp.status_code}  200
     Dictionary Should Contain Value  ${resp.json()}  Bulkan Evcimen
 
-Get Requests with Url Parameters
+Get Request with Url Parameters
     [Tags]  get
-    Create Session  httpbin     http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
-    ${resp}=     Get Request  httpbin  /get    params=${params}
+    ${params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=     Get Request  ${test_session}  /anything    params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
+    Should Be Equal As Strings     ${jsondata['method']}   GET
     Should Be Equal     ${jsondata['args']}     ${params}
 
-Get Requests with Json Data
+Get Request with Json Data
     [Tags]  get
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Get Request  httpbin  /get    json=${data}
+    ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Get Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
-    # httpbin does not support this... Should Be Equal     ${jsondata['json]}     ${data}
+    ${jsondata}=  Set Variable  ${resp.json()}
+    Should Be Equal As Strings     ${jsondata['method']}   GET
+    Should Be Equal     ${jsondata['json']}     ${data}
 
 Get HTTPS & Verify Cert
     [Tags]  get     get-cert
@@ -94,125 +106,129 @@ Get With Digest Auth
 
 Post Request With URL Params
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
-    ${resp}=  Post Request  httpbin  /post		params=${params}
+    ${params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=  Post Request  ${test_session}  /anything		params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
 
 Post Requests with Json Data
     [Tags]  post
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Post Request  httpbin  /post    json=${data}
+    ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Post Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
+    Should Be Equal As Strings     ${jsondata['method']}   POST
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Put Requests with Json Data
     [Tags]  put
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Put Request  httpbin  /put    json=${data}
+    ${data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
+    ${resp}=     Put Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
+    Should Be Equal As Strings     ${jsondata['method']}   PUT
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Post Request With No Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Post Request  httpbin  /post
+    ${resp}=  Post Request  ${test_session}  /anything
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
 
 Put Request With No Data
     [Tags]  put
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Put Request  httpbin  /put
+    ${resp}=  Put Request  ${test_session}  /anything
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   PUT
 
 Post Request With No Dictionary
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
-    Set Test Variable  ${data}  some content
-    ${resp}=  Post Request  httpbin  /post  data=${data}
+    ${data}=  Set Variable  some content
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     Should Contain  ${resp.text}  ${data}
 
 Put Request With URL Params
     [Tags]  put
-    Create Session  httpbin  http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
-    ${resp}=  Put Request  httpbin  /put  params=${params}
+    ${params}=   Create Dictionary   key=value     key2=value2
+    ${resp}=  Put Request  ${test_session}  /anything  params=${params}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   PUT
+
 
 Put Request With No Dictionary
     [Tags]  put
-    Create Session  httpbin  http://httpbin.org
     Set Test Variable  ${data}  some content
-    ${resp}=  Put Request  httpbin  /put  data=${data}
+    ${resp}=  Put Request  ${test_session}  /anything  data=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   PUT
     Should Contain  ${resp.text}  ${data}
 
-Post Requests
+Post Request
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-    &{data}=  Create Dictionary  name=bulkan  surname=evcimen
-    &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
-    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    ${data}=  Create Dictionary  name=bulkan  surname=evcimen
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=${headers}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
     Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
 
 Post With Unicode Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
-    &{data}=  Create Dictionary  name=度假村
-    &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
-    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    ${data}=  Create Dictionary  name=度假村
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=${headers}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     Dictionary Should Contain Value  ${resp.json()['form']}  度假村
 
 Post Request With Unicode Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
-    &{data}=  Create Dictionary  name=度假村
-    &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
-    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
+    ${data}=  Create Dictionary  name=度假村
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=${headers}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     Dictionary Should Contain Value  ${resp.json()['form']}  度假村
 
 Post Request With Binary Data in Dictionary
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
     ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
-    &{data}=  Create Dictionary  name=${file_data.strip()}
-    &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
-    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
-    Log  ${resp.json()['form']}
+    ${data}=  Create Dictionary  name=${file_data.strip()}
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=${headers}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     Should Contain  ${resp.json()['form']['name']}  \u5ea6\u5047\u6751
 
 Post Request With Binary Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
     ${data}=  Get Binary File  ${CURDIR}${/}data.json
-    &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
-    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=${headers}
-    Log  ${resp.json()['form']}
+    ${headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=${headers}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
     ${value}=  evaluate  list(${resp.json()['form']}.keys())[0]
     Should Contain  ${value}  度假村
 
 Post Request With Arbitrary Binary Data
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org    debug=3
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     &{headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
-    ${resp}=  Post Request  httpbin  /post  data=${data}  headers=&{headers}
+    ${resp}=  Post Request  ${test_session}  /anything  data=${data}  headers=&{headers}
     ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
     Should Be Equal  ${receivedData}  ${data}
 
 Post Request With File
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
     ${file_data}=  Get Binary File  ${CURDIR}${/}data.json
-    &{files}=  Create Dictionary  file=${file_data}
-    ${resp}=  Post Request  httpbin  /post  files=${files}
-    ${file}=  To Json  ${resp.json()['files']['file']}
+    ${files}=  Create Dictionary  file=${file_data}
+    ${resp}=  Post Request  ${test_session}  /anything  files=${files}
+    Should Be Equal As Strings  ${resp.status_code}  200
+    Should Be Equal As Strings     ${resp.json()['method']}   POST
+    ${file}=  Set Variable  ${{dict(${resp.json()['files']['file']})}}
     Dictionary Should Contain Key  ${file}  one
     Dictionary Should Contain Key  ${file}  two
 
@@ -277,7 +293,7 @@ Delete Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Delete Request  httpbin  /delete    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
 
 Patch Requests
@@ -295,38 +311,8 @@ Patch Requests with Json Data
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
     ${resp}=     Patch Request  httpbin  /patch    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  To Json  ${resp.content}
+    ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
-
-Do Not Pretty Print a JSON object
-    [Tags]    json
-    Comment    Define json variable.
-    &{var}=    Create Dictionary    key_one=true    key_two=this is a test string
-    ${resp}=    Get Request    httpbin    /get    params=${var}
-    Set Suite Variable    ${resp}
-    Should Be Equal As Strings    ${resp.status_code}    200
-    ${jsondata}=    To Json    ${resp.content}
-    Dictionaries Should Be Equal   ${jsondata['args']}    ${var}
-
-Pretty Print a JSON object
-    [Tags]    json
-    Comment    Define json variable.
-    Log    ${resp}
-    ${output}=    To Json    ${resp.content}    pretty_print=True
-    Log    ${output}
-    Should Contain    ${output}    "key_one": "true"
-    Should Contain    ${output}    "key_two": "this is a test string"
-    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
-
-Set Pretty Print to non-Boolean value
-    [Tags]    json
-    Comment    Define json variable.
-    Log    ${resp}
-    ${output}=    To Json    ${resp.content}    pretty_print="Hello"
-    Log    ${output}
-    Should Contain    ${output}    "key_one": "true"
-    Should Contain    ${output}    "key_two": "this is a test string"
-    Should Not Contain    ${output}    {u'key_two': u'this is a test string', u'key_one': u'true'}
 
 Create a session and make sure it exists
     [Tags]    session
@@ -342,5 +328,5 @@ Verify a non existing session
 Post Request With Large Truncated Body
     [Tags]  post
     ${html}=  Get File  ${CURDIR}${/}index.html
-    ${resp}=  Post Request  ${GLOBAL_LOCAL_SESSION}  /anything  data=${html}
+    ${resp}=  Post Request  ${test_session}  /anything  data=${html}
     Status Should be  200  ${resp}

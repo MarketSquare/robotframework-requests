@@ -46,24 +46,25 @@ jobs:
         coverage report
         coverage xml
     - name: Update codecov for unit tests
-      uses: codecov/codecov-action@v1.0.6
+      uses: codecov/codecov-action@v1
       with:
         flags: unit
         file: coverage.xml
     - name: Test with Robot Framework and coverage
       run: |
         coverage erase
-        coverage run --branch --source src/ -m robot --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
+        coverage run --branch --source src/ -m robot --loglevel trace:info --exclude skip --pythonpath src --outputdir ./tests-report --consolecolors ansi atests
     - name: Acceptance tests coverage
       run: |
         coverage report
         coverage xml
     - name: Update codecov for acceptance tests
-      uses: codecov/codecov-action@v1.0.6
+      uses: codecov/codecov-action@v1
       with:
         flags: acceptance
         file: coverage.xml
     - name: Archive Robot Framework Tests Report
+      if: ${{ always() }}
       uses: actions/upload-artifact@v1
       with:
         name: rf-tests-report-${{ matrix.os }}-${{ matrix.python-version }}

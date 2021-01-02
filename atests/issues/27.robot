@@ -1,7 +1,7 @@
 *** Settings ***
 Library  Collections
 Library  String
-Library  ../../src/RequestsLibrary/RequestsKeywords.py
+Library  RequestsLibrary
 Library  OperatingSystem
 Suite Teardown  Delete All Sessions
 
@@ -11,8 +11,8 @@ Post Request With XML File
     Create Session  httpbin  http://httpbin.org
 
     ${file_data}=  Get File  ${CURDIR}${/}test.xml
-    &{files}=  Create Dictionary  xml=${file_data}
-    &{headers}=  Create Dictionary  Authorization=testing-token
+    ${files}=  Create Dictionary  xml=${file_data}
+    ${headers}=  Create Dictionary  Authorization=testing-token
     Log  ${headers}
     ${resp}=  Post Request  httpbin  /post  files=${files}  headers=${headers}
 
