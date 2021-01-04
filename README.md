@@ -19,6 +19,7 @@ All requests keywords have been rewritten because of many not backward compatibl
 and to allow in the near future requests keywords without a session.
 Example `Get Request` become `GET On Session` and soon there will be also just `GET` 
 when a session is not needed.
+Old keywords `* Request` are now deprecated and will be removed in 1.0.0 version.
 
 **Implicit assert on status code:**
 `* On Session` keywords automatically fail if an error status code is returned.
