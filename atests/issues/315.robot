@@ -8,22 +8,15 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 *** Test Cases ***
 Test On Session Keyword With Verify As Parameter
 
-    GET On Session  ${GLOBAL_SESSION}  /  verify=${False}
+    ${resp}=  GET On Session  ${GLOBAL_SESSION}  /  verify=${False}
+    Status Should Be  OK  ${resp}
 
+Test On Session Keyword With None Cookies As Parameter
 
-#Test Unverified SSL Cert With Session Verify True
-#
-#    Create Session  unverified_ssl  unverified-ssl-??? verify=${True}
-#    Run Keyword And Expect Error  SSLError:*  GET On Session  unverified_ssl  /
-#
-#
-#Test Unverified SSL Cert With Session Verify False And Request Override True
-#
-#    Create Session  unverified_ssl  unverified-ssl-??? verify=${False}
-#    GET On Session  unverified_ssl  /  verify=${True}
-#
-#
-#Test Unverified SSL Cert With Session Verify True And Request Override False
-#
-#    Create Session  unverified_ssl  unverified-ssl-??? verify=${True}
-#    GET On Session  unverified_ssl  /  verify=${False}
+    ${resp}=  GET On Session  ${GLOBAL_SESSION}  /  cookies=${None}
+    Status Should Be  OK  ${resp}
+
+Test On Session Keyword With Cookies As Parameter
+
+    ${resp}=  GET On Session  ${GLOBAL_SESSION}  /  cookies=${False}
+    Status Should Be  OK  ${resp}

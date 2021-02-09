@@ -565,11 +565,15 @@ class SessionKeywords(RequestsKeywords):
         method_function = getattr(session, method)
         self._capture_output()
 
+        try:
+            kwargs['cookies']
+        except KeyError:
+            kwargs['cookies'] = self.cookies
+
         resp = method_function(
             self._get_url(session, uri),
             params=utils.utf8_urlencode(kwargs.pop('params', None)),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
-            cookies=self.cookies,
             **kwargs)
 
         log.log_request(resp)
