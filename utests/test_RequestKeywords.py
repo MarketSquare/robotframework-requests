@@ -23,7 +23,7 @@ def test_common_request_file_descriptor_closing():
         assert f.closed is True
 
 
-def test_common_request_verify_overwrite_true():
+def test_common_request_verify_override_true():
     session, m_common_request = build_mocked_session_common_request(verify=False)
     m_common_request('get', session, '/', verify=True)
     session.get.assert_called_with('http://mocking.rules/', cookies={}, params=None,
@@ -31,7 +31,7 @@ def test_common_request_verify_overwrite_true():
     assert session.verify is False
 
 
-def test_common_request_verify_overwrite_false():
+def test_common_request_verify_override_false():
     session, m_common_request = build_mocked_session_common_request(verify=True)
     m_common_request('get', session, '/', verify=False)
     session.get.assert_called_with('http://mocking.rules/', cookies={}, params=None,
