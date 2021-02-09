@@ -28,6 +28,7 @@ def test_common_request_verify_overwrite_true():
     m_common_request('get', session, '/', verify=True)
     session.get.assert_called_with('http://mocking.rules/', cookies={}, params=None,
                                    timeout=None, verify=True)
+    assert session.verify is False
 
 
 def test_common_request_verify_overwrite_false():
@@ -35,12 +36,13 @@ def test_common_request_verify_overwrite_false():
     m_common_request('get', session, '/', verify=False)
     session.get.assert_called_with('http://mocking.rules/', cookies={}, params=None,
                                    timeout=None, verify=False)
+    assert session.verify is True
 
 
 def test_common_request_verify_true_default():
     session, m_common_request = build_mocked_session_common_request(verify=True)
     m_common_request('get', session, '/')
-    assert session.verify
+    assert session.verify is True
     session.get.assert_called_with('http://mocking.rules/', cookies={}, params=None,
                                    timeout=None)
 
@@ -48,6 +50,6 @@ def test_common_request_verify_true_default():
 def test_common_request_verify_false_default():
     session, m_common_request = build_mocked_session_common_request(verify=False)
     m_common_request('get', session, '/')
-    assert not session.verify
+    assert session.verify is False
     session.get.assert_called_with('http://mocking.rules/', cookies={}, params=None,
                                    timeout=None)
