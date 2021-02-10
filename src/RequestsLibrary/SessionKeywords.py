@@ -94,7 +94,6 @@ class SessionKeywords(RequestsKeywords):
         # cant pass these into the Session anymore
         self.timeout = float(timeout) if timeout is not None else None
         self.cookies = cookies
-        self.verify = verify if self.builtin.convert_to_boolean(verify) is not True else None
 
         s.url = url
 
@@ -570,8 +569,7 @@ class SessionKeywords(RequestsKeywords):
             self._get_url(session, uri),
             params=utils.utf8_urlencode(kwargs.pop('params', None)),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
-            cookies=self.cookies,
-            verify=self.verify,
+            cookies=kwargs.pop('cookies', self.cookies),
             **kwargs)
 
         log.log_request(resp)
