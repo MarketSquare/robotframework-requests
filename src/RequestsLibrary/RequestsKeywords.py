@@ -1,5 +1,6 @@
 import json
 
+import requests
 import robot
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
@@ -64,3 +65,10 @@ class RequestsKeywords(object):
         if used outside this library it's up to the caller to close it.
         """
         return open(path, 'rb')
+
+    @keyword('GET')
+    def session_less_get(self, url, params=None,
+                         expected_status=None, msg=None, **kwargs):
+        response = requests.get(url, params, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
