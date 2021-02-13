@@ -2,7 +2,6 @@ import requests
 import robot
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
-from robot.utils.asserts import assert_equal
 
 from RequestsLibrary.compat import urljoin
 from RequestsLibrary import utils, log

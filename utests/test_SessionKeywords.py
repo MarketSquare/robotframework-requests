@@ -35,5 +35,3 @@ class TestUrlLibWarnings(unittest.TestCase):
         with self.assertRaises(AssertionError):
             with self.assertWarns(DeprecationWarning):
                 keywords.create_session('alias', 'http://mocking.rules')
-
-

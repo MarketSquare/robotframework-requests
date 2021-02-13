@@ -10,11 +10,11 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.utils.asserts import assert_equal
 
-from RequestsLibrary import utils, log
+from RequestsLibrary import utils
 from RequestsLibrary.compat import httplib, PY3, RetryAdapter
 from .RequestsKeywords import RequestsKeywords
 from RequestsLibrary.exceptions import InvalidResponse, InvalidExpectedStatus
-from RequestsLibrary.utils import is_file_descriptor, is_string_type
+from RequestsLibrary.utils import is_string_type
 
 try:
     from requests_ntlm import HttpNtlmAuth
