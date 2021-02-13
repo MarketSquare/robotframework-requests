@@ -1,3 +1,7 @@
+import sys
+
+import pytest
+
 from RequestsLibrary import RequestsLibrary
 from utests import mock
 
@@ -8,6 +12,12 @@ from utests import mock
 #     keywords._common_request('get', None, 'http://mock.rules')
 #     mocked_get.assert_called_with('http://mock.rules')
 
+def build_mocked_session_keywords(url=''):
+    keywords = RequestsLibrary()
+    session = mock.MagicMock()
+    session.url = url
+    return session, keywords
+
 
 def test_get_url_with_none_session():
     keywords = RequestsLibrary()
@@ -16,56 +26,43 @@ def test_get_url_with_none_session():
 
 
 def test_get_url_with_base():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, '')
     assert url == 'http://www.domain.com'
 
 
 def test_get_url_with_base_endpoint():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, 'endpoint')
     assert url == 'http://www.domain.com/endpoint'
 
 
 def test_get_url_with_base_slash_endpoint_pre():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com/'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com/')
     url = keywords._get_url(session, 'endpoint')
     assert url == 'http://www.domain.com/endpoint'
 
 
 def test_get_url_with_base_slash_endpoint_post():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, '/endpoint')
     assert url == 'http://www.domain.com/endpoint'
 
 
+@pytest.mark.skipif(sys.version_info < (3, 0), reason="different urljoin handling of double slash")
 def test_get_url_with_base2trailing_endpoint():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com//'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com//')
     url = keywords._get_url(session, 'endpoint')
     assert url == 'http://www.domain.com/endpoint'
 
 
 def test_get_url_with_base_slash_endpoint_2trailing():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, '/endpoint//')
     assert url == 'http://www.domain.com/endpoint//'
 
 
 def test_get_url_with_url_override_base():
-    keywords = RequestsLibrary()
-    session = mock.MagicMock()
-    session.url = 'http://www.domain.com'
+    session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, 'https://new.domain.com')
     assert url == 'https://new.domain.com'

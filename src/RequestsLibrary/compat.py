@@ -11,7 +11,7 @@ if PY3:
 else:
     import httplib  # noqa
     from urllib import urlencode  # noqa
-    from urllib import urljoin  # noqa
+    from urlparse import urljoin  # noqa
 
 
 class RetryAdapter(Retry):
