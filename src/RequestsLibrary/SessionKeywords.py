@@ -555,34 +555,6 @@ class SessionKeywords(RequestsKeywords):
         session.headers = merge_setting(headers, session.headers)
         session.cookies = merge_cookies(session.cookies, cookies)
 
-    def _common_request(
-            self,
-            method,
-            session,
-            uri,
-            **kwargs):
-
-        method_function = getattr(session, method)
-        self._capture_output()
-
-        resp = method_function(
-            self._get_url(session, uri),
-            params=utils.utf8_urlencode(kwargs.pop('params', None)),
-            timeout=self._get_timeout(kwargs.pop('timeout', None)),
-            cookies=kwargs.pop('cookies', self.cookies),
-            **kwargs)
-
-        log.log_request(resp)
-        self._print_debug()
-        session.last_resp = resp
-        log.log_response(resp)
-
-        data = kwargs.get('data', None)
-        if is_file_descriptor(data):
-            data.close()
-
-        return resp
-
     @staticmethod
     def _check_status(expected_status, resp, msg=None):
         """
@@ -604,17 +576,6 @@ class SessionKeywords(RequestsKeywords):
             msg = '' if msg is None else '{} '.format(msg)
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
-
-    @staticmethod
-    def _get_url(session, uri):
-        """
-        Helper method to get the full url
-        """
-        url = session.url
-        if uri:
-            slash = '' if uri.startswith('/') else '/'
-            url = "%s%s%s" % (session.url, slash, uri)
-        return url
 
     # FIXME might be broken we need a test for this
     def _get_timeout(self, timeout):

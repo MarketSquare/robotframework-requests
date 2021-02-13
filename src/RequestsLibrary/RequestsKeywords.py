@@ -1,10 +1,12 @@
-import json
-
 import requests
 import robot
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils.asserts import assert_equal
+
+from RequestsLibrary.compat import urljoin
+from RequestsLibrary import utils, log
+from RequestsLibrary.utils import is_file_descriptor
 
 
 class RequestsKeywords(object):
@@ -14,6 +16,53 @@ class RequestsKeywords(object):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
+
+    def _common_request(
+            self,
+            method,
+            session,
+            uri,
+            **kwargs):
+
+        if session:
+            method_function = getattr(session, method)
+        else:
+            method_function = getattr(requests, method)
+
+        self._capture_output()
+
+        resp = method_function(
+            self._get_url(session, uri),
+            params=utils.utf8_urlencode(kwargs.pop('params', None)),
+            timeout=self._get_timeout(kwargs.pop('timeout', None)),
+            cookies=kwargs.pop('cookies', self.cookies),
+            **kwargs)
+
+        log.log_request(resp)
+        self._print_debug()
+
+        if session:
+            session.last_resp = resp
+
+        log.log_response(resp)
+
+        data = kwargs.get('data', None)
+        if is_file_descriptor(data):
+            data.close()
+
+        return resp
+
+    @staticmethod
+    def _get_url(session, uri):
+        """
+        Helper method to get the full url
+        """
+        if session:
+            base = session.url
+        else:
+            base = ''
+        url = urljoin(base, uri)
+        return url
 
     @keyword("Status Should Be")
     def status_should_be(self, expected_status, response, msg=None):
@@ -69,6 +118,7 @@ class RequestsKeywords(object):
     @keyword('GET')
     def session_less_get(self, url, params=None,
                          expected_status=None, msg=None, **kwargs):
-        response = requests.get(url, params, **kwargs)
+        response = self._common_request('get', None, url,
+                                        params=params, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
