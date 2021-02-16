@@ -12,6 +12,18 @@ aimed to provide HTTP api testing functionalities by wrapping the well known [Py
 pip install robotframework-requests
 ```
 
+## ✨ Install latest 0.9 pre-release (alpha) version ✨
+```sh
+pip install robotframework-requests --pre
+```
+
+### What's new in 0.9 pre-release
+Session less keywords are now available, you can just `GET`, `POST`, etc.. without creating a session before!
+```robotframework
+${resp}=  GET  https://www.google.com
+```
+See the full [0.9 Keywords documentation](https://robotframework-requests.netlify.app/doc/requestslibrary)
+
 ### What's new in 0.8
 
 **New keywords structure:**
