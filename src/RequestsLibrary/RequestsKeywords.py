@@ -121,3 +121,48 @@ class RequestsKeywords(object):
                                         params=params, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
+
+    @keyword('POST')
+    def session_less_post(self, url, data=None, json=None,
+                          expected_status=None, msg=None, **kwargs):
+        response = self._common_request('post', None, url,
+                                        data=data, json=json, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('PUT')
+    def session_less_put(self, url, data=None, json=None,
+                         expected_status=None, msg=None, **kwargs):
+        response = self._common_request("put", None, url,
+                                        data=data, json=json, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('HEAD')
+    def session_less_head(self, url,
+                          expected_status=None, msg=None, **kwargs):
+        response = self._common_request('head', None, url, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('PATCH')
+    def session_less_patch(self, url, data=None, json=None,
+                           expected_status=None, msg=None, **kwargs):
+        response = self._common_request('patch', None, url,
+                                        data=data, json=json, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('DELETE')
+    def session_less_delete(self, url,
+                            expected_status=None, msg=None, **kwargs):
+        response = self._common_request("delete", None, url, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('OPTIONS')
+    def session_less_options(self, url,
+                             expected_status=None, msg=None, **kwargs):
+        response = self._common_request("options", None, url, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response

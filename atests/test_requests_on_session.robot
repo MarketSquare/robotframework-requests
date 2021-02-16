@@ -131,7 +131,7 @@ Post Request With Json
     ${body}=            Create Dictionary  a=1  b=2
     ${resp}=            POST On Session  ${GLOBAL_SESSION}  /anything  json=${body}
     Status Should Be    OK  ${resp}
-    ${data}=            To Json  ${resp.json()}[data]
+    ${data}=            Evaluate  ${resp.json()}[data]
     Dictionaries Should Be Equal  ${data}  ${body}
 
 Post Request Expect An Error And Evaluate Response
@@ -140,7 +140,7 @@ Post Request Expect An Error And Evaluate Response
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Post Request Expect Anything Status And Continue On Error
-    [Tags]  get
+    [Tags]  post
     ${resp}=            POST On Session  ${GLOBAL_SESSION}  /status/400  expected_status=anything
     Should Be Equal As Strings  BAD REQUEST  ${resp.reason}
 
@@ -205,7 +205,7 @@ Head Request And Fail By Default On Http Error
 
 Head Request Expect An Error And Evaluate Response
     [Tags]  head
-    ${resp}=             HEAD On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
+    ${resp}=            HEAD On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Patch Request On Existing Session
@@ -268,10 +268,10 @@ Options Request Check Allow Header
 
 Options Request And Bad Request Not Fail
     [Tags]  options
-    ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  /status/400
+    ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /status/400
     Status Should Be    OK  ${resp}
 
 Options Request Expect A Success On Unauthorized Request
     [Tags]  options
-    ${resp}=    OPTIONS On Session  ${GLOBAL_SESSION}  /status/401  expected_status=200
+    ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /status/401  expected_status=200
     Status Should Be    OK  ${resp}
