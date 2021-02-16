@@ -11,6 +11,11 @@ aimed to provide HTTP api testing functionalities by wrapping the well known [Py
 ```sh
 pip install robotframework-requests
 ```
+### What's new in 0.9
+Session less keywords are now available, you can just `GET`, `POST`, etc.. without creating a session before!
+```robotframework
+${resp}=  GET  https://www.google.com
+```
 
 ### What's new in 0.8
 
