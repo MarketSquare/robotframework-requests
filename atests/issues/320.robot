@@ -13,3 +13,13 @@ Test GET with list of values as params
     ${resp}=            GET On Session  ${GLOBAL_SESSION}  url=/anything  params=${parameters}
     Should Contain      ${resp.json()}[url]  ?key=1&key=2&key=3&key=4&key=5
     Should Be Equal     ${resp.json()}[args]  ${parameters}
+
+Test GET with spaces in dictionary as params
+    ${parameters}=      Create Dictionary  key  v a l u e
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  url=/anything  params=${parameters}
+    Should Be Equal     ${resp.json()}[args]  ${parameters}
+
+Test GET with spaces in string as params
+    ${parameters}=      Create Dictionary
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  url=/anything  params=key=v a l u e
+    Should Contain      ${resp.json()}[url]  v%20a%20l%20u%20e
