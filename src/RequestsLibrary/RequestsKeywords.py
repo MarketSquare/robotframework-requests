@@ -15,6 +15,9 @@ class RequestsKeywords(object):
         self._cache = robot.utils.ConnectionCache('No sessions created')
         self.builtin = BuiltIn()
         self.debug = 0
+        # The following variables are related to session but used in _common_request :(
+        self.timeout = None
+        self.cookies = None
 
     def _common_request(
             self,

@@ -6,13 +6,28 @@
 🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) library
 aimed to provide HTTP api testing functionalities by wrapping the well known [Python Requests Library](https://github.com/kennethreitz/requests).
 
-
 ## Install stable version
 ```sh
 pip install robotframework-requests
 ```
+
+## 🤖 Quick start
+```robotframework
+*** Settings ***
+Library               RequestsLibrary
+
+*** Test Cases ***
+
+Quick Get Request Test
+    ${response}=    GET    https://www.google.com/search    params=query=ciao    expected_status=200
+
+Quick Get A JSON Body
+    ${response}=    GET    https://jsonplaceholder.typicode.com/posts/1
+    Should Be Equal As Strings   1  ${response.json()}[id]
+```
+
 ### What's new in 0.9
-Session less keywords are now available, you can just `GET`, `POST`, etc.. without creating a session before!
+Session less keywords are now available, you can just `GET`, `POST`, etc.. no need to create a session anymore!
 ```robotframework
 ${resp}=  GET  https://www.google.com
 ```
@@ -22,14 +37,14 @@ ${resp}=  GET  https://www.google.com
 **New keywords structure:**
 All requests keywords have been rewritten because of many not backward compatible changes
 and to allow in the near future requests keywords without a session.
-Example `Get Request` become `GET On Session` and soon there will be also just `GET` 
+Example `Get Request` become `GET On Session` and soon there will be also just `GET`
 when a session is not needed.
 Old keywords `* Request` are now deprecated and will be removed in 1.0.0 version.
 
 **Implicit assert on status code:**
 `* On Session` keywords automatically fail if an error status code is returned.
-`expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`) 
-or `any` if you want to evaluate the response in any case. 
+`expect_status=` could be used to specify a status code (`201`, `OK`, `Bad request`)
+or `any` if you want to evaluate the response in any case.
 
 **Closer to the original Requests library:**
 New keywords have the same parameter orders and structure as the original.
@@ -38,7 +53,7 @@ Lot of pre-parsing / encoding has been removed to have a more accurate and uncha
 **Cleaner project architecture:**
 Main keywords file has been split with a more logic division to allow better and faster maintenance.
 
-## 🤖 Example usage
+## 🤖 More examples
 ```robotframework
 *** Settings ***
 Library               Collections
@@ -59,7 +74,7 @@ Get Request Test
 
 Post Request Test
     &{data}=          Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
-    ${resp}=          POST On Session    jsonplaceholder     /posts    json=${data}
+    ${resp}=          POST On Session    jsonplaceholder     /posts    json=${data}    expected_status=anything
     
     Status Should Be                     201    ${resp}
     Dictionary Should Contain Key        ${resp.json()}     id
