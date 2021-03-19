@@ -8,25 +8,8 @@ try:
 except ImportError:
     from distutils.core import setup
 
+
 PY3 = sys.version_info > (3,)
-
-CLASSIFIERS = """
-Development Status :: 5 - Production/Stable
-License :: OSI Approved :: MIT License
-Operating System :: OS Independent
-Programming Language :: Python
-Programming Language :: Python :: 2
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3
-Programming Language :: Python :: 3.6
-Programming Language :: Python :: 3.7
-Programming Language :: Python :: 3.8
-Programming Language :: Python :: 3.9
-Topic :: Software Development :: Testing
-"""[1:-1]
-
-TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8'] if PY3 \
-    else ['robotframework>=3.2.1', 'pytest', 'flask', 'coverage', 'flake8', 'mock']
 
 VERSION = None
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
@@ -34,14 +17,25 @@ with open(version_file) as file:
     code = compile(file.read(), version_file, 'exec')
     exec(code)
 
-with open('README.md') as file:
-    readme = file.read()
+DESCRIPTION = """
+Robot Framework keyword library wrapper around the HTTP client library requests.
+"""[1:-1]
+
+CLASSIFIERS = """
+Development Status :: 5 - Production/Stable
+License :: OSI Approved :: MIT License
+Operating System :: OS Independent
+Programming Language :: Python
+Topic :: Software Development :: Testing
+"""[1:-1]
+
+TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8'] if PY3 \
+    else ['robotframework>=3.2.1', 'pytest', 'flask', 'coverage', 'flake8', 'mock']
 
 setup(name='robotframework-requests',
       version=VERSION,
       description='Robot Framework keyword library wrapper around requests',
-      long_description=readme,
-      long_description_content_type='text/markdown',
+      long_description=DESCRIPTION,
       author='Bulkan Savun Evcimen',
       author_email='bulkan@gmail.com',
       maintainer='Luca Giovenzana',
