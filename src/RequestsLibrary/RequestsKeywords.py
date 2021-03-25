@@ -18,6 +18,7 @@ class RequestsKeywords(object):
         # The following variables are related to session but used in _common_request :(
         self.timeout = None
         self.cookies = None
+        self.last_response = None
 
     def _common_request(
             self,
@@ -42,8 +43,11 @@ class RequestsKeywords(object):
         log.log_request(resp)
         self._print_debug()
 
+        # FIXME this variable is not used probably could be removed
         if session:
             session.last_resp = resp
+
+        self.last_response = resp
 
         log.log_response(resp)
 
@@ -66,7 +70,7 @@ class RequestsKeywords(object):
         return url
 
     @keyword("Status Should Be")
-    def status_should_be(self, expected_status, response, msg=None):
+    def status_should_be(self, expected_status, response=None, msg=None):
         """
         Fails if response status code is different than the expected.
 
@@ -85,11 +89,13 @@ class RequestsKeywords(object):
         ``expected_status=anything`` to disable implicit assert.
         """
         # TODO add an example in documentation of GET On Session expected=any than assert
-
+        # TODO Add documentation about the last saved response
+        if not response:
+            response = self.last_response
         self._check_status(expected_status, response, msg)
 
     @keyword("Request Should Be Successful")
-    def request_should_be_successful(self, response):
+    def request_should_be_successful(self, response=None):
         """
         Fails if response status code is a client or server error (4xx, 5xx).
 
@@ -100,6 +106,8 @@ class RequestsKeywords(object):
 
         For a more versatile assert keyword see `Status Should Be`.
         """
+        if not response:
+            response = self.last_response
         self._check_status(None, response, msg=None)
 
     @staticmethod
