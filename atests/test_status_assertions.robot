@@ -86,3 +86,35 @@ Assert Status Should Be Fail On The Last Request
     [Tags]  post  status
     POST On Session  ${GLOBAL_SESSION}  /status/500  expected_status=500
     Run Keyword And Expect Error  Url: http://localhost:5000/status/500 Expected status: 500 != 200  Status Should Be  OK
+
+Assert Successful On The Last Session-Less Request
+    [Tags]  put  status
+    PUT  ${HTTP_LOCAL_SERVER}/status/200
+    Request Should Be Successful
+
+Assert Successful Fail On The Last Session-Less Request
+    [Tags]  put  status
+    PUT  ${HTTP_LOCAL_SERVER}/status/500  expected_status=500
+    Run Keyword And Expect Error  HTTPError: 500*  Request Should Be Successful
+
+Assert Successful Fail On The Last Session-Less Request After A Not Failing Request
+    [Tags]  get  post  status
+    GET  ${HTTP_LOCAL_SERVER}/status/200
+    POST  ${HTTP_LOCAL_SERVER}/status/500  expected_status=500
+    Run Keyword And Expect Error  HTTPError: 500*  Request Should Be Successful
+
+Assert Successful On The Last Session-Less Request After A Failing Request
+    [Tags]  get  status
+    HEAD  ${HTTP_LOCAL_SERVER}/status/500  expected_status=500
+    PATCH  ${HTTP_LOCAL_SERVER}/status/200
+    Request Should Be Successful
+
+Assert Status Should Be OK On The Last Session-Less Request
+    [Tags]  get  status
+    GET  ${HTTP_LOCAL_SERVER}/status/200
+    Status Should Be  200
+
+Assert Status Should Be Fail On The Last Session-Less Request
+    [Tags]  post  status
+    POST  ${HTTP_LOCAL_SERVER}/status/500  expected_status=500
+    Run Keyword And Expect Error  Url: http://localhost:5000/status/500 Expected status: 500 != 200  Status Should Be  OK

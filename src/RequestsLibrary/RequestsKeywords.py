@@ -43,13 +43,9 @@ class RequestsKeywords(object):
         log.log_request(resp)
         self._print_debug()
 
-        # FIXME this variable is not used probably could be removed
-        if session:
-            session.last_resp = resp
+        log.log_response(resp)
 
         self.last_response = resp
-
-        log.log_response(resp)
 
         data = kwargs.get('data', None)
         if is_file_descriptor(data):
@@ -79,6 +75,7 @@ class RequestsKeywords(object):
         'bad request', 'not found' etc.
 
         ``response`` is the output of other requests keywords like `GET On Session`.
+        If omitted the last response will be used.
 
         In case of failure an HTTPError will be automatically raised.
         A custom failure message ``msg`` can be added like in built-in keywords.
@@ -89,7 +86,6 @@ class RequestsKeywords(object):
         ``expected_status=anything`` to disable implicit assert.
         """
         # TODO add an example in documentation of GET On Session expected=any than assert
-        # TODO Add documentation about the last saved response
         if not response:
             response = self.last_response
         self._check_status(expected_status, response, msg)
@@ -100,6 +96,7 @@ class RequestsKeywords(object):
         Fails if response status code is a client or server error (4xx, 5xx).
 
         ``response`` is the output of other requests keywords like `GET On Session`.
+        If omitted the last response will be used.
 
         In case of failure an HTTPError will be automatically raised.
         A custom failure message ``msg`` can be added like in built-in keywords.
