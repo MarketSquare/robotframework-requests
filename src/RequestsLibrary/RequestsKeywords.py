@@ -109,7 +109,6 @@ class RequestsKeywords(object):
         |       ELSE
         |        [...]
         """
-        # TODO add an example in documentation of GET On Session expected=any than assert
         if not response:
             response = self.last_response
         self._check_status(expected_status, response, msg)
@@ -123,7 +122,6 @@ class RequestsKeywords(object):
         If omitted the last response will be used.
 
         In case of failure an HTTPError will be automatically raised.
-        A custom failure message ``msg`` can be added like in built-in keywords.
 
         For a more versatile assert keyword see `Status Should Be`.
         """

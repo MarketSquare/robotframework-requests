@@ -18,7 +18,10 @@ Library               RequestsLibrary
 
 *** Test Cases ***
 
-Quick Get Request Test
+Quick Get Request
+    ${response}=    GET  https://www.google.com
+
+Quick Get Request With Parameters Test
     ${response}=    GET  https://www.google.com/search  params=query=ciao  expected_status=200
 
 Quick Get A JSON Body
@@ -55,29 +58,28 @@ Main keywords file has been split with a more logic division to allow better and
 
 ## 🤖 More examples
 ```robotframework
-*** Settings ***
-Library               Collections
-Library               RequestsLibrary
-
-Suite Setup           Create Session    jsonplaceholder    https://jsonplaceholder.typicode.com
-
-*** Test Cases ***
-
-Get Request Test
-    Create Session    google             http://www.google.com
-
-    ${resp_google}=   GET On Session     google             /           expected_status=200
-    ${resp_json}=     GET On Session     jsonplaceholder    /posts/1
-
-    Should Be Equal As Strings           ${resp_google.reason}    OK
-    Dictionary Should Contain Value      ${resp_json.json()}    sunt aut facere repellat provident occaecati excepturi optio reprehenderit
-
-Post Request Test
-    &{data}=          Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
-    ${resp}=          POST On Session    jsonplaceholder     /posts    json=${data}    expected_status=anything
-    
-    Status Should Be                     201    ${resp}
-    Dictionary Should Contain Key        ${resp.json()}     id
+*** Settings ***                                                                                       
+Library    Collections                                                                                 
+Library    RequestsLibrary                                                                             
+                                                                                                       
+Suite Setup    Create Session  jsonplaceholder  https://jsonplaceholder.typicode.com                   
+                                                                                                       
+*** Test Cases ***                                                                                     
+                                                                                                       
+Get Request Test                                                                                       
+    Create Session    google  http://www.google.com                                                    
+                                                                                                       
+    ${resp_google}=   GET On Session  google  /  expected_status=200                                   
+    ${resp_json}=     GET On Session  jsonplaceholder  /posts/1                                        
+                                                                                                       
+    Should Be Equal As Strings          ${resp_google.reason}  OK                                      
+    Dictionary Should Contain Value     ${resp_json.json()}  sunt aut facere repellat provident        
+                                                                                                       
+Post Request Test                                                                                      
+    &{data}=    Create dictionary  title=Robotframework requests  body=This is a test!  userId=1       
+    ${resp}=    POST On Session    jsonplaceholder  /posts  json=${data}  expected_status=anything     
+                                                                                                       
+    Status Should Be                 201  ${resp}                                                      
 ```
 
 ### 📖 Keywords documentation

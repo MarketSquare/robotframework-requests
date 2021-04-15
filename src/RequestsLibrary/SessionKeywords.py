@@ -538,18 +538,17 @@ class SessionKeywords(RequestsKeywords):
     @keyword("Delete All Sessions")
     def delete_all_sessions(self):
         """ Removes all the session objects """
-        logger.info('Delete All Sessions')
+        logger.info('Deleting All Sessions')
 
         self._cache.empty_cache()
 
     # TODO this is not covered by any tests
     @keyword("Update Session")
     def update_session(self, alias, headers=None, cookies=None):
-        """Update Session Headers: update a HTTP Session Headers
+        """Updates HTTP Session Headers and Cookies.
 
-        ``alias`` Robot Framework alias to identify the session
-
-        ``headers`` Dictionary of headers merge into session
+        Session will be identified using the ``alias`` name.
+        Dictionary of ``headers`` and ``cookies`` to be updated and merged into session data.
         """
         session = self._cache.switch(alias)
         session.headers = merge_setting(headers, session.headers)
