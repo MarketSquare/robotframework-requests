@@ -74,16 +74,40 @@ class RequestsKeywords(object):
         But it could also be a named status code like 'ok', 'created', 'accepted' or
         'bad request', 'not found' etc.
 
-        ``response`` is the output of other requests keywords like `GET On Session`.
+        ``response`` is the output of other requests keywords like `GET` or `GET On Session`.
         If omitted the last response will be used.
 
         In case of failure an HTTPError will be automatically raised.
         A custom failure message ``msg`` can be added like in built-in keywords.
 
-        `* On Session` keywords (like `GET On Session`) already have an implicit assert mechanism, that by default,
-        verifies the response status code.
-        `Status Should Be` keyword can be useful to do an explicit assert in case of `* On Session` keyword with
-        ``expected_status=anything`` to disable implicit assert.
+        New requests keywords like `GET` or `GET On Session` (starting from 0.8 version) already have an implicit assert
+        mechanism that, by default, verifies the response status code.
+        `Status Should Be` keyword can be useful when you disable implicit assert using ``expected_status=anything``.
+
+        For example when you have a nested keyword that is used for both OK and ERROR responses:
+
+        |   *** Test Cases ***
+        |
+        |   Test Get Request And Make Sure Is A 404 Response
+        |       ${resp}=            GET Custom Keyword That Returns OK or ERROR Response  case=notfound
+        |       Status Should Be    404    ${resp}
+        |       Should Be Equal As Strings  NOT FOUND  ${resp.reason}
+        |
+        |   Test Get Request And Make Sure Is OK
+        |       ${resp}=            GET Custom Keyword That Returns OK or ERROR Response  case=pass
+        |       Status Should Be    200    ${resp}
+        |       Should Be Equal As Strings  OK  ${resp.reason}
+        |
+        |   *** Keywords ***
+        |
+        |   GET Custom Keyword That Returns OK or ERROR Response
+        |   [Arguments]  $case
+        |        [...]
+        |       IF $case == notfound
+        |           $resp=     GET [...] expected_status=Anything
+        |           [Return]   $resp
+        |       ELSE
+        |        [...]
         """
         # TODO add an example in documentation of GET On Session expected=any than assert
         if not response:
