@@ -1,5 +1,5 @@
-name-template: 'v$NEXT_PATCH_VERSION'
-tag-template: 'v$NEXT_PATCH_VERSION'
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
 categories:
   - title: 'Features'
     labels:
@@ -7,6 +7,14 @@ categories:
   - title: 'Fixes'
     labels:
       - 'bug'
+version-resolver:
+  major:
+    labels:
+      - 'increase-major'
+  minor:
+    labels:
+      - 'increase-minor'
+  default: patch
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 template: |
   ## What's new
