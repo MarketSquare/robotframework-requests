@@ -11,7 +11,7 @@ RequestsKeywords (common requests and sessionless keywords)
     |_ SessionKeywords (session creation and data)
         |_ DeprecatedKeywords (old keywords that need sessions)
         |_ RequestsOnSessionKeywords (new keywords that use sessions)
-        
+
 RequestsLibrary (extends RequestsOnSessionKeywords, DeprecatedKeywords)
 """
 
@@ -26,32 +26,52 @@ class RequestsLibrary(RequestsOnSessionKeywords, DeprecatedKeywords):
 
         = Usage =
 
-        Before making an HTTP request a new connection needs to be prepared this can be done with `Create Session`
-        keyword. Then you can execute any `* On Session` keywords below some examples:
+        The quickest way to start is using the requests keywords and urls see below examples:
 
         |   *** Settings ***
-        |   Library               Collections
         |   Library               RequestsLibrary
         |
-        |   Suite Setup           Create Session    jsonplaceholder    https://jsonplaceholder.typicode.com
+        |   *** Test Cases ***
+        |   Quick Get Request
+        |       ${response}=    GET  https://www.google.com
+        |
+        |   Quick Get Request With Parameters Test
+        |       ${response}=    GET  https://www.google.com/search  params=query=ciao  expected_status=200
+        |
+        |   Quick Get A JSON Body
+        |       ${response}=    GET  https://jsonplaceholder.typicode.com/posts/1
+        |       Should Be Equal As Strings    1  ${response.json()}[id]
+
+        In order to share the HTTP Session (with the same url, headers, cookies, etc.) among multiple requests,
+        a new connection needs to be prepared with ``Create Session`` and passed to the `* On Session` keywords.
+        You can then execute any `* On Session` keywords on the shared session by passing the created session alias
+        name, this will increase performances since the connection and ssl handshake is recycled and not repeated for
+        each requests.
+        Below some more advanced examples:
+
+        |   *** Settings ***
+        |   Library    Collections
+        |   Library    RequestsLibrary
+        |
+        |   Suite Setup    Create Session  jsonplaceholder  https://jsonplaceholder.typicode.com
         |
         |   *** Test Cases ***
         |
         |   Get Request Test
-        |       Create Session    google             http://www.google.com
+        |       Create Session    google  http://www.google.com
         |
-        |       ${resp_google}=   GET On Session     google             /           expected_status=200
-        |       ${resp_json}=     GET On Session     jsonplaceholder    /posts/1
+        |       ${resp_google}=   GET On Session  google  /  expected_status=200
+        |       ${resp_json}=     GET On Session  jsonplaceholder  /posts/1
         |
-        |       Should Be Equal As Strings           ${resp_google.reason}    OK
-        |       Dictionary Should Contain Value      ${resp_json.json()}    sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+        |       Should Be Equal As Strings          ${resp_google.reason}  OK
+        |       Dictionary Should Contain Value     ${resp_json.json()}  sunt aut facere repellat provident
         |
         |   Post Request Test
-        |       &{data}=          Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
-        |       ${resp}=          POST On Session    jsonplaceholder     /posts    json=${data}
+        |       &{data}=    Create dictionary  title=Robotframework requests  body=This is a test!  userId=1
+        |       ${resp}=    POST On Session    jsonplaceholder  /posts  json=${data}  expected_status=anything
         |
-        |       Status Should Be                     201    ${resp}
-        |       Dictionary Should Contain Key        ${resp.json()}     id
+        |       Status Should Be                 201  ${resp}
+        |       Dictionary Should Contain Key    ${resp.json()}  id
 
         = Response Object =
 

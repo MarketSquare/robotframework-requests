@@ -10,11 +10,11 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.utils.asserts import assert_equal
 
-from RequestsLibrary import utils, log
+from RequestsLibrary import utils
 from RequestsLibrary.compat import httplib, PY3, RetryAdapter
 from .RequestsKeywords import RequestsKeywords
 from RequestsLibrary.exceptions import InvalidResponse, InvalidExpectedStatus
-from RequestsLibrary.utils import is_file_descriptor, is_string_type
+from RequestsLibrary.utils import is_string_type
 
 try:
     from requests_ntlm import HttpNtlmAuth
@@ -538,50 +538,21 @@ class SessionKeywords(RequestsKeywords):
     @keyword("Delete All Sessions")
     def delete_all_sessions(self):
         """ Removes all the session objects """
-        logger.info('Delete All Sessions')
+        logger.info('Deleting All Sessions')
 
         self._cache.empty_cache()
 
     # TODO this is not covered by any tests
     @keyword("Update Session")
     def update_session(self, alias, headers=None, cookies=None):
-        """Update Session Headers: update a HTTP Session Headers
+        """Updates HTTP Session Headers and Cookies.
 
-        ``alias`` Robot Framework alias to identify the session
-
-        ``headers`` Dictionary of headers merge into session
+        Session will be identified using the ``alias`` name.
+        Dictionary of ``headers`` and ``cookies`` to be updated and merged into session data.
         """
         session = self._cache.switch(alias)
         session.headers = merge_setting(headers, session.headers)
         session.cookies = merge_cookies(session.cookies, cookies)
-
-    def _common_request(
-            self,
-            method,
-            session,
-            uri,
-            **kwargs):
-
-        method_function = getattr(session, method)
-        self._capture_output()
-
-        resp = method_function(
-            self._get_url(session, uri),
-            params=utils.utf8_urlencode(kwargs.pop('params', None)),
-            timeout=self._get_timeout(kwargs.pop('timeout', None)),
-            cookies=kwargs.pop('cookies', self.cookies),
-            **kwargs)
-
-        log.log_request(resp)
-        self._print_debug()
-        session.last_resp = resp
-        log.log_response(resp)
-
-        data = kwargs.get('data', None)
-        if is_file_descriptor(data):
-            data.close()
-
-        return resp
 
     @staticmethod
     def _check_status(expected_status, resp, msg=None):
@@ -604,17 +575,6 @@ class SessionKeywords(RequestsKeywords):
             msg = '' if msg is None else '{} '.format(msg)
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
-
-    @staticmethod
-    def _get_url(session, uri):
-        """
-        Helper method to get the full url
-        """
-        url = session.url
-        if uri:
-            slash = '' if uri.startswith('/') else '/'
-            url = "%s%s%s" % (session.url, slash, uri)
-        return url
 
     # FIXME might be broken we need a test for this
     def _get_timeout(self, timeout):

@@ -43,7 +43,7 @@ Get Request With Url Params As Escaped String
 
 Get Request With Url Duplicated Keys In Params
     [Tags]  get
-    ${array}=          Create List   1  2
+    ${array}=           Create List   1  2
     ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
     ...                     params=key=1&key=2
     Status Should Be    OK  ${resp}
@@ -51,7 +51,7 @@ Get Request With Url Duplicated Keys In Params
 
 Get Request With Url Duplicated Keys In Params And PHP Style Array
     [Tags]  get
-    ${array}=          Create List   1  2
+    ${array}=           Create List   1  2
     ${resp}=            GET On Session  ${GLOBAL_SESSION}  /anything
     ...                     params=key[]=1&key[]=2
     Status Should Be    OK  ${resp}
@@ -97,17 +97,17 @@ Get Request And Fail By Expecting A 200 Status With A Message
 
 Get Request Expect An Error And Evaluate Response
     [Tags]  get
-    ${resp}=    GET On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Get Request Expect Any Status And Continue On Error
     [Tags]  get
-    ${resp}=    GET On Session  ${GLOBAL_SESSION}  /status/404  expected_status=ANY
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /status/404  expected_status=ANY
     Should Be Equal As Strings  NOT FOUND  ${resp.reason}
 
 Get Request Expect Anything Status And Continue On Error
     [Tags]  get
-    ${resp}=    GET On Session  ${GLOBAL_SESSION}  /status/404  expected_status=Anything
+    ${resp}=            GET On Session  ${GLOBAL_SESSION}  /status/404  expected_status=Anything
     Should Be Equal As Strings  NOT FOUND  ${resp.reason}
 
 Post Request On Existing Session
@@ -131,17 +131,17 @@ Post Request With Json
     ${body}=            Create Dictionary  a=1  b=2
     ${resp}=            POST On Session  ${GLOBAL_SESSION}  /anything  json=${body}
     Status Should Be    OK  ${resp}
-    ${data}=            To Json  ${resp.json()}[data]
+    ${data}=            Evaluate  ${resp.json()}[data]
     Dictionaries Should Be Equal  ${data}  ${body}
 
 Post Request Expect An Error And Evaluate Response
     [Tags]  post
-    ${resp}=    POST On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
+    ${resp}=            POST On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Post Request Expect Anything Status And Continue On Error
-    [Tags]  get
-    ${resp}=    POST On Session  ${GLOBAL_SESSION}  /status/400  expected_status=anything
+    [Tags]  post
+    ${resp}=            POST On Session  ${GLOBAL_SESSION}  /status/400  expected_status=anything
     Should Be Equal As Strings  BAD REQUEST  ${resp.reason}
 
 Put Request On Existing Session
@@ -170,7 +170,7 @@ Put Request With Json
 
 Put Request Expect An Error And Evaluate Response
     [Tags]  put
-    ${resp}=    PUT On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
+    ${resp}=            PUT On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Head Request On Existing Session
@@ -205,7 +205,7 @@ Head Request And Fail By Default On Http Error
 
 Head Request Expect An Error And Evaluate Response
     [Tags]  head
-    ${resp}=    HEAD On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
+    ${resp}=            HEAD On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Patch Request On Existing Session
@@ -234,7 +234,7 @@ Patch Request With Json
 
 Patch Request Expect An Error And Evaluate Response
     [Tags]  Patch
-    ${resp}=    PATCH On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
+    ${resp}=            PATCH On Session  ${GLOBAL_SESSION}  /status/401  expected_status=401
     Should Be Equal As Strings  UNAUTHORIZED  ${resp.reason}
 
 Delete Request On Existing Session
@@ -249,7 +249,7 @@ Delete Request Should Have Delete Method
 
 Delete Request Expect An Error And Evaluate Response
     [Tags]  Delete
-    ${resp}=    DELETE On Session  ${GLOBAL_SESSION}  /status/202  expected_status=202
+    ${resp}=            DELETE On Session  ${GLOBAL_SESSION}  /status/202  expected_status=202
     Should Be Equal As Strings  ACCEPTED  ${resp.reason}
 
 Options Request On Existing Session
@@ -268,10 +268,10 @@ Options Request Check Allow Header
 
 Options Request And Bad Request Not Fail
     [Tags]  options
-    ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  /status/400
+    ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /status/400
     Status Should Be    OK  ${resp}
 
 Options Request Expect A Success On Unauthorized Request
     [Tags]  options
-    ${resp}=    OPTIONS On Session  ${GLOBAL_SESSION}  /status/401  expected_status=200
+    ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /status/401  expected_status=200
     Status Should Be    OK  ${resp}
