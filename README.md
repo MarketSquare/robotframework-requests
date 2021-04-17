@@ -30,9 +30,15 @@ Quick Get A JSON Body
 ```
 
 ### What's new in 0.9
-Session less keywords are now available, you can just `GET`, `POST`, etc.. no need to create a session anymore!
+Sessionless keywords are now available, you can just `GET`, `POST`, etc.. no need to create a session anymore!
 ```robotframework
 ${resp}=  GET  https://www.google.com
+```
+
+`Status Should Be` and `Request Should Be Successfull` can use the last response, no need to pass the response anymore!
+```robotframework
+GET  https://www.google.com
+Status Should Be  200
 ```
 
 ### What's new in 0.8
