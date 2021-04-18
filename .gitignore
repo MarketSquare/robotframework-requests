@@ -28,3 +28,4 @@ src/robotframework_requests.egg-info/
 venv/*
 env/*
 
+.vscode/*
