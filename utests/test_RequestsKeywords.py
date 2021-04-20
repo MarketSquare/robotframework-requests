@@ -25,28 +25,40 @@ def test_get_url_with_none_session():
     assert url == 'http://thisisa.url'
 
 
-def test_get_url_with_base():
+def test_get_url_with_session_url_only():
     session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, '')
     assert url == 'http://www.domain.com'
 
 
-def test_get_url_with_base_endpoint():
+def test_get_url_with_session_url_and_uri_endpoint():
     session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, 'endpoint')
     assert url == 'http://www.domain.com/endpoint'
 
 
-def test_get_url_with_base_slash_endpoint_pre():
+def test_get_url_with_session_url_slash_and_uri_endpoint():
     session, keywords = build_mocked_session_keywords('http://www.domain.com/')
     url = keywords._get_url(session, 'endpoint')
     assert url == 'http://www.domain.com/endpoint'
 
 
-def test_get_url_with_base_slash_endpoint_post():
+def test_get_url_with_session_url_and_uri_slash_endpoint():
     session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._get_url(session, '/endpoint')
     assert url == 'http://www.domain.com/endpoint'
+
+# breaking change with 0.8 :( #329
+def test_get_url_with_session_url_path_and_uri_root_endpoint():
+    session, keywords = build_mocked_session_keywords('http://www.domain.com/path')
+    url = keywords._get_url(session, '/endpoint')
+    assert url == 'http://www.domain.com/endpoint'
+
+
+def test_get_url_with_session_url_path_and_uri_endpoint():
+    session, keywords = build_mocked_session_keywords('http://www.domain.com/path/')
+    url = keywords._get_url(session, 'endpoint')
+    assert url == 'http://www.domain.com/path/endpoint'
 
 
 @pytest.mark.skipif(sys.version_info < (3, 0), reason="different urljoin handling of double slash")
