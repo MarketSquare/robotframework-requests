@@ -65,7 +65,7 @@ class RequestsKeywords(object):
         base = ''
         if session:
             base = session.url
-        if session and uri:
+        if session and uri and not session.url.endswith('/'):
             base = session.url + '/'
         if session and uri and uri.startswith('/'):
             uri = uri[1:]

@@ -76,6 +76,7 @@ def test_merge_url_with_session2trailing_and_endpoint():
     assert url == 'http://www.domain.com/endpoint'
 
 
+@pytest.mark.skipif(sys.version_info < (3, 0), reason="different urljoin handling of double slash")
 def test_merge_url_with_session_and_slash_endpoint_2trailing():
     session, keywords = build_mocked_session_keywords('http://www.domain.com')
     url = keywords._merge_url(session, '/endpoint//')
