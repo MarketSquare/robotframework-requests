@@ -35,7 +35,7 @@ class RequestsKeywords(object):
         self._capture_output()
 
         resp = method_function(
-            self._get_url(session, uri),
+            self._merge_url(session, uri),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
             cookies=kwargs.pop('cookies', self.cookies),
             **kwargs)
@@ -53,15 +53,22 @@ class RequestsKeywords(object):
 
         return resp
 
+    
     @staticmethod
-    def _get_url(session, uri):
+    def _merge_url(session, uri):
         """
-        Helper method to get the full url
+        Helper method that join session url and request url.
+        It relies on urljoin that handles quite good join urls and multiple /
+        but has some counter intuitive behaviours if you join uri starting with /
+        It handles also override in case a full url (http://etc) is passed as uri.
         """
+        base = ''
         if session:
             base = session.url
-        else:
-            base = ''
+        if session and uri:
+            base = session.url + '/'
+        if session and uri and uri.startswith('/'):
+            uri = uri[1:]
         url = urljoin(base, uri)
         return url
 
