@@ -23,6 +23,7 @@ lib/
 test.py
 bin/
 src/robotframework_requests.egg-info/
+.pytest_cache/*
 
 # ignore virtuvalenv
 venv/*
