@@ -47,13 +47,14 @@ class RequestsKeywords(object):
 
         self.last_response = resp
 
+        # file descriptors should be closed for files parameter as well
         data = kwargs.get('data', None)
         if is_file_descriptor(data):
             data.close()
 
         return resp
 
-    
+
     @staticmethod
     def _merge_url(session, uri):
         """
