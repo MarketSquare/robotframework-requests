@@ -12,7 +12,7 @@
     source venv/bin/activate
 ```
 4) Install the library in editing mode and all the test dependencies:
-    `python -m pip install -e .[test]`
+    `python -m pip install -e '.[test]'`
 5) Run acceptance tests with robot:
     `robot ./atests`
 6) Run unit tests wiht pytest:
