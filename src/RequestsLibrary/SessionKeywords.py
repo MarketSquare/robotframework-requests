@@ -135,7 +135,8 @@ class SessionKeywords(RequestsKeywords):
 
         ``timeout`` Connection timeout
 
-        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’})
+        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy
+                (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'})
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
 
@@ -217,8 +218,8 @@ class SessionKeywords(RequestsKeywords):
 
         ``timeout`` Connection timeout
 
-        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’})
-
+        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy
+                (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'})
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
@@ -304,8 +305,8 @@ class SessionKeywords(RequestsKeywords):
 
         ``timeout`` Connection timeout
 
-        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’})
-
+        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy
+                (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'})
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
@@ -386,8 +387,8 @@ class SessionKeywords(RequestsKeywords):
 
         ``timeout`` Connection timeout
 
-        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’})
-
+        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy
+                (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'})
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
@@ -465,8 +466,8 @@ class SessionKeywords(RequestsKeywords):
 
         ``timeout`` Connection timeout
 
-        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’})
-
+        ``proxies`` Dictionary mapping protocol or protocol and host to the URL of the proxy
+                (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'})
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.

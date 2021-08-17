@@ -178,7 +178,7 @@ class RequestsKeywords(object):
         | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
         | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
         | ``allow_redirects`` | Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``. |
-        | ``proxies`` | Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’}) |
+        | ``proxies`` | Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) |
         | ``verify``  | Either a boolean, in which case it controls whether we verify the server's TLS certificate, or a string, in which case it must be a path to a CA bundle to use. Defaults to ``True``. Warning: if a session has been created with ``verify=False`` any other requests will not verify the SSL certificate. |
         | ``stream`` | if ``False``, the response content will be immediately downloaded. |
         | ``cert`` | if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair. |
