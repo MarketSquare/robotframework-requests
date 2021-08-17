@@ -17,4 +17,6 @@ Test Post On Session Multipart
     ${resp}=    POST On Session  ${GLOBAL_SESSION}   /anything  files=${files}
 
     Should Contain  ${resp.json()}[headers][Content-Type]  multipart/form-data; boundary=
+    Should Contain  ${resp.json()}[headers][Content-Length]  480
     Should Contain  ${resp.json()}[files]  randombytes1
+    Should Contain  ${resp.json()}[files]  randombytes2
