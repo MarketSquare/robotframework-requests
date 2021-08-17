@@ -94,6 +94,30 @@ class RequestsLibrary(RequestsOnSessionKeywords, DeprecatedKeywords):
         | status_code | Integer Code of responded HTTP Status, e.g. 404 or 200. |
         | text    | Content of the response, in unicode. If ``response.encoding`` is ``None``, encoding will be guessed using chardet. The encoding of the response content is determined based solely on HTTP headers, following RFC 2616 to the letter. If you can take advantage of non-HTTP knowledge to make a better guess at the encoding, you should set ``response.encoding`` appropriately before accessing this property. |
         | url     | Final URL location of Response. |
+
+        = POST a Multipart-Encoded File =
+
+        RequestsLibrary makes it simple to upload Multipart-encoded files, but in order to make sure that the
+        Python Library provides automatically the right ``Content-Length`` and ``multipart/form-data; boundary=...``
+        headers you SHOULD NOT provide those headers manually, use the keyword
+        `Get File For Streaming Upload` instead that opens the files in binary mode.
+
+        Below an example of multiple file sent over a single POST:
+
+        |   Test Post Multiple Files
+        |       ${file_1}=  Get File For Streaming Upload  files/randombytes.bin
+        |       ${file_2}=  Get File For Streaming Upload  files/randombytes.bin
+        |       ${files}=   Create Dictionary  randombytes1  ${file_1}  randombytes2  ${file_2}
+        |
+        |       ${resp}=    POST  https://someurl  files=${files}
+
+        You can find a working test example in `atests/test_post_multipart.robot`.
+
+        For a complete reference verify the official Requests documentation:
+
+          - https://2.python-requests.org/en/master/user/quickstart/#post-a-multipart-encoded-file
+          - https://2.python-requests.org/en/master/user/advanced/#post-multiple-multipart-encoded-files
+
         """
     __version__ = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'

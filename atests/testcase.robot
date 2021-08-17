@@ -218,82 +218,33 @@ Post Request With File
 
 Post Request With Data and File
     [Tags]    post
-    Create Session    httpbin    http://httpbin.org
     &{data}=    Create Dictionary    name=mallikarjunarao    surname=kosuri
     Create File    foobar.txt    content=foobar
     ${file_data}=    Get File    foobar.txt
     &{files}=    Create Dictionary    file=${file_data}
-    ${resp}=    Post Request    httpbin    /post    files=${files}    data=${data}
+    ${resp}=    Post Request    ${test_session}    /anything    files=${files}    data=${data}
     Should Be Equal As Strings    ${resp.status_code}    200
 
 Put Requests
     [Tags]  put
-    Create Session  httpbin  http://httpbin.org
     &{data}=  Create Dictionary  name=bulkan  surname=evcimen
     &{headers}=  Create Dictionary  Content-Type=application/x-www-form-urlencoded
-    ${resp}=  Put Request  httpbin  /put  data=${data}  headers=${headers}
+    ${resp}=  Put Request  ${test_session}  /anything  data=${data}  headers=${headers}
     Dictionary Should Contain Value  ${resp.json()['form']}  bulkan
     Dictionary Should Contain Value  ${resp.json()['form']}  evcimen
 
-Head Request
-    [Tags]  head
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Head Request  httpbin  /headers
-    Should Be Equal As Strings  ${resp.status_code}  200
-
-Options Request
-    [Tags]  options
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Options Request  httpbin  /headers
-    Should Be Equal As Strings  ${resp.status_code}  200
-    Dictionary Should Contain Key  ${resp.headers}  allow
-
-Delete Request With URL Params
-    [Tags]  delete
-    Create Session  httpbin  http://httpbin.org
-    &{params}=   Create Dictionary   key=value     key2=value2
-    ${resp}=  Delete Request  httpbin  /delete		${params}
-    Should Be Equal As Strings  ${resp.status_code}  200
-
-Delete Request With No Data
-    [Tags]  delete
-    Create Session  httpbin  http://httpbin.org
-    ${resp}=  Delete Request  httpbin  /delete
-    Should Be Equal As Strings  ${resp.status_code}  200
-
-Delete Request With Data
-    [Tags]  delete
-    Create Session  httpbin  http://httpbin.org    debug=3
-    &{data}=  Create Dictionary  name=bulkan  surname=evcimen
-    ${resp}=  Delete Request  httpbin  /delete  data=${data}
-    Should Be Equal As Strings  ${resp.status_code}  200
-    Log  ${resp.content}
-    Comment  Dictionary Should Contain Value  ${resp.json()['data']}  bulkan
-    Comment  Dictionary Should Contain Value  ${resp.json()['data']}  evcimen
-
-Delete Requests with Json Data
-    [Tags]  delete
-    Create Session  httpbin     http://httpbin.org
-    &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Delete Request  httpbin  /delete    json=${data}
-    Should Be Equal As Strings  ${resp.status_code}  200
-    ${jsondata}=  Set Variable  ${resp.json()}
-    Should Be Equal     ${jsondata['json']}     ${data}
-
 Patch Requests
     [Tags]    patch
-    Create Session    httpbin    http://httpbin.org
     &{data}=    Create Dictionary    name=bulkan    surname=evcimen
     &{headers}=    Create Dictionary    Content-Type=application/x-www-form-urlencoded
-    ${resp}=    Patch Request    httpbin    /patch    data=${data}    headers=${headers}
+    ${resp}=    Patch Request    ${test_session}    /anything    data=${data}    headers=${headers}
     Dictionary Should Contain Value    ${resp.json()['form']}    bulkan
     Dictionary Should Contain Value    ${resp.json()['form']}    evcimen
 
 Patch Requests with Json Data
     [Tags]  patch
-    Create Session  httpbin     http://httpbin.org
     &{data}=    Create Dictionary   latitude=30.496346  longitude=-87.640356
-    ${resp}=     Patch Request  httpbin  /patch    json=${data}
+    ${resp}=     Patch Request  ${test_session}  /anything    json=${data}
     Should Be Equal As Strings  ${resp.status_code}  200
     ${jsondata}=  Set Variable  ${resp.json()}
     Should Be Equal     ${jsondata['json']}     ${data}
