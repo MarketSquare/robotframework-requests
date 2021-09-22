@@ -3,9 +3,9 @@ import robot
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
+from RequestsLibrary import log
 from RequestsLibrary.compat import urljoin
-from RequestsLibrary import utils, log
-from RequestsLibrary.utils import is_file_descriptor
+from RequestsLibrary.utils import is_file_descriptor, warn_if_equal_symbol_in_url_session_less
 
 
 class RequestsKeywords(object):
@@ -53,7 +53,6 @@ class RequestsKeywords(object):
             data.close()
 
         return resp
-
 
     @staticmethod
     def _merge_url(session, uri):
@@ -152,6 +151,7 @@ class RequestsKeywords(object):
         return open(path, 'rb')
 
     @keyword('GET')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_get(self, url, params=None,
                          expected_status=None, msg=None, **kwargs):
         """
@@ -193,6 +193,7 @@ class RequestsKeywords(object):
         return response
 
     @keyword('POST')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_post(self, url, data=None, json=None,
                           expected_status=None, msg=None, **kwargs):
         """
@@ -219,6 +220,7 @@ class RequestsKeywords(object):
         return response
 
     @keyword('PUT')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_put(self, url, data=None, json=None,
                          expected_status=None, msg=None, **kwargs):
         """
@@ -246,6 +248,7 @@ class RequestsKeywords(object):
         return response
 
     @keyword('HEAD')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_head(self, url,
                           expected_status=None, msg=None, **kwargs):
         """
@@ -270,6 +273,7 @@ class RequestsKeywords(object):
         return response
 
     @keyword('PATCH')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_patch(self, url, data=None, json=None,
                            expected_status=None, msg=None, **kwargs):
         """
@@ -296,6 +300,7 @@ class RequestsKeywords(object):
         return response
 
     @keyword('DELETE')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_delete(self, url,
                             expected_status=None, msg=None, **kwargs):
         """
@@ -317,6 +322,7 @@ class RequestsKeywords(object):
         return response
 
     @keyword('OPTIONS')
+    @warn_if_equal_symbol_in_url_session_less
     def session_less_options(self, url,
                              expected_status=None, msg=None, **kwargs):
         """
