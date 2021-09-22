@@ -1,13 +1,13 @@
 from robot.api.deco import keyword
 
-from RequestsLibrary.utils import warn_if_equal_symbol_in_url
+from RequestsLibrary.utils import warn_if_equal_symbol_in_url_on_session
 from .SessionKeywords import SessionKeywords
 
 
 class RequestsOnSessionKeywords(SessionKeywords):
 
-    @warn_if_equal_symbol_in_url
     @keyword("GET On Session")
+    @warn_if_equal_symbol_in_url_on_session
     def get_on_session(self, alias, url, params=None,
                        expected_status=None, msg=None, **kwargs):
         """
@@ -33,8 +33,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
-    @warn_if_equal_symbol_in_url
     @keyword("POST On Session")
+    @warn_if_equal_symbol_in_url_on_session
     def post_on_session(self, alias, url, data=None, json=None,
                         expected_status=None, msg=None, **kwargs):
         """
@@ -62,8 +62,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
-    @warn_if_equal_symbol_in_url
     @keyword("PATCH On Session")
+    @warn_if_equal_symbol_in_url_on_session
     def patch_on_session(self, alias, url, data=None, json=None,
                          expected_status=None, msg=None, **kwargs):
         """
@@ -91,8 +91,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
-    @warn_if_equal_symbol_in_url
     @keyword("PUT On Session")
+    @warn_if_equal_symbol_in_url_on_session
     def put_on_session(self, alias, url, data=None, json=None,
                        expected_status=None, msg=None, **kwargs):
         """
@@ -120,8 +120,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
-    @warn_if_equal_symbol_in_url
     @keyword('DELETE On Session')
+    @warn_if_equal_symbol_in_url_on_session
     def delete_on_session(self, alias, url,
                           expected_status=None, msg=None, **kwargs):
         """
@@ -144,8 +144,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
-    @warn_if_equal_symbol_in_url
     @keyword("HEAD On Session")
+    @warn_if_equal_symbol_in_url_on_session
     def head_on_session(self, alias, url,
                         expected_status=None, msg=None, **kwargs):
         """
@@ -171,8 +171,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         self._check_status(expected_status, response, msg)
         return response
 
-    @warn_if_equal_symbol_in_url
     @keyword("OPTIONS On Session")
+    @warn_if_equal_symbol_in_url_on_session
     def options_on_session(self, alias, url,
                            expected_status=None, msg=None, **kwargs):
         """

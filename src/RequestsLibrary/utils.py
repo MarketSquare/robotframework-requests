@@ -125,16 +125,32 @@ def format_data_according_to_header(session, data, headers):
     return data
 
 
-def warn_if_equal_symbol_in_url(func):
+def _log_url_warning_if_url_not_in_kwargs(kwargs):
+    if 'url' not in kwargs:
+        logger.warn("You might have an = symbol in url."
+                    " You better place 'url=' before, example: 'url=/your-url/foo?param=a'"
+                    " or use '/your-url/foo  params=param=a' or escape it")
+
+
+def warn_if_equal_symbol_in_url_session_less(func):
+    def decorator(*args, **kwargs):
+        try:
+            args[1]
+        except IndexError:
+            _log_url_warning_if_url_not_in_kwargs(kwargs)
+        return func(*args, **kwargs)
+
+    decorator.__name__ = func.__name__
+    decorator.__doc__ = func.__doc__
+    return decorator
+
+
+def warn_if_equal_symbol_in_url_on_session(func):
     def decorator(*args, **kwargs):
         try:
             args[2]
         except IndexError:
-            if 'url' not in kwargs:
-                logger.warn("You might have an = symbol in url."
-                            " You better place 'url=' before, example: 'url=/your-url/foo?param=a'"
-                            " or use '/your-url/foo  params=param=a' or escape it")
-
+            _log_url_warning_if_url_not_in_kwargs(kwargs)
         return func(*args, **kwargs)
     decorator.__name__ = func.__name__
     decorator.__doc__ = func.__doc__

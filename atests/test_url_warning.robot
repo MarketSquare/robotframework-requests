@@ -9,15 +9,24 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Test Cases ***
 
-Named URL with = symbol should not have warnings
+On Session Named URL with = symbol should not have warnings
    GET On Session  ${GLOBAL_SESSION}  url=/anything?a=a&b=b
 
-Positional URL with = symbol
+On Session Positional URL with = symbol
    Run Keyword And Expect Error   TypeError:*  GET On Session  ${GLOBAL_SESSION}  /anything?a=a&b=b
 
-Positional URL with '' should not have warnings
+On Session Positional URL with '' should not have warnings
    GET On Session  ${GLOBAL_SESSION}  ${Empty}
 
-Positional URL with None should not have warnings
+On Session Positional URL with None should not have warnings
    GET On Session  ${GLOBAL_SESSION}  ${None}
+
+Session Less Named URL with = symbol should not have warnings
+   GET  url=${HTTP_LOCAL_SERVER}/anything?a=a&b=b
+
+Session Less Positional URL with = symbol
+   Run Keyword And Expect Error   TypeError:*  GET  ${HTTP_LOCAL_SERVER}/anything?a=a&b=b
+
+Session Less Positional URL with '' should not have warnings
+   GET  ${HTTP_LOCAL_SERVER}/${Empty}
 
