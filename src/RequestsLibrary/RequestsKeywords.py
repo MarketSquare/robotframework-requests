@@ -177,10 +177,10 @@ class RequestsKeywords(object):
         | ``file-tuple`` | can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
         | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
         | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
-        | ``allow_redirects`` | Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``. |
+        | ``allow_redirects`` | Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``${True}``. |
         | ``proxies`` | Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) |
-        | ``verify``  | Either a boolean, in which case it controls whether we verify the server's TLS certificate, or a string, in which case it must be a path to a CA bundle to use. Defaults to ``True``. Warning: if a session has been created with ``verify=False`` any other requests will not verify the SSL certificate. |
-        | ``stream`` | if ``False``, the response content will be immediately downloaded. |
+        | ``verify``  | Either a boolean, in which case it controls whether we verify the server's TLS certificate, or a string, in which case it must be a path to a CA bundle to use. Defaults to ``${True}``. Warning: if a session has been created with ``verify=${False}`` any other requests will not verify the SSL certificate. |
+        | ``stream`` | if ``${False}``, the response content will be immediately downloaded. |
         | ``cert`` | if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair. |
 
         For more updated and complete information verify the official Requests api documentation:
