@@ -1,7 +1,7 @@
 ![Python application](https://github.com/MarketSquare/robotframework-requests/workflows/Python%20application/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/MarketSquare/robotframework-requests/branch/master/graph/badge.svg)](https://codecov.io/gh/MarketSquare/robotframework-requests)
-[![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
-[![Latest Version](https://img.shields.io/pypi/v/robotframework-requests.svg)](https://pypi.python.org/pypi/robotframework-requests)
+[![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-requests)](https://pypi.python.org/pypi/robotframework-requests)
+[![Latest Version](https://img.shields.io/pypi/v/robotframework-requests)](https://pypi.python.org/pypi/robotframework-requests)
 
 🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) library
 aimed to provide HTTP api testing functionalities by wrapping the well known [Python Requests Library](https://github.com/kennethreitz/requests).
