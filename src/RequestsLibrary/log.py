@@ -39,7 +39,7 @@ def format_data_to_log_string(data, limit=LOG_CHAR_LIMIT):
     if is_file_descriptor(data):
         return repr(data)
 
-    if len(data) > limit and logging.getLogger().level > 10:
+    if logging.getLogger().level > logging.DEBUG and len(data) > limit:
         data = "%s... (set the log level to DEBUG or TRACE to see the full content)" % data[:limit]
 
     return data
