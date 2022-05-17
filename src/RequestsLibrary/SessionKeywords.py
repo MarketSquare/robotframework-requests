@@ -194,6 +194,7 @@ class SessionKeywords(RequestsKeywords):
             url,
             headers={},
             cookies={},
+            auth=None,
             client_certs=None,
             timeout=None,
             proxies=None,
@@ -213,6 +214,8 @@ class SessionKeywords(RequestsKeywords):
         ``headers`` Dictionary of default headers
 
         ``cookies`` Dictionary of cookies
+
+        ``auth`` List of username & password for HTTP Basic Auth
 
         ``client_certs`` ['client certificate', 'client key'] PEM files containing the client key and certificate
 
@@ -248,10 +251,11 @@ class SessionKeywords(RequestsKeywords):
                               eg. set to [502, 503] to retry requests if those status are returned.
                               Note that max_retries must be greater than 0.
         """
+        auth = requests.auth.HTTPBasicAuth(*auth) if auth else None
 
         logger.info('Creating Session using : alias=%s, url=%s, headers=%s, \
-                    cookies=%s, client_certs=%s, timeout=%s, proxies=%s, verify=%s, \
-                    debug=%s ' % (alias, url, headers, cookies, client_certs, timeout,
+                    cookies=%s, auth=%s, client_certs=%s, timeout=%s, proxies=%s, verify=%s, \
+                    debug=%s ' % (alias, url, headers, cookies, auth, client_certs, timeout,
                                   proxies, verify, debug))
 
         session = self._create_session(
@@ -259,7 +263,7 @@ class SessionKeywords(RequestsKeywords):
             url=url,
             headers=headers,
             cookies=cookies,
-            auth=None,
+            auth=auth,
             timeout=timeout,
             max_retries=max_retries,
             backoff_factor=backoff_factor,
