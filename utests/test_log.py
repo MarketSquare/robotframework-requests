@@ -127,6 +127,7 @@ def test_format_data_not_truncate_debug_level(mocked_logger):
     for i in range(0, 100001):
         data = data + str(i)
     mocked_logger.getLogger().level = 10
+    mocked_logger.DEBUG = 10
     truncated = format_data_to_log_string(data)
     assert truncated == data
 
@@ -137,6 +138,7 @@ def test_format_data_not_truncate_trace_level(mocked_logger):
     for i in range(0, 100001):
         data = data + str(i)
     mocked_logger.getLogger().level = 0
+    mocked_logger.DEBUG = 10
     truncated = format_data_to_log_string(data)
     assert truncated == data
 
@@ -147,5 +149,6 @@ def test_format_data_truncate_info_level(mocked_logger):
     for i in range(0, 100001):
         data = data + str(i)
     mocked_logger.getLogger().level = 20
+    mocked_logger.DEBUG = 10
     truncated = format_data_to_log_string(data)
     assert truncated == data[:10000] + '... (set the log level to DEBUG or TRACE to see the full content)'
