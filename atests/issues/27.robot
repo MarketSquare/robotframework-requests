@@ -3,18 +3,19 @@ Library  Collections
 Library  String
 Library  RequestsLibrary
 Library  OperatingSystem
-Suite Teardown  Delete All Sessions
+Resource  ../res_setup.robot
+
+Suite Setup     Setup Flask Http Server
+Suite Teardown  Teardown Flask Http Server And Sessions
 
 *** Test Cases ***
 Post Request With XML File
     [Tags]  post
-    Create Session  httpbin  http://httpbin.org
-
     ${file_data}=  Get File  ${CURDIR}${/}test.xml
     ${files}=  Create Dictionary  xml=${file_data}
     ${headers}=  Create Dictionary  Authorization=testing-token
     Log  ${headers}
-    ${resp}=  Post Request  httpbin  /post  files=${files}  headers=${headers}
+    ${resp}=  POST On Session   ${GLOBAL_SESSION}  /anything  files=${files}  headers=${headers}
 
     Log  ${resp.json()}
 
