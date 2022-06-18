@@ -1,4 +1,3 @@
-from .DeprecatedKeywords import DeprecatedKeywords
 from .RequestsOnSessionKeywords import RequestsOnSessionKeywords
 from .version import VERSION
 
@@ -9,14 +8,13 @@ are instance of a class.
 
 RequestsKeywords (common requests and sessionless keywords)
     |_ SessionKeywords (session creation and data)
-        |_ DeprecatedKeywords (old keywords that need sessions)
         |_ RequestsOnSessionKeywords (new keywords that use sessions)
 
 RequestsLibrary (extends RequestsOnSessionKeywords, DeprecatedKeywords)
 """
 
 
-class RequestsLibrary(RequestsOnSessionKeywords, DeprecatedKeywords):
+class RequestsLibrary(RequestsOnSessionKeywords):
     """ RequestsLibrary is a Robot Framework library aimed to provide HTTP api testing functionalities
      by wrapping the well known Python Requests Library.
 

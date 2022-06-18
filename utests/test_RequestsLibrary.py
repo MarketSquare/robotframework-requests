@@ -1,4 +1,4 @@
-from RequestsLibrary import RequestsLibrary, DeprecatedKeywords, RequestsOnSessionKeywords
+from RequestsLibrary import RequestsLibrary, RequestsOnSessionKeywords
 from RequestsLibrary.RequestsKeywords import RequestsKeywords
 from RequestsLibrary.SessionKeywords import SessionKeywords
 
@@ -15,9 +15,6 @@ class TestRequestsLibraryInheritance():
     def test_make_sure_is_instance_of_session_keywords(self):
         assert isinstance(self.requests_library, SessionKeywords)
 
-    def test_make_sure_is_instance_of_deprecated_keywords(self):
-        assert isinstance(self.requests_library, DeprecatedKeywords)
-
     def test_make_sure_is_instance_of_requests_on_session_keywords(self):
         assert isinstance(self.requests_library, RequestsOnSessionKeywords)
 
@@ -26,9 +23,6 @@ class TestRequestsLibraryInheritance():
 
     def test_make_sure_it_has_methods_from_session_keywords(self):
         assert hasattr(self.requests_library, '_create_session')
-
-    def test_make_sure_it_has_methods_from_deprecated_keywords(self):
-        assert hasattr(self.requests_library, 'get_request')
 
     def test_make_sure_it_has_methods_from_requests_on_session_keywords(self):
         assert hasattr(self.requests_library, 'get_on_session')

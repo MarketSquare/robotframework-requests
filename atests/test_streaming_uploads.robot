@@ -14,7 +14,7 @@ Put Request With Streaming Upload
     Create Session  http_server  ${HTTP_LOCAL_SERVER}
     ${handle}=  Get File For Streaming Upload  ${CURDIR}${/}randombytes.bin
     ${headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
-    ${resp}=  Put Request  http_server  /anything  data=${handle}  headers=&{headers}
+    ${resp}=  PUT On Session  http_server  /anything  data=${handle}  headers=&{headers}
     ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     Should Be Equal  ${receivedData}  ${data}
@@ -24,7 +24,7 @@ Patch Request With Streaming Upload
     Create Session  http_server  ${HTTP_LOCAL_SERVER}
     ${handle}=  Get File For Streaming Upload  ${CURDIR}${/}randombytes.bin
     ${headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
-    ${resp}=  Patch Request  http_server  /anything  data=${handle}  headers=&{headers}
+    ${resp}=  PATCH On Session  http_server  /anything  data=${handle}  headers=&{headers}
     ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     Should Be Equal  ${receivedData}  ${data}
@@ -34,7 +34,7 @@ Post Request With Streaming Upload
     Create Session  http_server  ${HTTP_LOCAL_SERVER}
     ${handle}=  Get File For Streaming Upload  ${CURDIR}${/}randombytes.bin
     ${headers}=  Create Dictionary  Content-Type=application/octet-stream   Accept=application/octet-stream
-    ${resp}=  Post Request  http_server  /anything  data=${handle}  headers=&{headers}
+    ${resp}=  POST On Session  http_server  /anything  data=${handle}  headers=&{headers}
     ${receivedData}=  Base64 Decode Data  ${resp.json()['data']}
     ${data}=  Get Binary File  ${CURDIR}${/}randombytes.bin
     Should Be Equal  ${receivedData}  ${data}

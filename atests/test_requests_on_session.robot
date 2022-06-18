@@ -165,8 +165,7 @@ Put Request With Json
     ${body}=            Create Dictionary  a=1  b=2
     ${resp}=            PUT On Session  ${GLOBAL_SESSION}  /anything  json=${body}
     Status Should Be    OK  ${resp}
-    ${data}=            To Json  ${resp.json()}[data]
-    Dictionaries Should Be Equal  ${data}  ${body}
+    Dictionaries Should Be Equal  ${resp.json()}[json]  ${body}
 
 Put Request Expect An Error And Evaluate Response
     [Tags]  put
@@ -229,8 +228,7 @@ Patch Request With Json
     ${body}=            Create Dictionary  a=1  b=2
     ${resp}=            PATCH On Session  ${GLOBAL_SESSION}  /anything  json=${body}
     Status Should Be    OK  ${resp}
-    ${data}=            To Json  ${resp.json()}[data]
-    Dictionaries Should Be Equal  ${data}  ${body}
+    Dictionaries Should Be Equal  ${resp.json()}[json]  ${body}
 
 Patch Request Expect An Error And Evaluate Response
     [Tags]  Patch

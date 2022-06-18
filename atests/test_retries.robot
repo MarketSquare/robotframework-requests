@@ -27,32 +27,32 @@ Retry Get Request Because Of 502 Error With Default Config
     [Tags]  get  retry
     ${retry_status_list}=   Create List  502  503
     Create Session  http_server  ${HTTP_LOCAL_SERVER}  retry_status_list=${retry_status_list}
-    Run Keyword And Expect Error  RetryError: *   Get Request  http_server  /status/502
+    Run Keyword And Expect Error  RetryError: *   GET On Session  http_server  /status/502
 
 Retry Get Request Because Of 502 Error With Max Retries 1
     [Tags]  get  retry
     ${retry_status_list}=   Create List  502
     Create Session  http_server  ${HTTP_LOCAL_SERVER}  max_retries=1  retry_status_list=${retry_status_list}
-    Run Keyword And Expect Error  RetryError: *   Get Request  http_server  /status/502
+    Run Keyword And Expect Error  RetryError: *   GET On Session  http_server  /status/502
 
 Retry Disabled Get Request
     [Tags]  get  retry
     ${retry_status_list}=   Create List  502  503
     Create Session  http_server  ${HTTP_LOCAL_SERVER}  max_retries=0  retry_status_list=${retry_status_list}
-    Get Request  http_server  /status/502
+    GET On Session  http_server  url=/status/502  expected_status=502
 
 Retry Post Request Because Of 502 Error With Default Config
     [Tags]  post  retry
     ${retry_status_list}=   Create List  502
     ${retry_method_list}=   Create List  GET  POST
     Create Session  http_server  ${HTTP_LOCAL_SERVER}  retry_status_list=${retry_status_list}  retry_method_list=${retry_method_list}
-    Run Keyword And Expect Error  RetryError: *   Post Request  http_server  /status/502
+    Run Keyword And Expect Error  RetryError: *   POST On Session  http_server  url=/status/502  expected_status=502
 
 Retry Post Request Because Of 502 Error With Wrong Config
     [Tags]  post  retry
     ${retry_status_list}=   Create List  502
     ${retry_method_list}=   Create List  WRONG
     Create Session  http_server  ${HTTP_LOCAL_SERVER}  retry_status_list=${retry_status_list}  retry_method_list=${retry_method_list}
-    Post Request  http_server  /status/502
+    POST On Session  http_server  url=/status/502  expected_status=502
 
 # TODO fake the server in order to recover after a while
