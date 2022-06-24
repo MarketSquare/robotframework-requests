@@ -140,7 +140,7 @@ class SessionKeywords(RequestsKeywords):
 
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
 
-        ``debug`` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information. Valid values are 0, 1, 2 ...
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` Number of maximum retries each connection should attempt.
@@ -227,7 +227,7 @@ class SessionKeywords(RequestsKeywords):
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        ``debug`` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information. Valid values are 0, 1, 2 ...
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` Number of maximum retries each connection should attempt.
@@ -315,7 +315,7 @@ class SessionKeywords(RequestsKeywords):
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        ``debug`` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information. Valid values are 0, 1, 2 ...
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` Number of maximum retries each connection should attempt.
@@ -397,7 +397,7 @@ class SessionKeywords(RequestsKeywords):
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        ``debug`` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information. Valid values are 0, 1, 2 ...
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` Number of maximum retries each connection should attempt.
@@ -476,7 +476,7 @@ class SessionKeywords(RequestsKeywords):
         ``verify`` Whether the SSL cert will be verified. A CA_BUNDLE path can also be provided.
                  Defaults to False.
 
-        ``debug`` Enable http verbosity option more information
+        ``debug`` Enable http verbosity option more information. Valid values are 0, 1, 2 ...
                 https://docs.python.org/2/library/httplib.html#httplib.HTTPConnection.set_debuglevel
 
         ``max_retries`` Number of maximum retries each connection should attempt.
