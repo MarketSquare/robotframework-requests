@@ -73,7 +73,7 @@ You can install pre-release versions in this way:
 ### Others
 - [X] **Review PR:** [Support sending arrays in query string and request body](https://github.com/MarketSquare/robotframework-requests/pull/220)
 - [ ] **Review PR:** [disable cert warnings](https://github.com/MarketSquare/robotframework-requests/pull/209)
-- [ ] **Feature:** [Allow passing auth param to create client cert session](https://github.com/MarketSquare/robotframework-requests/issues/245)
+- [X] **Feature:** [Allow passing auth param to create client cert session](https://github.com/MarketSquare/robotframework-requests/issues/245)
 - [X] **Tech:** [Deprecate To Json keyword in favor of response.json attribute](https://github.com/MarketSquare/robotframework-requests/issues/219)
 - [ ] **Tech**: Moving all tests to local http server (Flask)
 - [ ] **Challenge**: Start local http server (Flask) only once per test run instead of start/stop for each suite
