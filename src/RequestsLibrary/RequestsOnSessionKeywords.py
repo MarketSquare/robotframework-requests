@@ -154,8 +154,8 @@ class RequestsOnSessionKeywords(SessionKeywords):
         Session will be identified using the ``alias`` name.
         The endpoint used to retrieve the HTTP headers is the ``url``.
 
-        ``allow_redirects`` parameter is not provided, it will be set to `False` (as
-        opposed to the default behavior).
+        ``allow_redirects`` parameter is not provided, it will be set to ``${False}`` (as
+        opposed to the default behavior ``${True}``).
 
         By default this keyword fails if a status code with error values is returned in the response,
         this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
