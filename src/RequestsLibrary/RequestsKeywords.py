@@ -1,11 +1,10 @@
 import requests
 import robot
-from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
-
 from RequestsLibrary import log
 from RequestsLibrary.compat import urljoin
 from RequestsLibrary.utils import is_file_descriptor, warn_if_equal_symbol_in_url_session_less
+from robot.api.deco import keyword
+from robot.libraries.BuiltIn import BuiltIn
 
 
 class RequestsKeywords(object):
@@ -173,8 +172,7 @@ class RequestsKeywords(object):
         | ``json``     | A JSON serializable Python object to send in the body of the request. |
         | ``headers``  | Dictionary of HTTP Headers to send with the request. |
         | ``cookies``  | Dict or CookieJar object to send with the request. |
-        | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. |
-        | ``file-tuple`` | can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
+        | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
         | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
         | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
         | ``allow_redirects`` | Boolean. Enable/disable (values ``${True}`` or ``${False}``) GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``${True}``. |
