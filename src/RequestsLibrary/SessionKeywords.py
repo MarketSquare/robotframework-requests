@@ -549,7 +549,7 @@ class SessionKeywords(RequestsKeywords):
         """ Removes all the session objects """
         logger.info('Deleting All Sessions')
 
-        self._cache.empty_cache()
+        self._cache.close_all()
 
     # TODO this is not covered by any tests
     @keyword("Update Session")
