@@ -87,12 +87,12 @@ Get Request And Fail By Default On Http Error
 
 Get Request And Fail By Expecting A 200 Status
     [Tags]  get
-    Run Keyword And Expect Error  Url: http://localhost:5000/status/404?param Expected status: 404 != 200
+    Run Keyword And Expect Error  Url: ${HTTP_LOCAL_SERVER}/status/404?param Expected status: 404 != 200
     ...                           GET On Session  ${GLOBAL_SESSION}  /status/404  param  200
 
 Get Request And Fail By Expecting A 200 Status With A Message
     [Tags]  get
-    Run Keyword And Expect Error  Custom msg Url: http://localhost:5000/status/404?param Expected status: 404 != 200
+    Run Keyword And Expect Error  Custom msg Url: ${HTTP_LOCAL_SERVER}/status/404?param Expected status: 404 != 200
     ...                           GET On Session  ${GLOBAL_SESSION}  /status/404  param  200  Custom msg
 
 Get Request Expect An Error And Evaluate Response

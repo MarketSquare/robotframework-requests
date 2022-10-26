@@ -8,10 +8,6 @@ Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
 
-*** Variables ***
-${HTTP_LOCAL_SERVER}    http://localhost:5000
-
-
 *** Test Cases ***
 Retry Session With Wrong Retry Status List
     [Tags]  session  retry

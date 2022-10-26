@@ -8,10 +8,6 @@ Suite Setup     Setup Flask Http Server
 Suite Teardown  Teardown Flask Http Server And Sessions
 
 
-*** Variables ***
-${HTTP_LOCAL_SERVER}    http://localhost:5000
-
-
 *** Test Cases ***
 Get Request With Session Headers
     [Tags]  get  headers
