@@ -11,7 +11,7 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 Request And Status Should Be Different
     [Tags]  get  status
     ${resp}=  GET On Session  ${GLOBAL_SESSION}  /status/404  expected_status=any
-    Run Keyword And Expect Error  Url: http://localhost:5000/status/404 Expected status: 404 != 201  Status Should Be  201  ${resp}
+    Run Keyword And Expect Error  Url: ${HTTP_LOCAL_SERVER}/status/404 Expected status: 404 != 201  Status Should Be  201  ${resp}
 
 Request And Status Should Be Equal
     [Tags]  get  status
@@ -36,7 +36,7 @@ Invalid Response
 Request And Status Should Be With A Message
     [Tags]  get  status
     ${resp}=  GET On Session  ${GLOBAL_SESSION}  /status/418  expected_status=any
-    Run Keyword And Expect Error  It should be a teapot! Url: http://localhost:5000/status/418 Expected status: 418 != 200
+    Run Keyword And Expect Error  It should be a teapot! Url: ${HTTP_LOCAL_SERVER}/status/418 Expected status: 418 != 200
     ...   Status Should Be  OK  ${resp}  It should be a teapot!
 
 Request Should Be Successful
@@ -85,7 +85,7 @@ Assert Status Should Be OK On The Last Request
 Assert Status Should Be Fail On The Last Request
     [Tags]  post  status
     POST On Session  ${GLOBAL_SESSION}  /status/500  expected_status=500
-    Run Keyword And Expect Error  Url: http://localhost:5000/status/500 Expected status: 500 != 200  Status Should Be  OK
+    Run Keyword And Expect Error  Url: ${HTTP_LOCAL_SERVER}/status/500 Expected status: 500 != 200  Status Should Be  OK
 
 Assert Successful On The Last Session-Less Request
     [Tags]  put  status
@@ -117,4 +117,4 @@ Assert Status Should Be OK On The Last Session-Less Request
 Assert Status Should Be Fail On The Last Session-Less Request
     [Tags]  post  status
     POST  ${HTTP_LOCAL_SERVER}/status/500  expected_status=500
-    Run Keyword And Expect Error  Url: http://localhost:5000/status/500 Expected status: 500 != 200  Status Should Be  OK
+    Run Keyword And Expect Error  Url: ${HTTP_LOCAL_SERVER}/status/500 Expected status: 500 != 200  Status Should Be  OK
