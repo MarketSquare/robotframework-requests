@@ -11,6 +11,11 @@ aimed to provide HTTP api testing functionalities by wrapping the well known [Py
 pip install robotframework-requests
 ```
 
+## Install pre-release version
+```sh
+pip install robotframework-requests --pre
+```
+
 ## 🤖 Quick start
 ```robotframework
 *** Settings ***
