@@ -2,6 +2,9 @@ import io
 import json
 import types
 
+from typing import TYPE_CHECKING
+from functools import update_wrapper
+
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 from robot.api import logger
@@ -140,9 +143,7 @@ def warn_if_equal_symbol_in_url_session_less(func):
             _log_url_warning_if_url_not_in_kwargs(kwargs)
         return func(*args, **kwargs)
 
-    decorator.__name__ = func.__name__
-    decorator.__doc__ = func.__doc__
-    return decorator
+    return update_wrapper(decorator, func) if TYPE_CHECKING else decorator
 
 
 def warn_if_equal_symbol_in_url_on_session(func):
@@ -152,6 +153,5 @@ def warn_if_equal_symbol_in_url_on_session(func):
         except IndexError:
             _log_url_warning_if_url_not_in_kwargs(kwargs)
         return func(*args, **kwargs)
-    decorator.__name__ = func.__name__
-    decorator.__doc__ = func.__doc__
-    return decorator
+
+    return update_wrapper(decorator, func) if TYPE_CHECKING else decorator
