@@ -1,10 +1,11 @@
 import requests
 import robot
+from robot.api.deco import keyword
+from robot.libraries.BuiltIn import BuiltIn
+
 from RequestsLibrary import log
 from RequestsLibrary.compat import urljoin
 from RequestsLibrary.utils import is_file_descriptor, warn_if_equal_symbol_in_url_session_less
-from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
 
 
 class RequestsKeywords(object):
@@ -275,7 +276,7 @@ class RequestsKeywords(object):
     def session_less_patch(self, url, data=None, json=None,
                            expected_status=None, msg=None, **kwargs):
         """
-        Sends a PUT request.
+        Sends a PATCH request.
 
         The endpoint used to send the request is the ``url`` parameter, while its body
         can be passed using ``data`` or ``json`` parameters.
