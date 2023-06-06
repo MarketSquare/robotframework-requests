@@ -92,7 +92,7 @@ class SessionKeywords(RequestsKeywords):
             s.verify = verify
 
         # cant pass these into the Session anymore
-        self.timeout = float(timeout) if timeout is not None else None
+        self.timeout = timeout
         self.cookies = cookies
 
         s.url = url
@@ -585,7 +585,6 @@ class SessionKeywords(RequestsKeywords):
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
 
-    # FIXME might be broken we need a test for this
     def _get_timeout(self, timeout):
         return float(timeout) if timeout is not None else self.timeout
 

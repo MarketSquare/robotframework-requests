@@ -7,9 +7,9 @@ from utests import SCRIPT_DIR
 
 
 def build_mocked_session_common_request(alias='alias', url='http://mocking.rules',
-                                        verify=None, cookies={}):
+                                        verify=None, cookies={}, timeout=None):
     keywords = RequestsLibrary()
-    session = keywords.create_session(alias, url, verify=verify, cookies=cookies)
+    session = keywords.create_session(alias, url, verify=verify, cookies=cookies, timeout=timeout)
     # this prevents a real network call from being executed
     session.get = mock.MagicMock()
     return session, keywords._common_request
@@ -67,3 +67,13 @@ def test_common_request_with_cookies_default_only():
     session, m_common_request = build_mocked_session_common_request(cookies={'a': 1, 'b': 2})
     m_common_request('get', session, '/')
     session.get.assert_called_with('http://mocking.rules/', timeout=None, cookies={'a': 1, 'b': 2})
+
+def test_common_request_with_float_timeout():
+    session, m_common_request = build_mocked_session_common_request(timeout=123.4)
+    m_common_request('get', session, '/')
+    session.get.assert_called_with('http://mocking.rules/', timeout=123.4, cookies={})
+
+def test_common_request_with_float_timeout_override():
+    session, m_common_request = build_mocked_session_common_request(timeout=None)
+    m_common_request('get', session, '/', timeout=123.4)
+    session.get.assert_called_with('http://mocking.rules/', timeout=123.4, cookies={})
