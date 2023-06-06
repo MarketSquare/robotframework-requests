@@ -77,3 +77,13 @@ def test_common_request_with_float_timeout_override():
     session, m_common_request = build_mocked_session_common_request(timeout=None)
     m_common_request('get', session, '/', timeout=123.4)
     session.get.assert_called_with('http://mocking.rules/', timeout=123.4, cookies={})
+
+def test_common_request_with_touple_timeout():
+    session, m_common_request = build_mocked_session_common_request(timeout=(123.4, 432.1))
+    m_common_request('get', session, '/')
+    session.get.assert_called_with('http://mocking.rules/', timeout=(123.4, 432.1), cookies={})
+
+def test_common_request_with_touple_timeout_override():
+    session, m_common_request = build_mocked_session_common_request(timeout=None)
+    m_common_request('get', session, '/', timeout=(123.4, 432.1))
+    session.get.assert_called_with('http://mocking.rules/', timeout=(123.4, 432.1), cookies={})

@@ -581,8 +581,14 @@ class SessionKeywords(RequestsKeywords):
             msg = "{}Url: {} Expected status".format(msg, resp.url)
             assert_equal(resp.status_code, expected_status, msg)
 
-    def _get_timeout(self, timeout):
-        return float(timeout) if timeout is not None else self.timeout
+    def _get_timeout(self, timeout):        
+        result = timeout if timeout is not None else self.timeout
+        
+        if result is None:
+            return None
+        if type(result) is tuple:
+            return (float(result[0]), float(result[1]))
+        return float(result)
 
     def _capture_output(self):
         if self.debug >= 1:
