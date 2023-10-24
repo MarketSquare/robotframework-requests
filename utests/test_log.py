@@ -1,11 +1,15 @@
 import json
 import os
+import pytest
 
-from requests import Request
-
+from requests import Request, PreparedRequest
 from RequestsLibrary.log import format_data_to_log_string, log_request, log_response
+from unittest.mock import patch
 from utests import SCRIPT_DIR
 from utests import mock
+
+
+__MOCKED_HEADERS = "mocked_headers"
 
 
 def test_format_with_data_and_headers_none():
@@ -45,19 +49,25 @@ def test_format_with_file_descriptor():
         assert data_str == repr(f)
 
 
-@mock.patch('RequestsLibrary.log.logger')
-def test_log_request(mocked_logger):
-    request = Request(method='get', url='http://mock.rulezz')
-    request = request.prepare()
+@pytest.mark.parametrize("log_headers, expected_headers", [(False, '{}'), (True, __MOCKED_HEADERS)])
+def test_log_request_with_headers(log_headers: bool, expected_headers: str):
+    with patch('RequestsLibrary.log.logger') as mocked_logger:
+        request = Request(method='get', url='http://mock.rulezz').prepare()
+        response = __mock_log_request_response(request)
+        log_request(response, log_headers)
+        assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                      "url=%s \n " % request.url +
+                                                      "path_url=%s \n " % request.path_url +
+                                                      "headers=%s \n " % expected_headers +
+                                                      "body=%s \n " % request.body)
+
+
+def __mock_log_request_response(request: PreparedRequest):
     response = mock.MagicMock()
     response.history = []
     response.request = request
-    log_request(response)
-    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
-                                                  "url=%s \n " % request.url +
-                                                  "path_url=%s \n " % request.path_url +
-                                                  "headers=%s \n " % request.headers +
-                                                  "body=%s \n " % request.body)
+    response.request.headers = __MOCKED_HEADERS
+    return response
 
 
 @mock.patch('RequestsLibrary.log.logger')
