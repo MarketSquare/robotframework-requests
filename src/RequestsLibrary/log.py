@@ -27,7 +27,6 @@ def log_request(response):
     logger.info("%s Request : " % original_request.method.upper() +
                 "url=%s %s\n " % (original_request.url, redirected) +
                 "path_url=%s \n " % original_request.path_url +
-                "headers=%s \n " % original_request.headers +
                 "body=%s \n " % format_data_to_log_string(original_request.body))
 
 
