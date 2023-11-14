@@ -116,7 +116,7 @@ class RequestsKeywords(object):
         |       ELSE
         |        [...]
         """
-        if not response:
+        if response is None:
             response = self.last_response
         self._check_status(expected_status, response, msg)
 
