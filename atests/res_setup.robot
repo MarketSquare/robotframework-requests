@@ -5,7 +5,7 @@ Library  RequestsLibrary
 
 *** Variables ***
 ${GLOBAL_SESSION}       global_session
-${HTTP_LOCAL_SERVER}    http://localhost:5000
+${HTTP_LOCAL_SERVER}    http://localhost:5010
 
 
 *** Keywords ***
