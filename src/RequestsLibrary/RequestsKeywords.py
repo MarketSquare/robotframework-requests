@@ -47,10 +47,11 @@ class RequestsKeywords(object):
 
         self.last_response = resp
 
-        # file descriptors should be closed for files parameter as well
-        data = kwargs.get('data', None)
-        if is_file_descriptor(data):
-            data.close()
+        files = kwargs.get('files', {}) or {}
+        data = kwargs.get('data', []) or []
+        files_descriptor_to_close = filter(is_file_descriptor, list(files.values()) + [data])
+        for file_descriptor in files_descriptor_to_close:
+            file_descriptor.close()
 
         return resp
 
@@ -59,7 +60,7 @@ class RequestsKeywords(object):
         """
         Helper method that join session url and request url.
         It relies on urljoin that handles quite good join urls and multiple /
-        but has some counter intuitive behaviours if you join uri starting with /
+        but has some counterintuitive behaviours if you join uri starting with /
         It handles also override in case a full url (http://etc) is passed as uri.
         """
         base = ''
