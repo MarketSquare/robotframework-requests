@@ -1,9 +1,8 @@
 import os
 
 from RequestsLibrary import RequestsLibrary
-from utests import mock
-
 from utests import SCRIPT_DIR
+from utests import mock
 
 
 def build_mocked_session_common_request(alias='alias', url='http://mocking.rules',
@@ -21,6 +20,16 @@ def test_common_request_file_descriptor_closing():
         m_common_request('get', session,
                          'http://mocking.rules', data=f)
         assert f.closed is True
+
+
+def test_common_request_files_descriptor_closing_when_passed_as_files_param():
+    session, m_common_request = build_mocked_session_common_request()
+    with open(os.path.join(SCRIPT_DIR, '../atests/randombytes.bin'), 'rb') as f1:
+        with open(os.path.join(SCRIPT_DIR, '../atests/data.json'), 'rb') as f2:
+            m_common_request('get', session,
+                             'http://mocking.rules', files={'randombytes': f1, 'data': f2})
+            assert f1.closed is True
+            assert f2.closed is True
 
 
 def test_common_request_verify_override_true():
@@ -68,20 +77,24 @@ def test_common_request_with_cookies_default_only():
     m_common_request('get', session, '/')
     session.get.assert_called_with('http://mocking.rules/', timeout=None, cookies={'a': 1, 'b': 2})
 
+
 def test_common_request_with_float_timeout():
     session, m_common_request = build_mocked_session_common_request(timeout=123.4)
     m_common_request('get', session, '/')
     session.get.assert_called_with('http://mocking.rules/', timeout=123.4, cookies={})
+
 
 def test_common_request_with_float_timeout_override():
     session, m_common_request = build_mocked_session_common_request(timeout=None)
     m_common_request('get', session, '/', timeout=123.4)
     session.get.assert_called_with('http://mocking.rules/', timeout=123.4, cookies={})
 
+
 def test_common_request_with_touple_timeout():
     session, m_common_request = build_mocked_session_common_request(timeout=(123.4, 432.1))
     m_common_request('get', session, '/')
     session.get.assert_called_with('http://mocking.rules/', timeout=(123.4, 432.1), cookies={})
+
 
 def test_common_request_with_touple_timeout_override():
     session, m_common_request = build_mocked_session_common_request(timeout=None)
