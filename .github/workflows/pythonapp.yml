@@ -37,7 +37,7 @@ jobs:
           coverage report
           coverage xml
       - name: Update codecov for unit tests
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
           flags: unit
           file: coverage.xml
