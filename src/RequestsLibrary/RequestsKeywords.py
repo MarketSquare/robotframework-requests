@@ -28,13 +28,14 @@ class RequestsKeywords(object):
             **kwargs):
 
         if session:
-            method_function = getattr(session, method)
+            request_function = getattr(session, "request")
         else:
-            method_function = getattr(requests, method)
+            request_function = getattr(requests, "request")
 
         self._capture_output()
 
-        resp = method_function(
+        resp = request_function(
+            method,
             self._merge_url(session, uri),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
             cookies=kwargs.pop('cookies', self.cookies),
@@ -177,7 +178,7 @@ class RequestsKeywords(object):
         | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
         | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
         | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
-        | ``allow_redirects`` | Boolean. Enable/disable (values ``${True}`` or ``${False}``) GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``${True}``. |
+        | ``allow_redirects`` | Boolean. Enable/disable (values ``${True}`` or ``${False}``) GET/POST/PUT/DELETE/PATCH/TRACE/CONNECT redirection. Defaults to ``${True}``. |
         | ``proxies`` | Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) |
         | ``verify``  | Either a boolean, in which case it controls whether we verify the server's TLS certificate, or a string, in which case it must be a path to a CA bundle to use. Defaults to ``${True}``. Warning: if a session has been created with ``verify=${False}`` any other requests will not verify the SSL certificate. |
         | ``stream`` | if ``${False}``, the response content will be immediately downloaded. |
@@ -187,7 +188,7 @@ class RequestsKeywords(object):
         https://requests.readthedocs.io/en/latest/api/
 
         """
-        response = self._common_request('get', None, url,
+        response = self._common_request('GET', None, url,
                                         params=params, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -214,7 +215,7 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('post', None, url,
+        response = self._common_request('POST', None, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -242,7 +243,7 @@ class RequestsKeywords(object):
         see the `GET` keyword for the complete list.
         """
 
-        response = self._common_request("put", None, url,
+        response = self._common_request("PUT", None, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -250,7 +251,7 @@ class RequestsKeywords(object):
     @keyword('HEAD')
     @warn_if_equal_symbol_in_url_session_less
     def session_less_head(self, url,
-                          expected_status=None, msg=None, **kwargs):
+                          expected_status=None, msg=None, allow_redirects=False, **kwargs):
         """
         Sends a HEAD request.
 
@@ -268,7 +269,7 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('head', None, url, **kwargs)
+        response = self._common_request('HEAD', None, url, allow_redirects=allow_redirects, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
@@ -294,7 +295,7 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('patch', None, url,
+        response = self._common_request('PATCH', None, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -317,14 +318,14 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request("delete", None, url, **kwargs)
+        response = self._common_request("DELETE", None, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword('OPTIONS')
     @warn_if_equal_symbol_in_url_session_less
     def session_less_options(self, url,
-                             expected_status=None, msg=None, **kwargs):
+                             expected_status=None, msg=None, allow_redirects=False, **kwargs):
         """
         Sends a OPTIONS request.
 
@@ -339,6 +340,50 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request("options", None, url, **kwargs)
+        response = self._common_request("OPTIONS", None, url, allow_redirects=allow_redirects, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('CONNECT')
+    @warn_if_equal_symbol_in_url_session_less
+    def session_less_connect(self, url,
+                             expected_status=None, msg=None, **kwargs):
+        """
+        Sends a CONNECT request.
+
+        The endpoint used to retrieve the resource is the ``url``.
+
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in `Status Should Be` keyword documentation.
+        In order to disable this implicit assert mechanism you can pass as ``expected_status`` the values ``any`` or
+        ``anything``.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET` keyword for the complete list.
+        """
+        response = self._common_request("CONNECT", None, url, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword('TRACE')
+    @warn_if_equal_symbol_in_url_session_less
+    def session_less_trace(self, url,
+                             expected_status=None, msg=None, **kwargs):
+        """
+        Sends a TRACE request.
+
+        The endpoint used to retrieve the resource is the ``url``.
+
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in `Status Should Be` keyword documentation.
+        In order to disable this implicit assert mechanism you can pass as ``expected_status`` the values ``any`` or
+        ``anything``.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET` keyword for the complete list.
+        """
+        response = self._common_request("TRACE", None, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response

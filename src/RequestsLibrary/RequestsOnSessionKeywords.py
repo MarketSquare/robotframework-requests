@@ -28,7 +28,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("get", session, url,
+        response = self._common_request("GET", session, url,
                                         params=params, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -57,7 +57,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("post", session, url,
+        response = self._common_request("POST", session, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -86,7 +86,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("patch", session, url,
+        response = self._common_request("PATCH", session, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -115,7 +115,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("put", session, url,
+        response = self._common_request("PUT", session, url,
                                         data=data, json=json, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
@@ -140,14 +140,14 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("delete", session, url, **kwargs)
+        response = self._common_request("DELETE", session, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword("HEAD On Session")
     @warn_if_equal_symbol_in_url_on_session
     def head_on_session(self, alias, url,
-                        expected_status=None, msg=None, **kwargs):
+                        expected_status=None, msg=None, allow_redirects=False, **kwargs):
         """
         Sends a HEAD request on a previously created HTTP Session.
 
@@ -167,14 +167,14 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("head", session, url, **kwargs)
+        response = self._common_request("HEAD", session, url, allow_redirects=allow_redirects, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword("OPTIONS On Session")
     @warn_if_equal_symbol_in_url_on_session
     def options_on_session(self, alias, url,
-                           expected_status=None, msg=None, **kwargs):
+                           expected_status=None, msg=None, allow_redirects=False, **kwargs):
         """
         Sends a OPTIONS request on a previously created HTTP Session.
 
@@ -191,6 +191,54 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("options", session, url, **kwargs)
+        response = self._common_request("OPTIONS", session, url, allow_redirects=allow_redirects, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword("CONNECT On Session")
+    @warn_if_equal_symbol_in_url_on_session
+    def connect_on_session(self, alias, url,
+                           expected_status=None, msg=None, **kwargs):
+        """
+        Sends a CONNECT request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``.
+
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in `Status Should Be` keyword documentation.
+        In order to disable this implicit assert mechanism you can pass as ``expected_status`` the values ``any`` or
+        ``anything``.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET` keyword for the complete list.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("CONNECT", session, url, **kwargs)
+        self._check_status(expected_status, response, msg)
+        return response
+
+    @keyword("TRACE On Session")
+    @warn_if_equal_symbol_in_url_on_session
+    def trace_on_session(self, alias, url,
+                           expected_status=None, msg=None, **kwargs):
+        """
+        Sends a TRACE request on a previously created HTTP Session.
+
+        Session will be identified using the ``alias`` name.
+        The endpoint used to retrieve the resource is the ``url``.
+
+        By default this keyword fails if a status code with error values is returned in the response,
+        this behavior can be modified using the ``expected_status`` and ``msg`` parameters,
+        read more about it in `Status Should Be` keyword documentation.
+        In order to disable this implicit assert mechanism you can pass as ``expected_status`` the values ``any`` or
+        ``anything``.
+
+        Other optional requests arguments can be passed using ``**kwargs``
+        see the `GET` keyword for the complete list.
+        """
+        session = self._cache.switch(alias)
+        response = self._common_request("TRACE", session, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
