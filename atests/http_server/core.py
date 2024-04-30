@@ -39,7 +39,7 @@ def view_headers():
     return jsonify(get_dict('headers'))
 
 
-@app.route("/anything", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE"])
+@app.route("/anything", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE", "HEAD", "CONNECT"])
 def view_anything(anything=None):
     """Returns anything passed in request data.
     ---
@@ -68,7 +68,7 @@ def view_anything(anything=None):
 
 
 @app.route(
-    "/status/<codes>", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE"]
+    "/status/<codes>", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE", "HEAD", "CONNECT"]
 )
 def view_status_code(codes):
     """Return status code or random status code if more than one are given
@@ -118,7 +118,7 @@ def view_status_code(codes):
     return status_code(code)
 
 
-@app.route("/redirect-to", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE"])
+@app.route("/redirect-to", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "TRACE", "HEAD", "CONNECT", "OPTIONS"])
 def redirect_to():
     """302/3XX Redirects to the given URL.
     ---

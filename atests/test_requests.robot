@@ -259,7 +259,7 @@ Options Request On Existing Session
 
 Options Request Check Allow Header
     [Tags]  options
-    ${allow_header}=    Create List   POST  HEAD  PATCH  GET  TRACE  DELETE  OPTIONS  PUT
+    ${allow_header}=    Create List   GET  POST  PUT  DELETE  PATCH  TRACE  HEAD  CONNECT  OPTIONS
     ${resp}=            OPTIONS  ${HTTP_LOCAL_SERVER}/anything
     Status Should Be    OK  ${resp}
     ${allow_response_header}=  Get From Dictionary      ${resp.headers}   Allow
@@ -275,3 +275,4 @@ Options Request Expect A Success On Unauthorized Request
     [Tags]  options
     ${resp}=            OPTIONS  ${HTTP_LOCAL_SERVER}/status/401  expected_status=200
     Status Should Be    OK  ${resp}
+

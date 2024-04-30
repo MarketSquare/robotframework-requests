@@ -257,7 +257,7 @@ Options Request On Existing Session
 
 Options Request Check Allow Header
     [Tags]  options
-    ${allow_header}=    Create List   POST  HEAD  PATCH  GET  TRACE  DELETE  OPTIONS  PUT
+    ${allow_header}=    Create List   POST  HEAD  PATCH  GET  TRACE  DELETE  OPTIONS  PUT  CONNECT
     ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /anything
     Status Should Be    OK  ${resp}
     ${allow_response_header}=  Get From Dictionary      ${resp.headers}   Allow

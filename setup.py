@@ -26,8 +26,8 @@ Programming Language :: Python :: 3.9
 Topic :: Software Development :: Testing
 """[1:-1]
 
-TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8'] if PY3 \
-    else ['robotframework>=3.2.1', 'pytest', 'flask', 'coverage', 'flake8', 'mock']
+TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask==2.3.3', 'werkzeug==2.3.8', 'six', 'coverage', 'flake8'] if PY3 \
+    else ['robotframework>=3.2.1', 'pytest', 'flask==2.3.3', 'werkzeug==2.3.8', 'coverage', 'flake8', 'mock']
 
 VERSION = None
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
