@@ -13,8 +13,7 @@ import re
 import time
 import os
 from hashlib import md5, sha256, sha512
-from werkzeug.http import parse_authorization_header
-from werkzeug.datastructures import WWWAuthenticate
+from werkzeug.datastructures import WWWAuthenticate, Authorization
 
 from flask import request, make_response
 from six.moves.urllib.parse import urlparse, urlunparse
@@ -357,7 +356,7 @@ def check_digest_auth(user, passwd):
     """Check user authentication using HTTP Digest auth"""
 
     if request.headers.get('Authorization'):
-        credentials = parse_authorization_header(request.headers.get('Authorization'))
+        credentials = Authorization.from_header(request.headers.get('Authorization'))
         if not credentials:
             return
         request_uri = request.script_root + request.path
