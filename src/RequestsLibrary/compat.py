@@ -2,17 +2,9 @@ import copy
 import sys
 from requests.packages.urllib3.util import Retry
 
-PY3 = sys.version_info > (3,)
-
-if PY3:
-    import http.client as httplib  # noqa
-    from urllib.parse import urlencode  # noqa
-    from urllib.parse import urljoin  # noqa
-else:
-    import httplib  # noqa
-    from urllib import urlencode  # noqa
-    from urlparse import urljoin  # noqa
-
+import http.client as httplib  # noqa
+from urllib.parse import urlencode  # noqa
+from urllib.parse import urljoin  # noqa
 
 class RetryAdapter(Retry):
 

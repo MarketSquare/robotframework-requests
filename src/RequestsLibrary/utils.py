@@ -6,7 +6,7 @@ from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 from robot.api import logger
 
-from RequestsLibrary.compat import urlencode, PY3
+from RequestsLibrary.compat import urlencode
 from RequestsLibrary.exceptions import UnknownStatusError
 
 
@@ -74,20 +74,10 @@ def json_pretty_print(content):
 
 
 def is_string_type(data):
-    if PY3 and isinstance(data, str):
-        return True
-    elif not PY3 and isinstance(data, unicode): # noqa
-        return True
-    return False
-
+    return isinstance(data, str)
 
 def is_file_descriptor(fd):
-    if PY3 and isinstance(fd, io.IOBase):
-        return True
-    if not PY3 and isinstance(fd, file): # noqa
-        return True
-    return False
-
+    return isinstance(fd, io.IOBase)
 
 def utf8_urlencode(data):
     if is_string_type(data):
@@ -102,7 +92,6 @@ def utf8_urlencode(data):
             v = v.encode('utf-8')
         utf8_data[k] = v
     return urlencode(utf8_data)
-
 
 def format_data_according_to_header(session, data, headers):
     # when data is an open file descriptor we ignore it
