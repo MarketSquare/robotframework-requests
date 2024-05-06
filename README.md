@@ -4,19 +4,23 @@
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-requests)](https://pypi.python.org/pypi/robotframework-requests)
 
 🏠 ``RequestsLibrary`` is a [Robot Framework](https://robotframework.org/) library
-aimed to provide HTTP api testing functionalities by wrapping the well known [Python Requests Library](https://github.com/kennethreitz/requests).
+aimed to provide HTTP api testing functionalities by wrapping the well
+known [Python Requests Library](https://github.com/kennethreitz/requests).
 
-## Install stable version
+## Install old version 0.9 (supports python 2.7+)
+
 ```sh
 pip install robotframework-requests
 ```
 
-## Install pre-release version
+## Install pre-release version 1.0a (supports python 3.8+)
+
 ```sh
 pip install robotframework-requests --pre
 ```
 
 ## 🤖 Quick start
+
 ```robotframework
 *** Settings ***
 Library               RequestsLibrary
@@ -35,12 +39,15 @@ Quick Get A JSON Body Test
 ```
 
 ### What's new in 0.9
+
 Sessionless keywords are now available, you can just `GET`, `POST`, etc.. no need to create a session anymore!
+
 ```robotframework
 ${resp}=  GET  https://www.google.com
 ```
 
 `Status Should Be` and `Request Should Be Successfull` can use the last response, no need to pass the response anymore!
+
 ```robotframework
 GET  https://www.google.com
 Status Should Be  200
@@ -68,6 +75,7 @@ Lot of pre-parsing / encoding has been removed to have a more accurate and uncha
 Main keywords file has been split with a more logic division to allow better and faster maintenance.
 
 ## 🤖 More examples
+
 ```robotframework
 *** Settings ***                                                                                       
 Library    Collections                                                                                 
@@ -94,15 +102,21 @@ Post Request Test
 ```
 
 ### 📖 Keywords documentation
-Robotframework-requests offers a wide set of keywords which can be found in the [Keywords documentation](http://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html)
+
+Robotframework-requests offers a wide set of keywords which can be found in
+the [Keywords documentation](http://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html)
 
 ### 🔬 Test examples
+
 You can find many test examples inside the `atests` folder.
 
 ## 🤝 Contributing ✍️
-Feel free to contribute and open an issue in order to discuss it. Before doing it take a look at the [contribution guidelines](CONTRIBUTING.md).
+
+Feel free to contribute and open an issue in order to discuss it. Before doing it take a look at
+the [contribution guidelines](CONTRIBUTING.md).
 
 📢 Get in touch with the community via slack and Users group
+
 - [Robot Framework Slack #requests channel](https://robotframework-slack-invite.herokuapp.com/)
 - [Robot Framework Users Group](https://groups.google.com/forum/#!forum/robotframework-users)
 
