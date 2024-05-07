@@ -11,7 +11,7 @@ from robot.api.deco import keyword
 from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils
-from RequestsLibrary.compat import httplib, PY3, RetryAdapter
+from RequestsLibrary.compat import httplib, RetryAdapter
 from .RequestsKeywords import RequestsKeywords
 from RequestsLibrary.exceptions import InvalidResponse, InvalidExpectedStatus
 from RequestsLibrary.utils import is_string_type
@@ -602,20 +602,8 @@ class SessionKeywords(RequestsKeywords):
     def _print_debug(self):
         if self.debug >= 1:
             sys.stdout = sys.__stdout__  # Restore stdout
-            if PY3:
-                debug_info = ''.join(
-                    self.http_log.content).replace(
-                    '\\r',
-                    '').replace(
-                    '\'',
-                    '')
-            else:
-                debug_info = ''.join(
-                    self.http_log.content).replace(
-                    '\\r',
-                    '').decode('string_escape').replace(
-                    '\'',
-                    '')
+            debug_info = ''.join(
+                self.http_log.content).replace('\\r','').replace('\'','')
 
             # Remove empty lines
             debug_info = "\n".join(
