@@ -276,3 +276,12 @@ Options Request Expect A Success On Unauthorized Request
     ${resp}=            OPTIONS  ${HTTP_LOCAL_SERVER}/status/401  expected_status=200
     Status Should Be    OK  ${resp}
 
+Connect Request
+    [Tags]  connect
+    ${resp}=            CONNECT  ${HTTP_LOCAL_SERVER}/anything
+    Status Should Be    OK  ${resp}
+
+Trace Request
+    [Tags]  trace
+    ${resp}=            TRACE  ${HTTP_LOCAL_SERVER}/anything
+    Status Should Be    OK  ${resp}

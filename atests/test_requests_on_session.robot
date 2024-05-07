@@ -273,3 +273,13 @@ Options Request Expect A Success On Unauthorized Request
     [Tags]  options
     ${resp}=            OPTIONS On Session  ${GLOBAL_SESSION}  /status/401  expected_status=200
     Status Should Be    OK  ${resp}
+
+Connect Request On Existing Session
+    [Tags]  connect
+    ${resp}=            CONNECT On Session  ${GLOBAL_SESSION}  /anything
+    Status Should Be    OK  ${resp}
+
+Trace Request On Existing Session
+    [Tags]  trace
+    ${resp}=            TRACE On Session  ${GLOBAL_SESSION}  /anything
+    Status Should Be    OK  ${resp}
