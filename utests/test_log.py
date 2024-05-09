@@ -61,6 +61,47 @@ def test_log_request(mocked_logger):
 
 
 @mock.patch('RequestsLibrary.log.logger')
+def test_log_request_with_headers(mocked_logger):
+    headers = {'User-Agent': 'python-requests/2.31.0',
+               'Accept-Encoding': 'gzip, deflate',
+               'Accept': '*/*',
+               'Connection': 'keep-alive'}
+    request = Request(method='get', url='http://mock.rulezz', headers=headers)
+    request = request.prepare()
+    response = mock.MagicMock()
+    response.history = []
+    response.request = request
+    log_request(response)
+    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                  "url=%s \n " % request.url +
+                                                  "path_url=%s \n " % request.path_url +
+                                                  "headers=%s \n " % request.headers +
+                                                  "body=%s \n " % request.body)
+
+
+@mock.patch('RequestsLibrary.log.logger')
+def test_log_request_with_headers_auth(mocked_logger):
+    headers = {'User-Agent': 'python-requests/2.31.0',
+               'Accept-Encoding': 'gzip, deflate',
+               'Accept': '*/*',
+               'Connection': 'keep-alive',
+               'Authorization': 'some_token'}
+    safe_headers = dict(headers)
+    safe_headers['Authorization'] = '*****'
+    request = Request(method='get', url='http://mock.rulezz', headers=headers)
+    request = request.prepare()
+    response = mock.MagicMock()
+    response.history = []
+    response.request = request
+    log_request(response)
+    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                  "url=%s \n " % request.url +
+                                                  "path_url=%s \n " % request.path_url +
+                                                  "headers=%s \n " % safe_headers +
+                                                  "body=%s \n " % request.body)
+
+
+@mock.patch('RequestsLibrary.log.logger')
 def test_log_request_with_redirect(mocked_logger):
     request = Request(method='get', url='http://mock.rulezz/redirected')
     request = request.prepare()
