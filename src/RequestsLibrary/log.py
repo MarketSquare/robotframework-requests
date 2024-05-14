@@ -1,4 +1,5 @@
 import logging
+import json
 
 from RequestsLibrary.utils import is_file_descriptor
 from robot.api import logger
@@ -24,11 +25,14 @@ def log_request(response):
     else:
         original_request = request
         redirected = ''
-    logger.info("%s Request : " % original_request.method.upper() +
-                "url=%s %s\n " % (original_request.url, redirected) +
-                "path_url=%s \n " % original_request.path_url +
-                "headers=%s \n " % original_request.headers +
-                "body=%s \n " % format_data_to_log_string(original_request.body))
+    log = f"""Request:  {original_request.method.upper()}
+        URL:      {original_request.url} {redirected}
+        Path URL: {original_request.path_url}
+        Headers:  {original_request.headers}
+        Body:     {format_data_to_log_string(original_request.body)}
+    """
+    
+    logger.info(log)
 
 
 def format_data_to_log_string(data, limit=LOG_CHAR_LIMIT):
