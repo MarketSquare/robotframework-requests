@@ -11,7 +11,7 @@ from RequestsLibrary.exceptions import UnknownStatusError
 
 
 class WritableObject:
-    """ HTTP stream handler """
+    """HTTP stream handler"""
 
     def __init__(self):
         self.content = []
@@ -24,7 +24,7 @@ def parse_named_status(status_code):
     """
     Converts named status from human readable to integer
     """
-    code = status_code.lower().replace(' ', '_')
+    code = status_code.lower().replace(" ", "_")
     code = codes.get(code)
     if not code:
         raise UnknownStatusError(status_code)
@@ -49,39 +49,17 @@ def merge_headers(session, headers):
     return merged_headers
 
 
-def is_json(data):
-    try:
-        json.loads(data)
-    except (TypeError, ValueError):
-        return False
-    return True
-
-
-def json_pretty_print(content):
-    """
-    Pretty print a JSON object
-
-    ``content``  JSON object to pretty print
-    """
-    temp = json.loads(content)
-    return json.dumps(
-        temp,
-        sort_keys=True,
-        indent=4,
-        separators=(
-            ',',
-            ': '))
-
-
 def is_string_type(data):
     return isinstance(data, str)
+
 
 def is_file_descriptor(fd):
     return isinstance(fd, io.IOBase)
 
+
 def utf8_urlencode(data):
     if is_string_type(data):
-        return data.encode('utf-8')
+        return data.encode("utf-8")
 
     if not isinstance(data, dict):
         return data
@@ -89,9 +67,10 @@ def utf8_urlencode(data):
     utf8_data = {}
     for k, v in data.items():
         if is_string_type(v):
-            v = v.encode('utf-8')
+            v = v.encode("utf-8")
         utf8_data[k] = v
     return urlencode(utf8_data)
+
 
 def format_data_according_to_header(session, data, headers):
     # when data is an open file descriptor we ignore it
@@ -101,12 +80,17 @@ def format_data_according_to_header(session, data, headers):
     # Merged headers are already case insensitive
     headers = merge_headers(session, headers)
 
-    if data is not None and headers is not None and 'Content-Type' in headers and not is_json(data):
-        if headers['Content-Type'].find("application/json") != -1:
+    if (
+        data is not None
+        and headers is not None
+        and "Content-Type" in headers
+        and not is_json(data)
+    ):
+        if headers["Content-Type"].find("application/json") != -1:
             if not isinstance(data, types.GeneratorType):
                 if str(data).strip():
                     data = json.dumps(data)
-        elif headers['Content-Type'].find("application/x-www-form-urlencoded") != -1:
+        elif headers["Content-Type"].find("application/x-www-form-urlencoded") != -1:
             data = utf8_urlencode(data)
     else:
         data = utf8_urlencode(data)
@@ -115,10 +99,12 @@ def format_data_according_to_header(session, data, headers):
 
 
 def _log_url_warning_if_url_not_in_kwargs(kwargs):
-    if 'url' not in kwargs:
-        logger.warn("You might have an = symbol in url."
-                    " You better place 'url=' before, example: 'url=/your-url/foo?param=a'"
-                    " or use '/your-url/foo  params=param=a' or escape it")
+    if "url" not in kwargs:
+        logger.warn(
+            "You might have an = symbol in url."
+            " You better place 'url=' before, example: 'url=/your-url/foo?param=a'"
+            " or use '/your-url/foo  params=param=a' or escape it"
+        )
 
 
 def warn_if_equal_symbol_in_url_session_less(func):
@@ -141,6 +127,7 @@ def warn_if_equal_symbol_in_url_on_session(func):
         except IndexError:
             _log_url_warning_if_url_not_in_kwargs(kwargs)
         return func(*args, **kwargs)
+
     decorator.__name__ = func.__name__
     decorator.__doc__ = func.__doc__
     return decorator

@@ -5,14 +5,17 @@ from robot.libraries.BuiltIn import BuiltIn
 
 from RequestsLibrary import log
 from RequestsLibrary.compat import urljoin
-from RequestsLibrary.utils import is_file_descriptor, warn_if_equal_symbol_in_url_session_less
+from RequestsLibrary.utils import (
+    is_file_descriptor,
+    warn_if_equal_symbol_in_url_session_less,
+)
 
 
 class RequestsKeywords(object):
-    ROBOT_LIBRARY_SCOPE = 'Global'
+    ROBOT_LIBRARY_SCOPE = "Global"
 
     def __init__(self):
-        self._cache = robot.utils.ConnectionCache('No sessions created')
+        self._cache = robot.utils.ConnectionCache("No sessions created")
         self.builtin = BuiltIn()
         self.debug = 0
         # The following variables are related to session but used in _common_request :(
@@ -20,12 +23,7 @@ class RequestsKeywords(object):
         self.cookies = None
         self.last_response = None
 
-    def _common_request(
-            self,
-            method,
-            session,
-            uri,
-            **kwargs):
+    def _common_request(self, method, session, uri, **kwargs):
 
         if session:
             method_function = getattr(session, method)
@@ -36,20 +34,23 @@ class RequestsKeywords(object):
 
         resp = method_function(
             self._merge_url(session, uri),
-            timeout=self._get_timeout(kwargs.pop('timeout', None)),
-            cookies=kwargs.pop('cookies', self.cookies),
-            **kwargs)
+            timeout=self._get_timeout(kwargs.pop("timeout", None)),
+            cookies=kwargs.pop("cookies", self.cookies),
+            **kwargs
+        )
 
         log.log_request(resp)
-        #self._print_debug()
+        # self._print_debug()
 
         log.log_response(resp)
 
         self.last_response = resp
 
-        files = kwargs.get('files', {}) or {}
-        data = kwargs.get('data', []) or []
-        files_descriptor_to_close = filter(is_file_descriptor, list(files.values()) + [data])
+        files = kwargs.get("files", {}) or {}
+        data = kwargs.get("data", []) or []
+        files_descriptor_to_close = filter(
+            is_file_descriptor, list(files.values()) + [data]
+        )
         for file_descriptor in files_descriptor_to_close:
             file_descriptor.close()
 
@@ -63,12 +64,12 @@ class RequestsKeywords(object):
         but has some counterintuitive behaviours if you join uri starting with /
         It handles also override in case a full url (http://etc) is passed as uri.
         """
-        base = ''
+        base = ""
         if session:
             base = session.url
-        if session and uri and not session.url.endswith('/'):
-            base = session.url + '/'
-        if session and uri and uri.startswith('/'):
+        if session and uri and not session.url.endswith("/"):
+            base = session.url + "/"
+        if session and uri and uri.startswith("/"):
             uri = uri[1:]
         url = urljoin(base, uri)
         return url
@@ -149,12 +150,13 @@ class RequestsKeywords(object):
         File descriptor is binary mode and read only. Requests keywords will automatically close the file,
         if used outside this library it's up to the caller to close it.
         """
-        return open(path, 'rb')
+        return open(path, "rb")
 
-    @keyword('GET')
+    @keyword("GET")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_get(self, url, params=None,
-                         expected_status=None, msg=None, **kwargs):
+    def session_less_get(
+        self, url, params=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a GET request.
 
@@ -187,15 +189,15 @@ class RequestsKeywords(object):
         https://requests.readthedocs.io/en/latest/api/
 
         """
-        response = self._common_request('get', None, url,
-                                        params=params, **kwargs)
+        response = self._common_request("get", None, url, params=params, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('POST')
+    @keyword("POST")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_post(self, url, data=None, json=None,
-                          expected_status=None, msg=None, **kwargs):
+    def session_less_post(
+        self, url, data=None, json=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a POST request.
 
@@ -214,15 +216,17 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('post', None, url,
-                                        data=data, json=json, **kwargs)
+        response = self._common_request(
+            "post", None, url, data=data, json=json, **kwargs
+        )
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('PUT')
+    @keyword("PUT")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_put(self, url, data=None, json=None,
-                         expected_status=None, msg=None, **kwargs):
+    def session_less_put(
+        self, url, data=None, json=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a PUT request.
 
@@ -242,15 +246,15 @@ class RequestsKeywords(object):
         see the `GET` keyword for the complete list.
         """
 
-        response = self._common_request("put", None, url,
-                                        data=data, json=json, **kwargs)
+        response = self._common_request(
+            "put", None, url, data=data, json=json, **kwargs
+        )
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('HEAD')
+    @keyword("HEAD")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_head(self, url,
-                          expected_status=None, msg=None, **kwargs):
+    def session_less_head(self, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a HEAD request.
 
@@ -268,14 +272,15 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('head', None, url, **kwargs)
+        response = self._common_request("head", None, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('PATCH')
+    @keyword("PATCH")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_patch(self, url, data=None, json=None,
-                           expected_status=None, msg=None, **kwargs):
+    def session_less_patch(
+        self, url, data=None, json=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a PATCH request.
 
@@ -294,15 +299,15 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('patch', None, url,
-                                        data=data, json=json, **kwargs)
+        response = self._common_request(
+            "patch", None, url, data=data, json=json, **kwargs
+        )
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('DELETE')
+    @keyword("DELETE")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_delete(self, url,
-                            expected_status=None, msg=None, **kwargs):
+    def session_less_delete(self, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a DELETE request.
 
@@ -321,10 +326,9 @@ class RequestsKeywords(object):
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('OPTIONS')
+    @keyword("OPTIONS")
     @warn_if_equal_symbol_in_url_session_less
-    def session_less_options(self, url,
-                             expected_status=None, msg=None, **kwargs):
+    def session_less_options(self, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a OPTIONS request.
 

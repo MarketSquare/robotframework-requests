@@ -1,10 +1,7 @@
 import copy
-import sys
+
 from requests.packages.urllib3.util import Retry
 
-import http.client as httplib  # noqa
-from urllib.parse import urlencode  # noqa
-from urllib.parse import urljoin  # noqa
 
 class RetryAdapter(Retry):
 
@@ -20,6 +17,6 @@ class RetryAdapter(Retry):
             super(RetryAdapter, self).__init__(**kwargs)
             # FIXME more specific except
         except TypeError:
-            value = kwargs.pop('allowed_methods', None)
-            kwargs['method_whitelist'] = value
+            value = kwargs.pop("allowed_methods", None)
+            kwargs["method_whitelist"] = value
             super(RetryAdapter, self).__init__(**kwargs)
