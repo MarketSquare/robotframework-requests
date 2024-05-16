@@ -1,7 +1,8 @@
 import os
+from unittest import mock
 
 from RequestsLibrary import RequestsLibrary
-from utests import SCRIPT_DIR, mock
+from utests import SCRIPT_DIR
 
 
 def build_mocked_session_common_request(

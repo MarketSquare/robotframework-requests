@@ -1,10 +1,11 @@
+from urllib.parse import urljoin
+
 import requests
 import robot
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
 from RequestsLibrary import log
-from RequestsLibrary.compat import urljoin
 from RequestsLibrary.utils import (
     is_file_descriptor,
     warn_if_equal_symbol_in_url_session_less,
@@ -40,7 +41,7 @@ class RequestsKeywords(object):
         )
 
         log.log_request(resp)
-        # self._print_debug()
+        self._print_debug()
 
         log.log_response(resp)
 

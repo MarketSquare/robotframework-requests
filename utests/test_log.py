@@ -1,10 +1,11 @@
 import json
 import os
+from unittest import mock
 
 from requests import Request
 
 from RequestsLibrary.log import log_request, log_response
-from utests import SCRIPT_DIR, mock
+from utests import SCRIPT_DIR
 
 
 @mock.patch("RequestsLibrary.log.logger")

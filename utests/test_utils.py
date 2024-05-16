@@ -1,11 +1,12 @@
 import os
+from unittest import mock
 
 import pytest
 from requests import Session
 
 from RequestsLibrary import RequestsLibrary
 from RequestsLibrary.utils import is_file_descriptor, merge_headers
-from utests import SCRIPT_DIR, mock
+from utests import SCRIPT_DIR
 
 
 def test_none():

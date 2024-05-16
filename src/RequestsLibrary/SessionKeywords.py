@@ -1,3 +1,4 @@
+import http.client as httplib
 import logging
 import sys
 
@@ -10,7 +11,7 @@ from robot.api.deco import keyword
 from robot.utils.asserts import assert_equal
 
 from RequestsLibrary import utils
-from RequestsLibrary.compat import RetryAdapter, httplib
+from RequestsLibrary.compat import RetryAdapter
 from RequestsLibrary.exceptions import InvalidExpectedStatus, InvalidResponse
 from RequestsLibrary.utils import is_string_type
 

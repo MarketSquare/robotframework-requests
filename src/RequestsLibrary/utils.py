@@ -1,12 +1,12 @@
 import io
 import json
 import types
+from urllib.parse import urlencode
 
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 from robot.api import logger
 
-from RequestsLibrary.compat import urlencode
 from RequestsLibrary.exceptions import UnknownStatusError
 
 

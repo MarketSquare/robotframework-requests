@@ -1,5 +1,6 @@
+from unittest import mock
+
 from RequestsLibrary import RequestsLibrary
-from utests import mock
 
 
 def build_mocked_session_keywords(url=""):
