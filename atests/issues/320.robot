@@ -3,9 +3,6 @@ Library   Collections
 Library   RequestsLibrary
 Resource  ../res_setup.robot
 
-Suite Setup     Setup Flask Http Server
-Suite Teardown  Teardown Flask Http Server And Sessions
-
 *** Test Cases ***
 Test GET with list of values as params
     ${values_list}=     Create List    1    2    3    4    5

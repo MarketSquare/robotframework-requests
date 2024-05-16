@@ -4,10 +4,6 @@ Library  Collections
 Library  RequestsLibrary
 Resource  res_setup.robot
 
-Suite Setup     Setup Flask Http Server
-Suite Teardown  Teardown Flask Http Server And Sessions
-
-
 *** Test Cases ***
 Retry Session With Wrong Retry Status List
     [Tags]  session  retry

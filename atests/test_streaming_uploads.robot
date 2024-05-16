@@ -4,9 +4,6 @@ Library  OperatingSystem
 Library  base64Decode.py
 Resource  res_setup.robot
 
-Suite Setup     Setup Flask Http Server
-Suite Teardown  Teardown Flask Http Server And Sessions
-
 *** Test Cases ***
 
 Put Request With Streaming Upload

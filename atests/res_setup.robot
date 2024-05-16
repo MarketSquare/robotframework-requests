@@ -10,13 +10,14 @@ ${HTTP_LOCAL_SERVER}    http://localhost:5010
 
 *** Keywords ***
 
-Setup Test Session
-    ${test_session}=  Set Variable  test_session
-    Set Test Variable  ${test_session}
-    Create Session  ${test_session}  ${HTTP_LOCAL_SERVER}
+Setup acceptance test suite
+    Setup Flask Http Server
+    Create Session  ${GLOBAL_SESSION}  ${HTTP_LOCAL_SERVER}
 
-Teardown Test Session
+Teardown acceptance test suite
     Delete All Sessions
+    Switch Process    flask
+    Terminate Process
 
 Setup Flask Http Server
     ${platform}=    Evaluate    sys.platform    sys
@@ -32,7 +33,4 @@ Wait Until Http Server Is Up And Running
     Create Session  wait-until-up  ${HTTP_LOCAL_SERVER}  max_retries=10
     Get On Session  wait-until-up  /
 
-Teardown Flask Http Server And Sessions
-    Delete All Sessions
-    Switch Process    flask
-    Terminate Process
+

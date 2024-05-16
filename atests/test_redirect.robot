@@ -2,9 +2,6 @@
 Library   RequestsLibrary
 Resource  res_setup.robot
 
-Suite Setup     Setup Flask Http Server
-Suite Teardown  Teardown Flask Http Server And Sessions
-
 *** Test Cases ***
 Get Request With Default Redirection
     [Tags]  get

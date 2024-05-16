@@ -4,9 +4,6 @@ Library  String
 Library  RequestsLibrary
 Resource  res_setup.robot
 
-Suite Setup     Setup Flask Http Server
-Suite Teardown  Teardown Flask Http Server And Sessions
-
 *** Test Cases ***
 
 On Session Named URL with = symbol should not have warnings

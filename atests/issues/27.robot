@@ -5,9 +5,6 @@ Library  RequestsLibrary
 Library  OperatingSystem
 Resource  ../res_setup.robot
 
-Suite Setup     Setup Flask Http Server
-Suite Teardown  Teardown Flask Http Server And Sessions
-
 *** Test Cases ***
 Post Request With XML File
     [Tags]  post

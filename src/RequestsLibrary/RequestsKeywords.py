@@ -41,7 +41,7 @@ class RequestsKeywords(object):
             **kwargs)
 
         log.log_request(resp)
-        self._print_debug()
+        #self._print_debug()
 
         log.log_response(resp)
 
