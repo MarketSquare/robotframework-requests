@@ -26,10 +26,10 @@ class RequestsLibrary(RequestsOnSessionKeywords):
 
        The quickest way to start is using the requests keywords and urls see below examples:
 
-       |   *** Settings ***
+       |   ***** Settings *****
        |   Library               RequestsLibrary
        |
-       |   *** Test Cases ***
+       |   ***** Test Cases *****
        |   Quick Get Request Test
        |       ${response}=    GET  https://www.google.com
        |
@@ -47,13 +47,13 @@ class RequestsLibrary(RequestsOnSessionKeywords):
        each requests.
        Below some more advanced examples:
 
-       |   *** Settings ***
+       |   ***** Settings *****
        |   Library    Collections
        |   Library    RequestsLibrary
        |
        |   Suite Setup    Create Session  jsonplaceholder  https://jsonplaceholder.typicode.com
        |
-       |   *** Test Cases ***
+       |   ***** Test Cases *****
        |
        |   Get Request Test
        |       Create Session    google  http://www.google.com
