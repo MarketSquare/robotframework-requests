@@ -95,7 +95,7 @@ class RequestsKeywords(object):
 
         For example when you have a nested keyword that is used for both OK and ERROR responses:
 
-        |   *** Test Cases ***
+        |   ***** Test Cases *****
         |
         |   Test Get Request And Make Sure Is A 404 Response
         |       ${resp}=            GET Custom Keyword That Returns OK or ERROR Response  case=notfound
@@ -107,7 +107,7 @@ class RequestsKeywords(object):
         |       Status Should Be    200    ${resp}
         |       Should Be Equal As Strings  OK  ${resp.reason}
         |
-        |   *** Keywords ***
+        |   ***** Keywords *****
         |
         |   GET Custom Keyword That Returns OK or ERROR Response
         |   [Arguments]  $case
