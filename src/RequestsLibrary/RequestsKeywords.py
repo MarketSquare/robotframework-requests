@@ -330,7 +330,7 @@ class RequestsKeywords(object):
     def session_less_options(self, url,
                              expected_status=None, msg=None, **kwargs):
         """
-        Sends a OPTIONS request.
+        Sends an OPTIONS request.
 
         The endpoint used to retrieve the resource is the ``url``.
 

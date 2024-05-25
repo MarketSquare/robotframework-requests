@@ -181,7 +181,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
     def options_on_session(self, alias, url,
                            expected_status=None, msg=None, **kwargs):
         """
-        Sends a OPTIONS request on a previously created HTTP Session.
+        Sends an OPTIONS request on a previously created HTTP Session.
 
         Session will be identified using the ``alias`` name.
         The endpoint used to retrieve the resource is the ``url``.
