@@ -8,60 +8,96 @@ Suite Teardown  Teardown Flask Http Server And Sessions
 *** Test Cases ***
 Get Request With Default Redirection
     [Tags]  get
-    ${resp}=  GET On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything
+    ${resp}=  GET  url=${HTTP_LOCAL_SERVER}/redirect-to?url=anything
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
 Get Request With Redirection
     [Tags]  get
-    ${resp}=  GET On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
+    ${resp}=  GET  url=${HTTP_LOCAL_SERVER}/redirect-to?url=anything   allow_redirects=${True}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
 Get Request Without Redirection
     [Tags]  get
+    ${resp}=  GET  url=${HTTP_LOCAL_SERVER}/redirect-to?url=anything   allow_redirects=${False}
+    Status Should Be  302  ${resp}
+    Length Should Be  ${resp.history}  0
+
+Head Request Without Default Redirection
+    [Tags]  head
+    ${resp}=  HEAD  url=${HTTP_LOCAL_SERVER}/redirect-to?url=anything
+    Status Should Be  302  ${resp}
+    Length Should Be  ${resp.history}  0
+
+Head Request With Redirection
+    [Tags]  head
+    ${resp}=  HEAD  url=${HTTP_LOCAL_SERVER}/redirect-to?url=anything   allow_redirects=${True}
+    Status Should Be  OK  ${resp}
+    Length Should Be  ${resp.history}  1
+
+Head Request Without Redirection
+    [Tags]  head
+    ${resp}=  HEAD  url=${HTTP_LOCAL_SERVER}/redirect-to?url=anything   allow_redirects=${False}
+    Status Should Be  302  ${resp}
+    Length Should Be  ${resp.history}  0
+
+Get Request on Session With Default Redirection
+    [Tags]  get
+    ${resp}=  GET On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything
+    Status Should Be  OK  ${resp}
+    Length Should Be  ${resp.history}  1
+
+Get Request on Session With Redirection
+    [Tags]  get
+    ${resp}=  GET On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
+    Status Should Be  OK  ${resp}
+    Length Should Be  ${resp.history}  1
+
+Get Request on Session Without Redirection
+    [Tags]  get
     ${resp}=  GET On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-Options Request With Redirection By Default
+Options Request on Session With Redirection By Default
     [Tags]  options
     ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything
     Status Should Be  200  ${resp}
     Length Should Be  ${resp.history}  1
 
-Options Request With Redirection
+Options Request on Session With Redirection
     [Tags]  options
     ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
-Options Request Without Redirection
+Options Request on Session Without Redirection
     [Tags]  options
     ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-Head Request Without Redirection By Default
+Head Request on Session Without Redirection By Default
     [Tags]  head
     ${resp}=  HEAD On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything
     ${status}=  Convert To String  ${resp.status_code}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-Head Request With Redirection
+Head Request on Session With Redirection
     [Tags]  head
     ${resp}=  HEAD On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
-Head Request Without Redirection
+Head Request on Session Without Redirection
     ${resp}=  HEAD On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
     ${status}=  Convert To String  ${resp.status_code}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-Post Request With Redirection
+Post Request on Session With Redirection
     [Tags]  post
     # FIXME should be 2 different tests
     # FIXME should be verifed also the payload is returned
@@ -75,12 +111,12 @@ Post Request With Redirection
     ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
     Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
 
-Post Request Without Redirection
+Post Request on Session Without Redirection
     [Tags]  post
     ${resp}=  POST On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  data=something  allow_redirects=${false}
     Status Should be  302  ${resp}
 
-Put Request With Redirection
+Put Request on Session With Redirection
     [Tags]  put
     # FIXME should be 2 different tests
     # FIXME should be verifed also the payload is returned
@@ -94,30 +130,30 @@ Put Request With Redirection
     ${redirected_url}=  Catenate  ${HTTP_LOCAL_SERVER}/anything
     Should Be Equal As Strings  ${resp.json()['url']}  ${redirected_url}
 
-Put Request Without Redirection
+Put Request on Session Without Redirection
     [Tags]  put
     ${resp}=  PUT On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
     Status Should be  302  ${resp}
 
-CONNECT Request Without Redirection
+CONNECT Request on Session Without Redirection
     [Tags]  connect
     ${resp}=  CONNECT On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
     Status Should be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-CONNECT Request With Redirection
+CONNECT Request on Session With Redirection
     [Tags]  connect
     ${resp}=  CONNECT On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
     Status Should be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
-TRACE Request Without Redirection
+TRACE Request on Session Without Redirection
     [Tags]  trace
     ${resp}=  TRACE On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
     Status Should be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-TRACE Request With Redirection
+TRACE Request on Session With Redirection
     [Tags]  trace
     ${resp}=  TRACE On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
     Status Should be  OK  ${resp}
