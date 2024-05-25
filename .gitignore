@@ -30,3 +30,6 @@ venv/*
 env/*
 
 .vscode/*
+
+# ignore http server log
+atests/http_server/http_server.log

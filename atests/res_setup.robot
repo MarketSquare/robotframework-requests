@@ -29,7 +29,7 @@ Setup Flask Http Server
     Set global variable    ${HTTP_LOCAL_SERVER}    ${HTTP_LOCAL_SERVER}
 
     # No way to have the return code or other data on the process since it's in background
-    Start Process    ${flask_cmd}    cwd=${CURDIR}/http_server/    alias=flask
+    Start Process    ${flask_cmd}    cwd=${CURDIR}/http_server/    alias=flask    stderr=http_server.log    stdout=http_server.log
     Create Session    ${GLOBAL_SESSION}    ${HTTP_LOCAL_SERVER}
     Wait Until Http Server Is Up And Running
 
