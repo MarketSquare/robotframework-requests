@@ -1,6 +1,7 @@
 from robot.api.deco import keyword
 
 from RequestsLibrary.utils import warn_if_equal_symbol_in_url_on_session
+
 from .SessionKeywords import SessionKeywords
 
 
@@ -8,8 +9,9 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
     @keyword("GET On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def get_on_session(self, alias, url, params=None,
-                       expected_status=None, msg=None, **kwargs):
+    def get_on_session(
+        self, alias, url, params=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a GET request on a previously created HTTP Session.
 
@@ -28,15 +30,15 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("GET", session, url,
-                                        params=params, **kwargs)
+        response = self._common_request("GET", session, url, params=params, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword("POST On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def post_on_session(self, alias, url, data=None, json=None,
-                        expected_status=None, msg=None, **kwargs):
+    def post_on_session(
+        self, alias, url, data=None, json=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a POST request on a previously created HTTP Session.
 
@@ -57,15 +59,17 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("POST", session, url,
-                                        data=data, json=json, **kwargs)
+        response = self._common_request(
+            "POST", session, url, data=data, json=json, **kwargs
+        )
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword("PATCH On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def patch_on_session(self, alias, url, data=None, json=None,
-                         expected_status=None, msg=None, **kwargs):
+    def patch_on_session(
+        self, alias, url, data=None, json=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a PATCH request on a previously created HTTP Session.
 
@@ -86,15 +90,17 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("PATCH", session, url,
-                                        data=data, json=json, **kwargs)
+        response = self._common_request(
+            "PATCH", session, url, data=data, json=json, **kwargs
+        )
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword("PUT On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def put_on_session(self, alias, url, data=None, json=None,
-                       expected_status=None, msg=None, **kwargs):
+    def put_on_session(
+        self, alias, url, data=None, json=None, expected_status=None, msg=None, **kwargs
+    ):
         """
         Sends a PUT request on a previously created HTTP Session.
 
@@ -115,15 +121,15 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("PUT", session, url,
-                                        data=data, json=json, **kwargs)
+        response = self._common_request(
+            "PUT", session, url, data=data, json=json, **kwargs
+        )
         self._check_status(expected_status, response, msg)
         return response
 
-    @keyword('DELETE On Session')
+    @keyword("DELETE On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def delete_on_session(self, alias, url,
-                          expected_status=None, msg=None, **kwargs):
+    def delete_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a DELETE request on a previously created HTTP Session.
 
@@ -146,8 +152,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
     @keyword("HEAD On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def head_on_session(self, alias, url,
-                        expected_status=None, msg=None, **kwargs):
+    def head_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a HEAD request on a previously created HTTP Session.
 
@@ -169,7 +174,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         session = self._cache.switch(alias)
 
         # Do not allow redirects for HEAD method by default.
-        if not "allow_redirects" in kwargs:
+        if "allow_redirects" not in kwargs:
             kwargs["allow_redirects"] = False
 
         response = self._common_request("HEAD", session, url, **kwargs)
@@ -178,8 +183,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
     @keyword("OPTIONS On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def options_on_session(self, alias, url,
-                           expected_status=None, msg=None, **kwargs):
+    def options_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
         """
         Sends an OPTIONS request on a previously created HTTP Session.
 
@@ -202,8 +206,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
     @keyword("CONNECT On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def connect_on_session(self, alias, url,
-                           expected_status=None, msg=None, **kwargs):
+    def connect_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a CONNECT request on a previously created HTTP Session.
 
@@ -226,8 +229,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
 
     @keyword("TRACE On Session")
     @warn_if_equal_symbol_in_url_on_session
-    def trace_on_session(self, alias, url,
-                           expected_status=None, msg=None, **kwargs):
+    def trace_on_session(self, alias, url, expected_status=None, msg=None, **kwargs):
         """
         Sends a TRACE request on a previously created HTTP Session.
 
