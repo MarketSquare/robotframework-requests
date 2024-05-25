@@ -178,7 +178,7 @@ class RequestsKeywords(object):
         | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
         | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
         | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
-        | ``allow_redirects`` | Boolean. Enable/disable (values ``${True}`` or ``${False}``) GET/POST/PUT/DELETE/PATCH/TRACE/CONNECT redirection. Defaults to ``${True}``. |
+        | ``allow_redirects`` | Boolean. Enable/disable (values ``${True}`` or ``${False}``). Only for HEAD method keywords allow_redirection defaults to ``${False}``, all others ``${True}``. |
         | ``proxies`` | Dictionary mapping protocol or protocol and host to the URL of the proxy (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) |
         | ``verify``  | Either a boolean, in which case it controls whether we verify the server's TLS certificate, or a string, in which case it must be a path to a CA bundle to use. Defaults to ``${True}``. Warning: if a session has been created with ``verify=${False}`` any other requests will not verify the SSL certificate. |
         | ``stream`` | if ``${False}``, the response content will be immediately downloaded. |
@@ -251,7 +251,7 @@ class RequestsKeywords(object):
     @keyword('HEAD')
     @warn_if_equal_symbol_in_url_session_less
     def session_less_head(self, url,
-                          expected_status=None, msg=None, allow_redirects=False, **kwargs):
+                          expected_status=None, msg=None, **kwargs):
         """
         Sends a HEAD request.
 
@@ -269,7 +269,10 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request('HEAD', None, url, allow_redirects=allow_redirects, **kwargs)
+        if not "allow_redirects" in kwargs:
+            kwargs["allow_redirects"] = False
+
+        response = self._common_request('HEAD', None, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
@@ -325,7 +328,7 @@ class RequestsKeywords(object):
     @keyword('OPTIONS')
     @warn_if_equal_symbol_in_url_session_less
     def session_less_options(self, url,
-                             expected_status=None, msg=None, allow_redirects=False, **kwargs):
+                             expected_status=None, msg=None, **kwargs):
         """
         Sends a OPTIONS request.
 
@@ -340,7 +343,7 @@ class RequestsKeywords(object):
         Other optional requests arguments can be passed using ``**kwargs``
         see the `GET` keyword for the complete list.
         """
-        response = self._common_request("OPTIONS", None, url, allow_redirects=allow_redirects, **kwargs)
+        response = self._common_request("OPTIONS", None, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 

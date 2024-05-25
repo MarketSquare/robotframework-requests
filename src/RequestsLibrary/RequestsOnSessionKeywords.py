@@ -147,7 +147,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
     @keyword("HEAD On Session")
     @warn_if_equal_symbol_in_url_on_session
     def head_on_session(self, alias, url,
-                        expected_status=None, msg=None, allow_redirects=False, **kwargs):
+                        expected_status=None, msg=None, **kwargs):
         """
         Sends a HEAD request on a previously created HTTP Session.
 
@@ -167,14 +167,19 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("HEAD", session, url, allow_redirects=allow_redirects, **kwargs)
+
+        # Do not allow redirects for HEAD method by default.
+        if not "allow_redirects" in kwargs:
+            kwargs["allow_redirects"] = False
+
+        response = self._common_request("HEAD", session, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 
     @keyword("OPTIONS On Session")
     @warn_if_equal_symbol_in_url_on_session
     def options_on_session(self, alias, url,
-                           expected_status=None, msg=None, allow_redirects=False, **kwargs):
+                           expected_status=None, msg=None, **kwargs):
         """
         Sends a OPTIONS request on a previously created HTTP Session.
 
@@ -191,7 +196,7 @@ class RequestsOnSessionKeywords(SessionKeywords):
         see the `GET` keyword for the complete list.
         """
         session = self._cache.switch(alias)
-        response = self._common_request("OPTIONS", session, url, allow_redirects=allow_redirects, **kwargs)
+        response = self._common_request("OPTIONS", session, url, **kwargs)
         self._check_status(expected_status, response, msg)
         return response
 

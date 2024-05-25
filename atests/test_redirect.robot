@@ -24,25 +24,23 @@ Get Request Without Redirection
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
 
-# TODO understand whether this is the right behavior or not
-Options Request Without Redirection By Default
+Options Request With Redirection By Default
     [Tags]  options
     ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything
-    Status Should Be  302  ${resp}
-    Length Should Be  ${resp.history}  0
+    Status Should Be  200  ${resp}
+    Length Should Be  ${resp.history}  1
 
-# TODO understand whether this is the right behavior or not
 Options Request With Redirection
     [Tags]  options
     ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
     Status Should Be  OK  ${resp}
     Length Should Be  ${resp.history}  1
 
-Head Request With Redirection
-    [Tags]  head
-    ${resp}=  HEAD On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
-    Status Should Be  OK  ${resp}
-    Length Should Be  ${resp.history}  1
+Options Request Without Redirection
+    [Tags]  options
+    ${resp}=  OPTIONS On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
+    Status Should Be  302  ${resp}
+    Length Should Be  ${resp.history}  0
 
 Head Request Without Redirection By Default
     [Tags]  head
@@ -50,6 +48,12 @@ Head Request Without Redirection By Default
     ${status}=  Convert To String  ${resp.status_code}
     Status Should Be  302  ${resp}
     Length Should Be  ${resp.history}  0
+
+Head Request With Redirection
+    [Tags]  head
+    ${resp}=  HEAD On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${true}
+    Status Should Be  OK  ${resp}
+    Length Should Be  ${resp.history}  1
 
 Head Request Without Redirection
     ${resp}=  HEAD On Session  ${GLOBAL_SESSION}  url=/redirect-to?url=anything  allow_redirects=${false}
