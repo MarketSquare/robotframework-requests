@@ -65,7 +65,7 @@ You can install pre-release versions in this way:
 ### Possible topic of interest:
 - [ ] **Review PR:** [disable cert warnings](https://github.com/MarketSquare/robotframework-requests/pull/209)
 - [ ] **Tech**: Moving all tests to local http server (Flask)
-- [ ] **Challenge**: Start local http server (Flask) only once per test run instead of start/stop for each suite
+- [x] **Challenge**: Start local http server (Flask) only once per test run instead of start/stop for each suite
 
 ### Reply / close issues as you will :)
 https://github.com/MarketSquare/robotframework-requests/issues
