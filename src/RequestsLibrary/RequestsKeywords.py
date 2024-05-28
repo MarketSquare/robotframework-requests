@@ -34,6 +34,8 @@ class RequestsKeywords(object):
 
         self._capture_output()
 
+        kwargs.update({'verify': session.verify})
+        
         resp = method_function(
             self._merge_url(session, uri),
             timeout=self._get_timeout(kwargs.pop('timeout', None)),
