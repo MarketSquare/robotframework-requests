@@ -168,6 +168,13 @@ class RequestsKeywords(object):
         """
         return open(path, "rb")
 
+    @keyword("Get response")
+    def get_response(self) -> requests.Response:
+        """
+        Returns the response from the last request.
+        """
+        return self.last_response
+
     @keyword("GET")
     @warn_if_equal_symbol_in_url_session_less
     def session_less_get(
