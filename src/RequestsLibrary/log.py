@@ -26,7 +26,7 @@ def log_request(response):
         original_request = request
         redirected = ""
     safe_headers = dict(original_request.headers)
-    if AUTHORIZATION in safe_headers:
+    if logger.LOGLEVEL not in ['TRACE', 'DEBUG'] and AUTHORIZATION in safe_headers:
         safe_headers[AUTHORIZATION] = '*****'
     logger.info(
         "%s Request : " % original_request.method.upper()
