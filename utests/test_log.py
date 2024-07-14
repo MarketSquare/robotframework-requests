@@ -1,5 +1,6 @@
 import json
 import os
+import pytest
 
 from requests import Request
 
@@ -48,6 +49,71 @@ def test_format_with_file_descriptor():
 @mock.patch('RequestsLibrary.log.logger')
 def test_log_request(mocked_logger):
     request = Request(method='get', url='http://mock.rulezz')
+    request = request.prepare()
+    response = mock.MagicMock()
+    response.history = []
+    response.request = request
+    log_request(response)
+    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                  "url=%s \n " % request.url +
+                                                  "path_url=%s \n " % request.path_url +
+                                                  "headers=%s \n " % request.headers +
+                                                  "body=%s \n " % request.body)
+
+
+@mock.patch('RequestsLibrary.log.logger')
+def test_log_request_with_headers(mocked_logger):
+    headers = {'User-Agent': 'python-requests/2.31.0',
+               'Accept-Encoding': 'gzip, deflate',
+               'Accept': '*/*',
+               'Connection': 'keep-alive'}
+    request = Request(method='get', url='http://mock.rulezz', headers=headers)
+    request = request.prepare()
+    response = mock.MagicMock()
+    response.history = []
+    response.request = request
+    log_request(response)
+    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                  "url=%s \n " % request.url +
+                                                  "path_url=%s \n " % request.path_url +
+                                                  "headers=%s \n " % request.headers +
+                                                  "body=%s \n " % request.body)
+
+
+@pytest.mark.parametrize('log_level', ['INFO', 'CONSOLE', 'HTML', 'WARN', 'ERROR'])
+@mock.patch('RequestsLibrary.log.logger')
+def test_log_request_with_headers_auth_with_no_debug_trace_logger(mocked_logger, log_level):
+    mocked_logger.LOGLEVEL = log_level
+    headers = {'User-Agent': 'python-requests/2.31.0',
+               'Accept-Encoding': 'gzip, deflate',
+               'Accept': '*/*',
+               'Connection': 'keep-alive',
+               'Authorization': 'some_token'}
+    safe_headers = dict(headers)
+    safe_headers['Authorization'] = '*****'
+    request = Request(method='get', url='http://mock.rulezz', headers=headers)
+    request = request.prepare()
+    response = mock.MagicMock()
+    response.history = []
+    response.request = request
+    log_request(response)
+    assert mocked_logger.info.call_args[0][0] == ("%s Request : " % request.method +
+                                                  "url=%s \n " % request.url +
+                                                  "path_url=%s \n " % request.path_url +
+                                                  "headers=%s \n " % safe_headers +
+                                                  "body=%s \n " % request.body)
+
+
+@pytest.mark.parametrize('log_level', ['DEBUG', 'TRACE'])
+@mock.patch('RequestsLibrary.log.logger')
+def test_log_request_with_headers_auth_with_debug_trace_logger(mocked_logger, log_level):
+    headers = {'User-Agent': 'python-requests/2.31.0',
+               'Accept-Encoding': 'gzip, deflate',
+               'Accept': '*/*',
+               'Connection': 'keep-alive',
+               'Authorization': 'some_token'}
+    mocked_logger.LOGLEVEL = log_level
+    request = Request(method='get', url='http://mock.rulezz', headers=headers)
     request = request.prepare()
     response = mock.MagicMock()
     response.history = []
