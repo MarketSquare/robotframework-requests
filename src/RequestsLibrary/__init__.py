@@ -116,6 +116,13 @@ class RequestsLibrary(RequestsOnSessionKeywords):
          - https://2.python-requests.org/en/master/user/quickstart/#post-a-multipart-encoded-file
          - https://2.python-requests.org/en/master/user/advanced/#post-multiple-multipart-encoded-files
 
+       = Logging and authentication =
+
+       Every request logs headers. This implies that in the case of basic
+       authentication, the password could be exposed in the Robot Framework
+       output files. By default, the value of ``Authorization`` is masked,
+       expect when the log level is set to ``TRACE`` or ``DEBUG``.
+
     """
 
     __version__ = VERSION
