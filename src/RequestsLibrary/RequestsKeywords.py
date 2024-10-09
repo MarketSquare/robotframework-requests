@@ -6,6 +6,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from RequestsLibrary import log
 from RequestsLibrary.compat import urljoin
 from RequestsLibrary.utils import (
+    is_list_or_tuple,
     is_file_descriptor,
     warn_if_equal_symbol_in_url_session_less,
 )
@@ -48,14 +49,29 @@ class RequestsKeywords(object):
 
         files = kwargs.get("files", {}) or {}
         data = kwargs.get("data", []) or []
-        files_descriptor_to_close = filter(
-            is_file_descriptor, list(files.values()) + [data]
-        )
-        for file_descriptor in files_descriptor_to_close:
-            file_descriptor.close()
+
+        self._close_file_descriptors(files, data)
 
         return resp
 
+    @staticmethod
+    def _close_file_descriptors(files, data):
+        """
+        Helper method that closes any open file descriptors.
+        """
+        
+        if is_list_or_tuple(files):
+            files_descriptor_to_close = filter(
+                is_file_descriptor, [file[1][1] for file in files] + [data]
+            )
+        else:
+            files_descriptor_to_close = filter(
+                is_file_descriptor, list(files.values()) + [data]
+            )
+        
+        for file_descriptor in files_descriptor_to_close:
+            file_descriptor.close()
+    
     @staticmethod
     def _merge_url(session, uri):
         """
@@ -176,7 +192,7 @@ class RequestsKeywords(object):
         | ``json``     | A JSON serializable Python object to send in the body of the request. |
         | ``headers``  | Dictionary of HTTP Headers to send with the request. |
         | ``cookies``  | Dict or CookieJar object to send with the request. |
-        | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. |
+        | ``files``    | Dictionary of file-like-objects (or ``{'name': file-tuple}``) for multipart encoding upload. ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')`` or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers to add for the file. List or tuple of ``('key': file-tuple)`` allows uploading multiple files with the same key, resulting in a list of files on the receiving end. |
         | ``auth`` | Auth tuple to enable Basic/Digest/Custom HTTP Auth. |
         | ``timeout`` | How many seconds to wait for the server to send data before giving up, as a float, or a ``(connect timeout, read timeout)`` tuple. |
         | ``allow_redirects`` | Boolean. Enable/disable (values ``${True}`` or ``${False}``). Only for HEAD method keywords allow_redirection defaults to ``${False}``, all others ``${True}``. |
