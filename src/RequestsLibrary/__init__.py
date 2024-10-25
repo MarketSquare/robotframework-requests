@@ -118,10 +118,11 @@ class RequestsLibrary(RequestsOnSessionKeywords):
 
        = Logging and authentication =
 
-       Every request logs headers. This implies that in the case of basic
-       authentication, the password could be exposed in the Robot Framework
-       output files. By default, the value of ``Authorization`` is masked,
-       expect when the log level is set to ``TRACE`` or ``DEBUG``.
+       All request data are logged by default headers included, which means that, sensitive information like passwords
+       or tokens may be present in the Robot Framework output files.
+       For this reason, the ``Authorization`` header is masked in standard logs to protect sensitive data.
+
+       The full value of ``Authorization`` will only be visible if the logging level is set to ``TRACE`` or ``DEBUG``.
 
     """
 
