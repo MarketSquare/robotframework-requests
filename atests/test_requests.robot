@@ -283,20 +283,20 @@ Trace Request
     ${resp}=    TRACE    ${HTTP_LOCAL_SERVER}/anything
     Status Should Be    OK    ${resp}
 
-Get request with get response
+Get request with last response
     [Tags]    get
     GET    ${HTTP_LOCAL_SERVER}/anything
     Status Should Be    OK
-    ${resp}=    Get response
+    ${resp}=    Last response
     Should be equal    ${resp.status_code}    ${200}
     Should be equal    ${resp.json()}[url]    ${HTTP_LOCAL_SERVER}/anything
 
-Post request with get response
+Post request with last response
     [Tags]    post
     ${data}=   Create dictionary    key1=one    key2=two    key3=3
     POST    ${HTTP_LOCAL_SERVER}/anything    json=${data}
     Status Should Be    OK
-    ${resp}=    Get response
+    ${resp}=    Last response
     Should be equal    ${resp.status_code}    ${200}
     Should be equal    ${resp.json()}[url]    ${HTTP_LOCAL_SERVER}/anything
     Should be equal    ${resp.json()}[json]   ${data}

@@ -168,8 +168,8 @@ class RequestsKeywords(object):
         """
         return open(path, "rb")
 
-    @keyword("Get response")
-    def get_response(self) -> requests.Response:
+    @keyword("Last response")
+    def get_last_response(self) -> requests.Response:
         """
         Returns the response from the last request.
         """
