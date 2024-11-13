@@ -629,7 +629,7 @@ class SessionKeywords(RequestsKeywords):
                 expected_status = utils.parse_named_status(expected_status)
             msg = "" if msg is None else "{} ".format(msg)
             msg = "{}Url: {} Expected status".format(msg, resp.url)
-            assert_equal(resp.status_code, expected_status, msg)
+            assert_equal(expected_status, resp.status_code, msg)
 
     def _get_timeout(self, timeout):
         result = timeout if timeout is not None else self.timeout
