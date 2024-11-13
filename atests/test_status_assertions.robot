@@ -7,7 +7,7 @@ Request And Status Should Be Different
     [Tags]    get    status
     ${resp}=    GET On Session    ${GLOBAL_SESSION}    /status/404    expected_status=any
     Run Keyword And Expect Error
-    ...    Url: ${HTTP_LOCAL_SERVER}/status/404 Expected status: 404 != 201
+    ...    Url: ${HTTP_LOCAL_SERVER}/status/404 Expected status: 201 != 404
     ...    Status Should Be
     ...    201
     ...    ${resp}
@@ -36,7 +36,7 @@ Request And Status Should Be With A Message
     [Tags]    get    status
     ${resp}=    GET On Session    ${GLOBAL_SESSION}    /status/418    expected_status=any
     Run Keyword And Expect Error
-    ...    It should be a teapot! Url: ${HTTP_LOCAL_SERVER}/status/418 Expected status: 418 != 200
+    ...    It should be a teapot! Url: ${HTTP_LOCAL_SERVER}/status/418 Expected status: 200 != 418
     ...    Status Should Be
     ...    OK
     ...    ${resp}
@@ -89,7 +89,7 @@ Assert Status Should Be Fail On The Last Request
     [Tags]    post    status
     POST On Session    ${GLOBAL_SESSION}    /status/500    expected_status=500
     Run Keyword And Expect Error
-    ...    Url: ${HTTP_LOCAL_SERVER}/status/500 Expected status: 500 != 200
+    ...    Url: ${HTTP_LOCAL_SERVER}/status/500 Expected status: 200 != 500
     ...    Status Should Be
     ...    OK
 
@@ -124,6 +124,6 @@ Assert Status Should Be Fail On The Last Session-Less Request
     [Tags]    post    status
     POST    ${HTTP_LOCAL_SERVER}/status/500    expected_status=500
     Run Keyword And Expect Error
-    ...    Url: ${HTTP_LOCAL_SERVER}/status/500 Expected status: 500 != 200
+    ...    Url: ${HTTP_LOCAL_SERVER}/status/500 Expected status: 200 != 500
     ...    Status Should Be
     ...    OK
