@@ -256,8 +256,16 @@ def status_code(code):
     return r
 
 
+# =============================================================================
+# UNUSED: Authentication functions below are no longer used (Flask-HTTPAuth is used instead)
+# These functions remain for reference but can be removed in the future
+# =============================================================================
+
 def check_basic_auth(user, passwd):
-    """Checks user authentication using HTTP Basic Auth."""
+    """Checks user authentication using HTTP Basic Auth.
+
+    UNUSED: Replaced by Flask-HTTPAuth's @basic_auth.verify_password decorator
+    """
 
     auth = request.authorization
     return auth and auth.username == user and auth.password == passwd
@@ -268,6 +276,7 @@ def check_basic_auth(user, passwd):
 
 
 def H(data, algorithm):
+    """UNUSED: Hash function for digest auth (replaced by Flask-HTTPAuth)"""
     if algorithm == 'SHA-256':
         return sha256(data).hexdigest()
     elif algorithm == 'SHA-512':
@@ -280,6 +289,8 @@ def HA1(realm, username, password, algorithm):
     """Create HA1 hash by realm, username, password
 
     HA1 = md5(A1) = MD5(username:realm:password)
+
+    UNUSED: Replaced by Flask-HTTPAuth
     """
     if not realm:
         realm = u''
@@ -295,6 +306,8 @@ def HA2(credentials, request, algorithm):
         HA2 = md5(A2) = MD5(method:digestURI)
     If the qop directive's value is "auth-int" , then HA2 is
         HA2 = md5(A2) = MD5(method:digestURI:MD5(entityBody))
+
+    UNUSED: Replaced by Flask-HTTPAuth
     """
     if credentials.get("qop") == "auth" or credentials.get('qop') is None:
         return H(b":".join([request['method'].encode('utf-8'), request['uri'].encode('utf-8')]), algorithm)
@@ -321,6 +334,8 @@ def response(credentials, password, request):
     - `credentials`: credentials dict
     - `password`: request user password
     - `request`: request dict
+
+    UNUSED: Replaced by Flask-HTTPAuth
     """
     response = None
     algorithm = credentials.get('algorithm')
@@ -354,7 +369,10 @@ def response(credentials, password, request):
 
 
 def check_digest_auth(user, passwd):
-    """Check user authentication using HTTP Digest auth"""
+    """Check user authentication using HTTP Digest auth
+
+    UNUSED: Replaced by Flask-HTTPAuth's @digest_auth.get_password decorator
+    """
 
     if request.headers.get('Authorization'):
         credentials = Authorization.from_header(request.headers.get('Authorization'))
@@ -456,6 +474,10 @@ def next_stale_after_value(stale_after):
 
 
 def digest_challenge_response(app, qop, algorithm, stale=False):
+    """Generate digest authentication challenge response.
+
+    UNUSED: Replaced by Flask-HTTPAuth which handles challenge generation automatically
+    """
     response = app.make_response('')
     response.status_code = 401
 

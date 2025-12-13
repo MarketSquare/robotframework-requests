@@ -2,6 +2,7 @@
 # See AUTHORS and LICENSE for more information
 
 from flask import Flask, Response, jsonify as flask_jsonify, request
+from flask_httpauth import HTTPBasicAuth, HTTPDigestAuth
 
 from .structures import CaseInsensitiveDict
 from .helpers import get_dict, status_code
@@ -9,6 +10,11 @@ from .utils import weighted_choice
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'test-secret-key-for-digest-auth'
+
+# Initialize authentication handlers
+basic_auth = HTTPBasicAuth()
+digest_auth = HTTPDigestAuth()
 
 
 def jsonify(*args, **kwargs):
@@ -191,3 +197,92 @@ def redirect_to():
     response.headers["Location"] = args["url"]
 
     return response
+
+
+# Basic auth verification callback
+@basic_auth.verify_password
+def verify_basic_password(username, password):
+    # Get expected credentials from the request path
+    path_parts = request.path.split('/')
+    if len(path_parts) >= 4 and path_parts[1] == 'basic-auth':
+        expected_user = path_parts[2]
+        expected_pass = path_parts[3]
+        return username == expected_user and password == expected_pass
+    return False
+
+
+@app.route("/basic-auth/<user>/<passwd>")
+@basic_auth.login_required
+def basic_auth_endpoint(user, passwd):
+    """Prompts the user for authorization using HTTP Basic Auth.
+    ---
+    tags:
+      - Auth
+    parameters:
+      - in: path
+        name: user
+        type: string
+        required: true
+      - in: path
+        name: passwd
+        type: string
+        required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Successful authentication.
+      401:
+        description: Unsuccessful authentication.
+    """
+    return jsonify(authenticated=True, user=basic_auth.current_user())
+
+
+# Digest auth password callback
+@digest_auth.get_password
+def get_digest_password(username):
+    # Get expected credentials from the request path
+    path_parts = request.path.split('/')
+    if len(path_parts) >= 5 and path_parts[1] == 'digest-auth':
+        expected_user = path_parts[3]
+        expected_pass = path_parts[4]
+        if username == expected_user:
+            return expected_pass
+    return None
+
+
+@app.route("/digest-auth/<qop>/<user>/<passwd>")
+@app.route("/digest-auth/<qop>/<user>/<passwd>/<algorithm>")
+@digest_auth.login_required
+def digest_auth_endpoint(qop, user, passwd, algorithm='MD5'):
+    """Prompts the user for authorization using HTTP Digest Auth.
+    ---
+    tags:
+      - Auth
+    parameters:
+      - in: path
+        name: qop
+        type: string
+        required: true
+      - in: path
+        name: user
+        type: string
+        required: true
+      - in: path
+        name: passwd
+        type: string
+        required: true
+      - in: path
+        name: algorithm
+        type: string
+        required: false
+        default: MD5
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Successful authentication.
+      401:
+        description: Unsuccessful authentication.
+    """
+    return jsonify(authenticated=True, user=digest_auth.current_user())

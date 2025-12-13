@@ -21,7 +21,7 @@ Programming Language :: Python :: 3.9
 Topic :: Software Development :: Testing
 """[1:-1]
 
-TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8']
+TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8', 'Flask-HTTPAuth==4.8.0']
 
 VERSION = None
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
