@@ -1,6 +1,5 @@
 *** Settings ***
 Library     RequestsLibrary
-Resource    res_setup.robot
 
 
 *** Test Cases ***
