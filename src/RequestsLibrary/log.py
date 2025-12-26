@@ -17,7 +17,7 @@ def log_response(response):
     )
 
 
-def log_request(response):
+def log_request(response, has_secrets=False):
     request = response.request
     if response.history:
         original_request = response.history[0].request
@@ -25,9 +25,14 @@ def log_request(response):
     else:
         original_request = request
         redirected = ""
+
+    # Mask Authorization header based on whether secrets were used
     safe_headers = dict(original_request.headers)
-    if logger.LOGLEVEL not in ['TRACE', 'DEBUG'] and AUTHORIZATION in safe_headers:
-        safe_headers[AUTHORIZATION] = '*****'
+    if AUTHORIZATION in safe_headers:
+        # If secrets were used, always mask. Otherwise, only mask if not in DEBUG/TRACE
+        if has_secrets or logger.LOGLEVEL not in ['TRACE', 'DEBUG']:
+            safe_headers[AUTHORIZATION] = '*****'
+
     logger.info(
         "%s Request : " % original_request.method.upper()
         + "url=%s %s\n " % (original_request.url, redirected)

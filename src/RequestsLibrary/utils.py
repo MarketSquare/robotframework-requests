@@ -5,6 +5,11 @@ import types
 from requests.status_codes import codes
 from requests.structures import CaseInsensitiveDict
 from robot.api import logger
+try:
+    from robot.api.types import Secret
+    robot_supports_secrets = True
+except (ImportError, ModuleNotFoundError):
+    robot_supports_secrets = False
 
 from RequestsLibrary.compat import urlencode
 from RequestsLibrary.exceptions import UnknownStatusError
@@ -74,8 +79,34 @@ def is_string_type(data):
 def is_file_descriptor(fd):
     return isinstance(fd, io.IOBase)
 
+
 def is_list_or_tuple(data):
     return isinstance(data, (list, tuple))
+
+
+def check_and_process_secrets(auth):
+    """
+    Check if auth contains secrets and process them
+
+    Returns:
+        tuple: (processed_auth, has_secrets_flag)
+    """
+    if not auth or not isinstance(auth, (list, tuple)):
+        return auth, False
+
+    if robot_supports_secrets:
+        has_secrets_flag = False
+        processed = []
+        for a in auth:
+            if isinstance(a, Secret):
+                has_secrets_flag = True
+                processed.append(a.value)
+            else:
+                processed.append(a)
+        return tuple(processed), has_secrets_flag
+    else:
+        return auth, False
+
 
 def utf8_urlencode(data):
     if is_string_type(data):

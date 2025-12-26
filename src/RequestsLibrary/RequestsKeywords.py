@@ -6,6 +6,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from RequestsLibrary import log
 from RequestsLibrary.compat import urljoin
 from RequestsLibrary.utils import (
+    check_and_process_secrets,
     is_list_or_tuple,
     is_file_descriptor,
     warn_if_equal_symbol_in_url_session_less,
@@ -22,6 +23,14 @@ class RequestsKeywords(object):
         self.timeout = None
         self.cookies = None
         self.last_response = None
+        self._request_has_secrets = False
+        self._session_secrets = {}  # Maps session object ID to secrets flag
+
+    def _get_session_secrets_flag(self, session):
+        """Get the secrets flag for a session object"""
+        if not session:
+            return False
+        return self._session_secrets.get(id(session), False)
 
     def _common_request(self, method, session, uri, **kwargs):
 
@@ -29,6 +38,19 @@ class RequestsKeywords(object):
             request_function = getattr(session, "request")
         else:
             request_function = getattr(requests, "request")
+
+        auth = kwargs.get("auth")
+        if auth is not None and isinstance(auth, (list, tuple)):
+            kwargs["auth"], contains_secrets = check_and_process_secrets(auth)
+        else:
+            contains_secrets = False
+
+        if session:
+            # Check if the session was created with robot secrets
+            contains_secrets = contains_secrets or self._get_session_secrets_flag(session)
+
+        # Store secrets flag for _print_debug to access
+        self._request_has_secrets = contains_secrets
 
         self._capture_output()
 
@@ -40,7 +62,7 @@ class RequestsKeywords(object):
             **kwargs
         )
 
-        log.log_request(resp)
+        log.log_request(resp, has_secrets=contains_secrets)
         self._print_debug()
 
         log.log_response(resp)
@@ -59,7 +81,7 @@ class RequestsKeywords(object):
         """
         Helper method that closes any open file descriptors.
         """
-        
+
         if is_list_or_tuple(files):
             files_descriptor_to_close = filter(
                 is_file_descriptor, [file[1][1] for file in files] + [data]
@@ -68,10 +90,10 @@ class RequestsKeywords(object):
             files_descriptor_to_close = filter(
                 is_file_descriptor, list(files.values()) + [data]
             )
-        
+
         for file_descriptor in files_descriptor_to_close:
             file_descriptor.close()
-    
+
     @staticmethod
     def _merge_url(session, uri):
         """
