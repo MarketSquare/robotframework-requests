@@ -32,6 +32,18 @@ def test_common_request_files_descriptor_closing_when_passed_as_files_param():
             assert f2.closed is True
 
 
+def test_common_request_files_descriptor_closing_when_passed_as_file_tuple():
+    session, m_common_request = build_mocked_session_common_request()
+    with open(os.path.join(SCRIPT_DIR, '../atests/randombytes.bin'), 'rb') as f:
+        m_common_request(
+            'get',
+            session,
+            'http://mocking.rules',
+            files={'randombytes': ('randombytes.bin', f)},
+        )
+        assert f.closed is True
+
+
 def test_common_request_verify_override_true():
     session, m_common_request = build_mocked_session_common_request(verify=False)
     m_common_request('get', session, '/', verify=True)
