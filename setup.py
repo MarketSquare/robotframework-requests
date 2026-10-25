@@ -21,7 +21,10 @@ Programming Language :: Python :: 3.9
 Topic :: Software Development :: Testing
 """[1:-1]
 
-TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8', 'Flask-HTTPAuth==4.8.0']
+MULTIPART_REQUIRE = ['requests-toolbelt']
+
+TEST_REQUIRE = ['robotframework>=3.2.1', 'pytest', 'flask', 'six', 'coverage', 'flake8', 'Flask-HTTPAuth==4.8.0'] \
+    + MULTIPART_REQUIRE
 
 VERSION = None
 version_file = join(dirname(abspath(__file__)), 'src', 'RequestsLibrary', 'version.py')
@@ -53,5 +56,6 @@ setup(name='robotframework-requests',
           'requests'
       ],
       extras_require={
+          'multipart': MULTIPART_REQUIRE,
           'test': TEST_REQUIRE
       })

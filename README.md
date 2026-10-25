@@ -101,6 +101,36 @@ Post Request Test
     Status Should Be                 201  ${resp}                                                      
 ```
 
+### 📎 Multipart form data upload
+
+`Create Multipart Data` builds a `multipart/form-data` body, the format used by HTML forms and most
+APIs to upload files, to pass as `data` to `POST On Session`, `PUT On Session` or `PATCH On Session`.
+Files are streamed from disk, so large files are not loaded in memory.
+It needs an optional dependency: `pip install "robotframework-requests[multipart]"`
+
+- `fields`: dictionary of `name=value`, or list of `(name, value)` pairs to repeat a name.
+  Dictionary and list values are sent as JSON.
+- `files`: dictionary of `name=path`, or list of `(name, path[, content_type[, filename]])`,
+  `(name, [paths])` or `{name, path, content_type, filename}` dictionaries.
+  The file name and content type are taken from the path when not given.
+- `files_first=${True}` sends the files before the fields.
+- The `Content-Type` header with its boundary is set for you, session headers such as an
+  `Authorization` token are kept.
+
+```robotframework
+Upload Report Test
+    ${headers}=      Create Dictionary    Authorization=Bearer ${token}
+    Create Session   api    https://example.com    headers=${headers}
+    ${settings}=     Create Dictionary    everything=${True}
+    ${fields}=       Create Dictionary    action=add    settings=${settings}
+    ${files}=        Create Dictionary    document=${CURDIR}/report.pdf
+    ${multipart}=    Create Multipart Data    fields=${fields}    files=${files}
+    ${resp}=         POST On Session    api    /upload    data=${multipart}
+```
+
+See the [Create Multipart Data](http://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html#Create%20Multipart%20Data)
+keyword documentation for all the formats and examples.
+
 ### 📖 Keywords documentation
 
 Robotframework-requests offers a wide set of keywords which can be found in

@@ -77,6 +77,30 @@ def is_file_descriptor(fd):
 def is_list_or_tuple(data):
     return isinstance(data, (list, tuple))
 
+
+def is_multipart_encoder(data):
+    """
+    Duck typing check for requests_toolbelt MultipartEncoder like objects,
+    so that requests_toolbelt is not required to be installed.
+    """
+    return hasattr(data, "content_type") and callable(getattr(data, "read", None))
+
+
+def get_multipart_file_descriptors(encoder):
+    """
+    Returns the file descriptors held by the fields of a multipart encoder.
+    """
+    fields = getattr(encoder, "fields", None)
+    if not fields:
+        return []
+    values = fields.values() if isinstance(fields, dict) else [field[1] for field in fields]
+    return [
+        value[1]
+        for value in values
+        if is_list_or_tuple(value) and len(value) > 1 and is_file_descriptor(value[1])
+    ]
+
+
 def utf8_urlencode(data):
     if is_string_type(data):
         return data.encode("utf-8")

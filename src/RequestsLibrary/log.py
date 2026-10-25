@@ -42,7 +42,9 @@ def format_data_to_log_string(data, limit=LOG_CHAR_LIMIT):
     if not data:
         return None
 
-    if is_file_descriptor(data):
+    # Streaming bodies (file descriptors, generators, multipart encoders...)
+    # can't be read without consuming them and may not support len() or slicing
+    if is_file_descriptor(data) or not isinstance(data, (str, bytes)):
         return repr(data)
 
     if logging.getLogger().level > logging.DEBUG and len(data) > limit:

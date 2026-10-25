@@ -218,3 +218,24 @@ def test_format_data_truncate_info_level(mocked_logger):
     mocked_logger.DEBUG = 10
     truncated = format_data_to_log_string(data)
     assert truncated == data[:10000] + '... (set the log level to DEBUG or TRACE to see the full content)'
+
+
+def test_format_with_streaming_body_without_len():
+    def body():
+        yield b'chunk'
+    data = body()
+    assert format_data_to_log_string(data) == repr(data)
+
+
+class StreamingBody:
+    """Like a requests_toolbelt MultipartEncoder: readable, with a length but no slicing"""
+    def __len__(self):
+        return 20000
+
+    def read(self, size=-1):
+        return b''
+
+
+def test_format_with_large_streaming_body():
+    data = StreamingBody()
+    assert format_data_to_log_string(data, 10000) == repr(data)
